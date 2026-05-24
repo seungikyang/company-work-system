@@ -1,0 +1,34 @@
+# 실제 위치 후보: src/main/resources/application.yml
+# 목표: 로컬 학습용 H2 + JPA 설정을 채워보세요.
+
+spring:
+  datasource:
+    # TODO 01: 인메모리 H2 URL 을 채우세요. (testdb 라는 이름으로 띄운다고 가정)
+    url: jdbc:h2:mem:____
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      # TODO 02: 브라우저에서 H2 콘솔에 접속하려면 어떤 값이어야 할까요?
+      enabled: ____
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      # TODO 03: 학습/로컬에서는 매 실행마다 스키마를 재생성하기 위해 어떤 값이 적합한가요?
+      #          운영에서는 어떤 값이 안전한가요? answers.md 에서 비교해보세요.
+      ddl-auto: ____
+    properties:
+      hibernate:
+        # TODO 04: SQL 가독성을 위해 줄바꿈/들여쓰기를 적용하려면?
+        format_sql: ____
+    # TODO 05: 콘솔에 실행되는 SQL 을 찍어보고 싶으면?
+    show-sql: ____
+
+# TODO 06: 토큰/시크릿이 생긴다면 이런 식으로 환경 변수로 분리한다.
+#          하드코딩하지 않는 이유를 한 줄로 적어보세요.
+app:
+  security:
+    session-timeout: ${APP_SESSION_TIMEOUT:1800}
