@@ -6,11 +6,12 @@
 
 ## 사용 방법
 
-1. [problems.md](./problems.md) 를 열어 오늘 풀 문제를 고릅니다.
-2. `practice/starter/` 아래의 해당 파일에서 `TODO`와 `____` 빈칸을 채웁니다.
-3. 막히면 [company_work_system_PRD_TRD.md](../company_work_system_PRD_TRD.md) 의 관련 절(3.x)을 다시 읽습니다.
-4. 채운 다음 [answers.md](./answers.md) 로 의도를 확인합니다.
-5. 같은 흐름을 한 번 더 백지에서 작성해 봅니다.
+1. [feature-implementation-workbook.md](./feature-implementation-workbook.md) 에서 기능 요구사항(FR ID)별 구현 흐름을 먼저 훑습니다.
+2. [problems.md](./problems.md) 를 열어 오늘 풀 문제를 고릅니다.
+3. `practice/starter/` 아래의 해당 파일에서 `TODO`와 `____` 빈칸을 채웁니다.
+4. 막히면 [company_work_system_PRD_TRD.md](../company_work_system_PRD_TRD.md) 의 관련 절(3.x)을 다시 읽습니다.
+5. 채운 다음 [answers.md](./answers.md) 로 의도를 확인합니다.
+6. 같은 흐름을 한 번 더 백지에서 작성해 봅니다.
 
 이 폴더의 파일은 **컴파일 대상이 아니라 학습용 조각 코드**입니다. 패키지 선언과 import 는 일부러 생략했습니다.
 
@@ -61,6 +62,7 @@
 
 ## 추천 학습 호흡
 
+0일차: `feature-implementation-workbook.md` 로 전체 FR ID 와 구현 계층 매핑 훑기
 1주차: 00 ~ 07 (빌드 + 도메인 모델링 + Repository)
 2주차: 08 ~ 14, 23 ~ 30 (Service 비즈니스 로직 — 등록/검색/휴가/공지/결재/인증/부서/상세·취소·리스트)
 3주차: 15 ~ 19, 25 ~ 27, 31 ~ 34 (예외/DTO/Controller/Repository/Config/Interceptor)
