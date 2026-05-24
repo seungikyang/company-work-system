@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/exception/GlobalExceptionHandler.java
-// 목표: 모든 Controller 의 예외를 일관된 응답으로 변환하세요. PRD/TRD 3.9 참고.
+// 목표: 모든 Controller 의 예외를 일관된 응답으로 변환하세요. TRD 3.9 참고.
 
 // TODO 01: 모든 @RestController 에 적용되는 전역 예외 핸들러임을 알리는 어노테이션.
 @____

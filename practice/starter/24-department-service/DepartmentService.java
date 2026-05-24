@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/DepartmentService.java
-// 목표: 부서 CRUD 와 소속 직원 조회를 채우세요. PRD/TRD 2.5.3, 3.7.3 참고.
+// 목표: 부서 CRUD 와 소속 직원 조회를 채우세요. PRD 2.5.3, TRD 3.7.3 참고.
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +60,7 @@ public class DepartmentService {
         if (request.getName() != null
                 && !request.getName().trim().equals(dept.getName())
                 && departmentRepository.existsByName(request.getName().trim())) {
-            throw new BusinessException(ErrorCode.INVALID_INPUT, "이미 존재하는 부서명입니다.");
+            throw new BusinessException(ErrorCode.DUPLICATE_DEPARTMENT_NAME, "이미 존재하는 부서명입니다.");
         }
 
         dept.update(request.getName(), request.getDescription());

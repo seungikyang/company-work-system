@@ -1,6 +1,6 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/ApprovalService.java
 // 목표: 전자결재 문서의 작성(DRAFT) → 결재 요청(PENDING) 흐름을 채우세요.
-//       PRD/TRD 2.4.3, 2.5.6, 3.8.4 참고.
+//       PRD 2.4.3, 2.5.6, TRD 3.8.4 참고.
 
 @Transactional
 public ApprovalResponse createDraft(Long currentEmployeeId, ApprovalCreateRequest request) {

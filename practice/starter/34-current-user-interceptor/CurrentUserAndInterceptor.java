@@ -3,7 +3,7 @@
 //   - src/main/java/com/example/companywork/security/CurrentUser.java
 //   - src/main/java/com/example/companywork/security/CurrentUserArgumentResolver.java
 // 목표: 세션 기반 1차 보안에서 “로그인 사용자 ID 를 Controller 메서드 인자로 주입” 하는
-//       표준 패턴을 채우세요. PRD/TRD 3.11.1 참고.
+//       표준 패턴을 채우세요. TRD 3.11.1 참고.
 
 // =====================================================================
 // 1. @CurrentUser — 커스텀 어노테이션

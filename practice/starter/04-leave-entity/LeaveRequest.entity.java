@@ -1,6 +1,6 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/domain/LeaveRequest.java
 // 목표: 휴가 신청 엔티티 + LeaveType + ApprovalStatus enum 을 채우세요.
-//       PRD/TRD 3.3.4, 3.6.3, 3.6.4 참고.
+//       TRD 3.3.4, 3.6.3, 3.6.4 참고.
 
 // ===== LeaveType =====
 public enum LeaveType {

@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/LeaveService.java
-// 목표: 휴가 — 내 목록 / 상세 / 취소 흐름을 채우세요. PRD/TRD 2.5.4 (FR-LEAVE-002~004), 3.7.4 참고.
+// 목표: 휴가 — 내 목록 / 상세 / 취소 + 관리자 목록 흐름을 채우세요. PRD 2.5.4 (FR-LEAVE-002~004, FR-LEAVE-008), TRD 3.7.4 참고.
 
 @Transactional(readOnly = true)
 public Page<LeaveResponse> findMyLeaves(Long currentEmployeeId, Pageable pageable) {
@@ -11,13 +11,15 @@ public Page<LeaveResponse> findMyLeaves(Long currentEmployeeId, Pageable pageabl
 }
 
 @Transactional(readOnly = true)
-public LeaveResponse detail(Long currentEmployeeId, Long leaveId) {
+public LeaveResponse detail(Long currentEmployeeId, UserRole currentRole, Long leaveId) {
 
     LeaveRequest leave = leaveRepository.findById(leaveId)
         .orElseThrow(() -> new BusinessException(ErrorCode.LEAVE_NOT_FOUND));
 
-    // TODO 02: 본인 휴가만 상세 조회 가능. 관리자는 별도 API 로 분리하거나 role 인자를 함께 받아 분기.
-    if (!leave.getEmployee().getId().equals(currentEmployeeId)) {
+    // TODO 02: 본인 또는 ADMIN 만 상세 조회 가능.
+    boolean isOwner = leave.getEmployee().getId().equals(currentEmployeeId);
+    boolean isAdmin = currentRole == UserRole.____;
+    if (!isOwner && !isAdmin) {
         throw new BusinessException(ErrorCode.____);
     }
 

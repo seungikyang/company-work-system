@@ -1,6 +1,6 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/repository/EmployeeRepository.java
 // 목표: 직원 검색 / 페이징 / 부서별 조회를 위한 메서드 쿼리를 채우세요.
-//       PRD/TRD 2.5.2, 3.7.2 참고.
+//       PRD 2.5.2, TRD 3.7.2 참고.
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 

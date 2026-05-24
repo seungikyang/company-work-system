@@ -1,6 +1,6 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/EmployeeService.java
 // 목표: 직원 등록 시 User + Employee 를 같은 트랜잭션으로 묶어 저장하세요.
-//       PRD/TRD 3.7.2, 3.8.1, 3.10.1 참고.
+//       TRD 3.7.2, 3.8.1, 3.10.1 참고.
 
 // TODO 01: 이 메서드가 트랜잭션 안에서 실행되도록 선언하세요.
 @____

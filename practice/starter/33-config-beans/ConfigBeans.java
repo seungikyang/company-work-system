@@ -1,6 +1,6 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/config/*
 // 목표: 학습용 세션 / Security / Audit 단계에서 필요한 핵심 Bean 들을 채우세요.
-//       PRD/TRD 3.11 (보안), 3.5 (Audit 컬럼) 참고.
+//       TRD 3.11 (보안), 3.5 (Audit 컬럼) 참고.
 
 // =====================================================================
 // 1. JPA Auditing 활성화 — createdAt/updatedAt 자동 채움
@@ -61,7 +61,7 @@ public class WebMvcConfig implements ____ {
 // =====================================================================
 // 4. (학습 2차) Spring Security 단계의 SecurityFilterChain — 보강용 미리보기
 // =====================================================================
-// 이 단계는 PRD 3.11.2 의 “확장 구현” 입니다.
+// 이 단계는 TRD 3.11.2 의 “확장 구현” 입니다.
 // 1차(세션) 단계와 2차(Security) 단계를 동시에 켜지 않습니다.
 //
 // @Configuration

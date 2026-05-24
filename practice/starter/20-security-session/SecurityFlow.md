@@ -1,6 +1,6 @@
 # 보안 흐름 워크북
 
-PRD/TRD 3.11 에서 정의한 1차/2차/3차 보안 진화를 직접 채워봅니다. 아래 빈칸과 질문에 한 줄씩 답을 적어 두면, 면접에서 “이 시스템의 보안은 어떻게 진화시킬 수 있나요?”에 자연스럽게 답할 수 있습니다.
+TRD 3.11 에서 정의한 1차/2차/3차 보안 진화를 직접 채워봅니다. 아래 빈칸과 질문에 한 줄씩 답을 적어 두면, 면접에서 “이 시스템의 보안은 어떻게 진화시킬 수 있나요?”에 자연스럽게 답할 수 있습니다.
 
 ---
 
@@ -52,7 +52,8 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**", "/h2-console/**").____()
             .requestMatchers("/api/admin/**").hasRole("____")
-            .requestMatchers("/api/approvals/pending").hasAnyRole("APPROVER", "ADMIN")
+            .requestMatchers("/api/approvals/pending", "/api/approvals/*/approve", "/api/approvals/*/reject")
+                .hasAnyRole("APPROVER", "ADMIN")
             .anyRequest().____()
         )
         .formLogin(form -> form.loginProcessingUrl("/api/auth/login").permitAll())
@@ -103,7 +104,7 @@ public PasswordEncoder passwordEncoder() {
 
 ---
 
-## 권한 정책 매트릭스 (PRD 3.11.3 채우기)
+## 권한 정책 매트릭스 (TRD 3.11.3 채우기)
 
 | 기능 | USER | ADMIN | APPROVER |
 |---|---|---|---|

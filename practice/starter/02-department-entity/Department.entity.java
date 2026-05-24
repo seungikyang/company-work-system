@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/domain/Department.java
-// 목표: 부서 엔티티를 채우세요. PRD/TRD 3.3.3, 3.5.2 참고.
+// 목표: 부서 엔티티를 채우세요. TRD 3.3.3, 3.5.2 참고.
 
 @Entity
 @Table(
@@ -18,7 +18,7 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // TODO 02: 부서명 컬럼 길이를 PRD 3.5.2 에 맞춰 채우세요.
+    // TODO 02: 부서명 컬럼 길이를 TRD 3.5.2 에 맞춰 채우세요.
     @Column(nullable = false, length = ____)
     private String name;
 

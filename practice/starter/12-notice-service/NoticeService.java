@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/NoticeService.java
-// 목표: 공지사항 CRUD + 중요 공지 우선 정렬. PRD/TRD 3.7.5, 3.8.3 참고.
+// 목표: 공지사항 CRUD + 중요 공지 우선 정렬. TRD 3.7.5, 3.8.3 참고.
 
 @RequiredArgsConstructor
 @Service

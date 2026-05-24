@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/LeaveService.java
-// 목표: 휴가 신청 흐름을 채우세요. PRD/TRD 2.4.2, 2.5.4, 3.8.2 참고.
+// 목표: 휴가 신청 흐름을 채우세요. PRD 2.4.2, 2.5.4, TRD 3.8.2 참고.
 
 @Transactional
 public LeaveResponse request(Long currentEmployeeId, LeaveCreateRequest request) {

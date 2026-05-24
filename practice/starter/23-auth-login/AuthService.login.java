@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/AuthService.java
-// 목표: 로그인 / 로그아웃 / 내 정보 조회 / 비밀번호 변경. PRD/TRD 2.5.1, 3.11 참고.
+// 목표: 로그인 / 로그아웃 / 내 정보 조회 / 비밀번호 변경. PRD 2.5.1, TRD 3.11 참고.
 
 @Service
 @RequiredArgsConstructor

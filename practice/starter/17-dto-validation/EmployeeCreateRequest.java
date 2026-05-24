@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/dto/EmployeeCreateRequest.java
-// 목표: Bean Validation 어노테이션을 채우세요. PRD/TRD 3.7.2, 비기능 요구사항 검증 참고.
+// 목표: Bean Validation 어노테이션을 채우세요. TRD 3.7.2, PRD 2.6 비기능 요구사항 검증 참고.
 // 주의: Spring Boot 3.x 이므로 import 는 jakarta.validation.constraints.* 입니다.
 
 @Getter

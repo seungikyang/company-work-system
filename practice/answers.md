@@ -197,16 +197,16 @@
 
 ## 29. 휴가 — 내 목록 / 상세 / 취소
 
-- “내 휴가만” 검증을 Service 가 한 뒤에도, Repository 쿼리 자체에 `employeeId` 조건을 두는 편이 IDOR 공격에 안전하다.
+- “내 휴가만” 검증을 Service 가 한 뒤에도, Repository 쿼리 자체에 `employeeId` 조건을 두는 편이 IDOR 공격에 안전하다. 상세 조회는 본인 또는 ADMIN 만 허용한다.
 - 본인 PENDING 휴가만 취소 가능. 도메인 메서드(`cancelByOwner`) 안에서 상태 검증을 캡슐화.
-- 관리자 목록의 동적 조건은 학습 단계에서는 if 분기로 충분. 조건이 4개 이상으로 늘면 Querydsl/Specification.
+- 관리자 목록(FR-LEAVE-008)은 `/api/admin/leaves` 에서 status, employeeId 같은 조건을 받는다. 동적 조건은 학습 단계에서는 if 분기로 충분하고, 조건이 4개 이상으로 늘면 Querydsl/Specification 을 검토한다.
 - `CANCELED` 를 별도 상태로 두면 “직원이 직접 취소한 것” 과 “관리자가 반려한 것” 을 통계에서 구분할 수 있다.
 
 ## 30. 결재 — my / pending / detail 권한
 
-- 상세 조회는 작성자 또는 결재자만 허용. 둘 다 아니면 `ACCESS_DENIED(403)`.
+- 상세 조회는 작성자, 결재자 또는 ADMIN 만 허용. 셋 다 아니면 `ACCESS_DENIED(403)`.
 - 결재자가 변경 가능한 모델이라면 `pending` 쿼리는 현재 `approverId` 기준이므로 위임 직후부터 새 결재자에게 노출된다.
-- 관리자에게 모든 문서를 보여주려면 Service 시그니처에 `UserRole role` 을 추가해 관리자 우회 분기를 두는 편이 명확.
+- 관리자에게 모든 문서를 보여주려면 Service 시그니처에 `UserRole role` 을 추가해 관리자 허용 분기를 명시하는 편이 명확.
 
 ## 31. 모든 Repository
 

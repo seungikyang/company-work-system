@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/controller/DepartmentController.java
-// 목표: 부서 REST API. PRD/TRD 3.7.3 참고.
+// 목표: 부서 REST API. TRD 3.7.3 참고.
 
 @RestController
 @RequestMapping("/api/departments")

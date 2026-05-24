@@ -176,6 +176,7 @@ office-management-system
 | FR-LEAVE-005 | 휴가 승인 | 관리자가 휴가를 승인한다 | 필수 |
 | FR-LEAVE-006 | 휴가 반려 | 관리자가 휴가를 반려한다 | 필수 |
 | FR-LEAVE-007 | 휴가 상태 조회 | PENDING, APPROVED, REJECTED 상태를 조회한다 | 필수 |
+| FR-LEAVE-008 | 관리자 휴가 목록 조회 | 관리자가 전체 휴가 신청을 상태/직원 조건으로 조회한다 | 필수 |
 
 ### 2.5.5 공지사항 기능
 
@@ -426,7 +427,7 @@ company-work-system
 |---|---|---|
 | id | Long | 휴가 신청 PK |
 | employeeId | Long | 직원 FK |
-| leaveType | LeaveType | ANNUAL, HALF_DAY, SICK |
+| leaveType | LeaveType | ANNUAL, HALF_DAY, SICK, OFFICIAL |
 | startDate | LocalDate | 휴가 시작일 |
 | endDate | LocalDate | 휴가 종료일 |
 | reason | String | 휴가 사유 |
@@ -683,10 +684,11 @@ public enum ApprovalStatus {
 
 | Method | URL | 설명 | 권한 |
 |---|---|---|---|
-| POST | /api/leaves | 휴가 신청 | USER |
-| GET | /api/leaves/my | 내 휴가 목록 | USER |
-| GET | /api/leaves/{leaveId} | 휴가 상세 조회 | USER, ADMIN |
-| PATCH | /api/leaves/{leaveId}/cancel | 휴가 신청 취소 | USER |
+| POST | /api/leaves | 휴가 신청 | 로그인 사용자 |
+| GET | /api/leaves/my | 내 휴가 목록 | 로그인 사용자 |
+| GET | /api/leaves/{leaveId} | 휴가 상세 조회 | 본인 또는 ADMIN |
+| PATCH | /api/leaves/{leaveId}/cancel | 휴가 신청 취소 | 본인 |
+| GET | /api/admin/leaves | 관리자 휴가 목록 | ADMIN |
 | PATCH | /api/admin/leaves/{leaveId}/approve | 휴가 승인 | ADMIN |
 | PATCH | /api/admin/leaves/{leaveId}/reject | 휴가 반려 | ADMIN |
 
@@ -725,13 +727,13 @@ public enum ApprovalStatus {
 
 | Method | URL | 설명 | 권한 |
 |---|---|---|---|
-| POST | /api/approvals | 결재 문서 작성 | USER |
-| PATCH | /api/approvals/{approvalId}/submit | 결재 요청 | USER |
-| GET | /api/approvals/my | 내 결재 문서 목록 | USER |
-| GET | /api/approvals/pending | 승인 대기 문서 목록 | APPROVER |
-| GET | /api/approvals/{approvalId} | 결재 상세 조회 | USER, APPROVER |
-| PATCH | /api/approvals/{approvalId}/approve | 결재 승인 | APPROVER |
-| PATCH | /api/approvals/{approvalId}/reject | 결재 반려 | APPROVER |
+| POST | /api/approvals | 결재 문서 작성 | 로그인 사용자 |
+| PATCH | /api/approvals/{approvalId}/submit | 결재 요청 | 작성자 |
+| GET | /api/approvals/my | 내 결재 문서 목록 | 로그인 사용자 |
+| GET | /api/approvals/pending | 승인 대기 문서 목록 | APPROVER, ADMIN |
+| GET | /api/approvals/{approvalId} | 결재 상세 조회 | 작성자, 결재자, ADMIN |
+| PATCH | /api/approvals/{approvalId}/approve | 결재 승인 | APPROVER, ADMIN |
+| PATCH | /api/approvals/{approvalId}/reject | 결재 반려 | APPROVER, ADMIN |
 
 ---
 
@@ -784,16 +786,22 @@ public enum ApprovalStatus {
 
 | 예외 코드 | HTTP Status | 설명 |
 |---|---|---|
+| INVALID_INPUT | 400 | 입력값 검증 실패 |
+| AUTHENTICATION_REQUIRED | 401 | 로그인이 필요함 |
 | USER_NOT_FOUND | 404 | 사용자를 찾을 수 없음 |
 | EMPLOYEE_NOT_FOUND | 404 | 직원을 찾을 수 없음 |
 | DEPARTMENT_NOT_FOUND | 404 | 부서를 찾을 수 없음 |
 | LEAVE_NOT_FOUND | 404 | 휴가 신청을 찾을 수 없음 |
 | APPROVAL_NOT_FOUND | 404 | 결재 문서를 찾을 수 없음 |
+| NOTICE_NOT_FOUND | 404 | 공지사항을 찾을 수 없음 |
 | DUPLICATE_EMAIL | 400 | 이메일 중복 |
 | DUPLICATE_EMPLOYEE_NUMBER | 400 | 사번 중복 |
+| DUPLICATE_DEPARTMENT_NAME | 400 | 부서명 중복 |
+| DEPARTMENT_HAS_EMPLOYEES | 400 | 소속 직원이 있는 부서 삭제 시도 |
 | INVALID_DATE_RANGE | 400 | 잘못된 날짜 범위 |
 | INVALID_STATUS | 400 | 처리할 수 없는 상태 |
 | ACCESS_DENIED | 403 | 접근 권한 없음 |
+| INTERNAL_ERROR | 500 | 서버 내부 오류 |
 
 ---
 
@@ -942,8 +950,13 @@ Department
 직원 목록 조회
 직원 상세 조회
 직원 수정
+직원 검색/페이징
+직원 비활성/퇴사 처리
 부서 등록
 부서 목록 조회
+부서 상세 조회
+부서 수정
+부서 삭제 정책
 ```
 
 ### 3.13.4 4단계: 휴가 신청/승인
@@ -951,9 +964,12 @@ Department
 ```text
 휴가 신청
 내 휴가 목록 조회
+휴가 상세 조회
+휴가 신청 취소
 관리자 휴가 목록 조회
 휴가 승인
 휴가 반려
+휴가 상태 조회
 ```
 
 ### 3.13.5 5단계: 공지사항
@@ -973,8 +989,10 @@ Department
 결재 요청
 내 결재 목록
 승인 대기 목록
+결재 상세 조회
 결재 승인
 결재 반려
+결재 상태 조회
 ```
 
 ### 3.13.7 7단계: 문서화
@@ -1039,6 +1057,8 @@ com.example.companywork
 - ApprovalStatus enum
 - 휴가 신청 API: POST /api/leaves
 - 내 휴가 목록 API: GET /api/leaves/my
+- 휴가 상세 API: GET /api/leaves/{leaveId}
+- 휴가 신청 취소 API: PATCH /api/leaves/{leaveId}/cancel
 - 관리자 휴가 목록 API: GET /api/admin/leaves
 - 휴가 승인 API: PATCH /api/admin/leaves/{leaveId}/approve
 - 휴가 반려 API: PATCH /api/admin/leaves/{leaveId}/reject
@@ -1073,6 +1093,7 @@ com.example.companywork
 - 결재 요청 API: PATCH /api/approvals/{approvalId}/submit
 - 내 결재 목록 API: GET /api/approvals/my
 - 승인 대기 목록 API: GET /api/approvals/pending
+- 결재 상세 API: GET /api/approvals/{approvalId}
 - 결재 승인 API: PATCH /api/approvals/{approvalId}/approve
 - 결재 반려 API: PATCH /api/approvals/{approvalId}/reject
 
@@ -1240,28 +1261,41 @@ Entity와 DTO를 분리하면 보안과 유지보수 측면에서 유리하다.
 - [ ] 로그인
 - [ ] 로그아웃
 - [ ] 내 정보 조회
+- [ ] 비밀번호 변경
+- [ ] 권한 구분
 - [ ] 직원 등록
 - [ ] 직원 목록 조회
 - [ ] 직원 상세 조회
 - [ ] 직원 수정
+- [ ] 직원 삭제/비활성화
 - [ ] 직원 검색
+- [ ] 직원 페이징
 - [ ] 부서 등록
 - [ ] 부서 목록 조회
 - [ ] 부서 상세 조회
+- [ ] 부서 수정
+- [ ] 부서 삭제
 - [ ] 휴가 신청
 - [ ] 내 휴가 목록 조회
+- [ ] 휴가 상세 조회
+- [ ] 휴가 신청 취소
 - [ ] 관리자 휴가 목록 조회
 - [ ] 휴가 승인
 - [ ] 휴가 반려
+- [ ] 휴가 상태 조회
 - [ ] 공지사항 등록
 - [ ] 공지사항 목록 조회
 - [ ] 공지사항 상세 조회
 - [ ] 공지사항 수정
 - [ ] 공지사항 삭제
+- [ ] 중요 공지 표시
 - [ ] 결재 문서 작성
 - [ ] 결재 요청
+- [ ] 내 결재 목록 조회
+- [ ] 결재 상세 조회
 - [ ] 결재 승인
 - [ ] 결재 반려
+- [ ] 결재 상태 조회
 
 ### 3.17.2 기술 체크리스트
 

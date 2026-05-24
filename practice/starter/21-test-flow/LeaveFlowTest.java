@@ -1,6 +1,6 @@
 // 실제 구현 위치 예: src/test/java/com/example/companywork/integration/LeaveFlowTest.java
 // 목표: 휴가 신청 → 관리자 승인 → 결과 확인 흐름을 MockMvc 통합 테스트로 채우세요.
-//       PRD/TRD 3.12 참고. bank-system 의 BankSystemApiTest 와 비슷한 형태입니다.
+//       TRD 3.12 참고. bank-system 의 BankSystemApiTest 와 비슷한 형태입니다.
 
 @SpringBootTest
 @AutoConfigureMockMvc

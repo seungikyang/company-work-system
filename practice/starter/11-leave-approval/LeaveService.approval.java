@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/LeaveService.java
-// 목표: 휴가 승인 / 반려 처리. PRD/TRD 3.8.2, 3.10.2, 3.16.1 (트러블슈팅) 참고.
+// 목표: 휴가 승인 / 반려 처리. TRD 3.8.2, 3.10.2, 3.16.1 (트러블슈팅) 참고.
 
 @Transactional
 public LeaveResponse approve(Long approverUserId, Long leaveId) {

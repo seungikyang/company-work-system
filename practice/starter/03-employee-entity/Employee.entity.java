@@ -1,6 +1,6 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/domain/Employee.java
 // 목표: 직원 엔티티와 EmployeeStatus enum 을 채우세요.
-//       PRD/TRD 3.3.2, 3.5.3, 3.6.2 참고.
+//       TRD 3.3.2, 3.5.3, 3.6.2 참고.
 
 // ===== EmployeeStatus enum =====
 public enum EmployeeStatus {

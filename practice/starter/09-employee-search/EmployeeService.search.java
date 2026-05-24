@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/EmployeeService.java
-// 목표: 직원 목록을 검색 + 페이징으로 반환하세요. PRD/TRD 2.5.2 (FR-EMP-006/007) 참고.
+// 목표: 직원 목록을 검색 + 페이징으로 반환하세요. PRD 2.5.2 (FR-EMP-006/007) 참고.
 
 // TODO 01: 읽기 전용 트랜잭션을 명시하면 성능과 의도를 동시에 챙길 수 있습니다.
 @Transactional(readOnly = ____)

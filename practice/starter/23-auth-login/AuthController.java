@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/controller/AuthController.java
-// 목표: 인증 관련 API 엔드포인트를 채우세요. PRD/TRD 3.7.1 참고.
+// 목표: 인증 관련 API 엔드포인트를 채우세요. TRD 3.7.1 참고.
 
 @RestController
 @RequestMapping("/api/auth")

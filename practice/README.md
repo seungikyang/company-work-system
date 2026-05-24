@@ -48,7 +48,7 @@
 | 26 | Controller | `26-notice-controller/NoticeController.java` | 공지 REST API + DTO |
 | 27 | Controller | `27-approval-controller/ApprovalController.java` | 결재 REST API + my/pending |
 | 28 | Service | `28-employee-detail-update/EmployeeService.detail.java` | 직원 상세/수정/퇴사 처리 |
-| 29 | Service | `29-leave-my-cancel/LeaveService.my.java` | 휴가 내 목록/상세/취소 |
+| 29 | Service | `29-leave-my-cancel/LeaveService.my.java` | 휴가 내 목록/상세/취소 + 관리자 목록 |
 | 30 | Service | `30-approval-lists/ApprovalService.lists.java` | 결재 my/pending/detail 권한 검사 |
 | 31 | Repository | `31-repositories-all/AllRepositories.java` | User/Department/Leave/Notice/Approval Repository |
 | 32 | DTO | `32-response-dto-mapping/ResponseDtoMapping.java` | Entity↔DTO 변환 패턴 |

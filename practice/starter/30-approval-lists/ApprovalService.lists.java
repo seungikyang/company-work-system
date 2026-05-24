@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/ApprovalService.java
-// 목표: 결재 — 내 목록 / 승인 대기 목록 / 상세. PRD/TRD 2.5.6 (FR-APPROVAL-003/004), 3.7.6 참고.
+// 목표: 결재 — 내 목록 / 승인 대기 목록 / 상세. PRD 2.5.6 (FR-APPROVAL-003/004), TRD 3.7.6 참고.
 
 @Transactional(readOnly = true)
 public Page<ApprovalResponse> findMyDocuments(Long currentEmployeeId, ApprovalStatus status, Pageable pageable) {
@@ -23,16 +23,16 @@ public Page<ApprovalResponse> findPendingForApprover(Long currentEmployeeId, Pag
 }
 
 @Transactional(readOnly = true)
-public ApprovalResponse detail(Long currentEmployeeId, Long approvalId) {
+public ApprovalResponse detail(Long currentEmployeeId, UserRole currentRole, Long approvalId) {
 
     ApprovalDocument doc = approvalRepository.findById(approvalId)
         .orElseThrow(() -> new BusinessException(ErrorCode.APPROVAL_NOT_FOUND));
 
-    // TODO 03: 작성자도 결재자도 아닌 사람이 접근하면 차단.
-    //          (관리자에게 모든 문서를 보여주려면 role 인자를 추가로 받습니다.)
+    // TODO 03: 작성자도 결재자도 아니고 ADMIN 도 아닌 사람이 접근하면 차단.
     boolean isWriter   = doc.getWriterId().equals(currentEmployeeId);
     boolean isApprover = doc.getApproverId().equals(currentEmployeeId);
-    if (!isWriter && !isApprover) {
+    boolean isAdmin    = currentRole == UserRole.____;
+    if (!isWriter && !isApprover && !isAdmin) {
         throw new BusinessException(ErrorCode.____);
     }
 

@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/EmployeeService.java
-// 목표: 직원 상세 / 수정 / 비활성·삭제 흐름을 채우세요. PRD/TRD 2.5.2 (FR-EMP-003~005) 참고.
+// 목표: 직원 상세 / 수정 / 비활성·삭제 흐름을 채우세요. PRD 2.5.2 (FR-EMP-003~005) 참고.
 
 @Transactional(readOnly = true)
 public EmployeeResponse detail(Long employeeId) {

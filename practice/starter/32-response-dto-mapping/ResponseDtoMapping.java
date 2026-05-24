@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/dto/*Response.java
-// 목표: Entity ↔ Response DTO 매핑 패턴을 채우세요. PRD/TRD 3.16.3 (Entity 직접 반환 문제) 참고.
+// 목표: Entity ↔ Response DTO 매핑 패턴을 채우세요. TRD 3.16.3 (Entity 직접 반환 문제) 참고.
 
 // 핵심 원칙:
 // - Entity 는 영속성/도메인 책임.

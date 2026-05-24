@@ -2,7 +2,7 @@
 //   - src/main/java/com/example/companywork/exception/ErrorCode.java
 //   - src/main/java/com/example/companywork/exception/BusinessException.java
 //   - src/main/java/com/example/companywork/exception/ErrorResponse.java
-// 목표: 공통 에러 모델을 채우세요. PRD/TRD 3.9 참고.
+// 목표: 공통 에러 모델을 채우세요. TRD 3.9 참고.
 
 // ===== ErrorCode =====
 public enum ErrorCode {
@@ -12,7 +12,7 @@ public enum ErrorCode {
     AUTHENTICATION_REQUIRED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다."),
 
-    // TODO 01: 도메인별 NOT_FOUND 4종을 채우세요. (User / Employee / Department / Leave / Approval / Notice)
+    // TODO 01: 도메인별 NOT_FOUND 6종을 채우세요. (User / Employee / Department / Leave / Approval / Notice)
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
     EMPLOYEE_NOT_FOUND(____, "직원을 찾을 수 없습니다."),
     DEPARTMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "부서를 찾을 수 없습니다."),
@@ -20,9 +20,11 @@ public enum ErrorCode {
     APPROVAL_NOT_FOUND(HttpStatus.NOT_FOUND, "결재 문서를 찾을 수 없습니다."),
     NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "____"),
 
-    // TODO 02: 중복 에러 2종.
+    // TODO 02: 중복/무결성 에러.
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "____"),
     DUPLICATE_EMPLOYEE_NUMBER(HttpStatus.BAD_REQUEST, "이미 사용 중인 사번입니다."),
+    DUPLICATE_DEPARTMENT_NAME(HttpStatus.BAD_REQUEST, "이미 존재하는 부서명입니다."),
+    DEPARTMENT_HAS_EMPLOYEES(HttpStatus.BAD_REQUEST, "소속 직원이 있는 부서는 삭제할 수 없습니다."),
 
     // TODO 03: 휴가 신청 시 시작일 > 종료일 같은 잘못된 날짜.
     INVALID_DATE_RANGE(HttpStatus.____, "잘못된 날짜 범위입니다."),

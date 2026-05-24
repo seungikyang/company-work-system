@@ -200,7 +200,7 @@
 - 트러블슈팅 문서의 4단계 템플릿(문제 → 원인 → 해결 → 배운 점).
 - API 명세 문서를 손으로 적을지(Markdown) Swagger/OpenAPI 로 자동화할지.
 
-## 23. 인증 — 로그인 / 로그아웃 / 내 정보 / 비밀번호 변경 (TRD 2.5.1, 3.7.1, 3.11)
+## 23. 인증 — 로그인 / 로그아웃 / 내 정보 / 비밀번호 변경 (PRD 2.5.1, TRD 3.7.1, 3.11)
 
 파일:
 
@@ -213,7 +213,7 @@
 - 로그인 실패 메시지를 “이메일 vs 비밀번호” 로 구분하지 않는 이유.
 - 비밀번호 변경 시 현재 비밀번호 확인 + 새 비밀번호 해시.
 
-## 24. 부서 Service — CRUD + 삭제 정책 (TRD 2.5.3, 3.7.3)
+## 24. 부서 Service — CRUD + 삭제 정책 (PRD 2.5.3, TRD 3.7.3)
 
 파일: `starter/24-department-service/DepartmentService.java`
 
@@ -246,7 +246,7 @@
 - 상태 전이를 동사형 경로(`/submit`, `/approve`, `/reject`)로 표현한 트레이드오프.
 - `@PreAuthorize("hasAnyRole('APPROVER','ADMIN')")` 의 의미.
 
-## 28. 직원 상세 / 수정 / 퇴사 처리 (TRD 2.5.2)
+## 28. 직원 상세 / 수정 / 퇴사 처리 (PRD 2.5.2)
 
 파일: `starter/28-employee-detail-update/EmployeeService.detail.java`
 
@@ -255,20 +255,21 @@
 - Service 가 setter 를 직접 호출하지 않고 도메인 메서드를 만드는 이유.
 - soft delete(`RESIGNED`) vs hard delete 의 트레이드오프.
 
-## 29. 휴가 — 내 목록 / 상세 / 취소 + 관리자 목록 (TRD 2.5.4)
+## 29. 휴가 — 내 목록 / 상세 / 취소 + 관리자 목록 (PRD 2.5.4)
 
 파일: `starter/29-leave-my-cancel/LeaveService.my.java`
 
 - 본인 휴가만 조회 가능하도록 Service 에서 소유자 검증.
 - 본인 PENDING 휴가만 취소 가능하도록 도메인 메서드에서 상태 검증.
+- 관리자 전체 목록은 FR-LEAVE-008 기준으로 `/api/admin/leaves` 에서 상태/직원 조건을 받는다.
 - 관리자 목록을 status + employeeId 조건으로 분기 조회하는 패턴.
 - 기간(from/to) 조건을 추가했을 때의 확장 방법.
 
-## 30. 결재 — my / pending / detail 권한 검사 (TRD 2.5.6)
+## 30. 결재 — my / pending / detail 권한 검사 (PRD 2.5.6)
 
 파일: `starter/30-approval-lists/ApprovalService.lists.java`
 
-- 작성자도 결재자도 아닌 사람이 상세 조회하면 ACCESS_DENIED.
+- 작성자도 결재자도 아니고 ADMIN 도 아닌 사람이 상세 조회하면 ACCESS_DENIED.
 - 결재자 권한 위임(approverId 변경) 시 pending 쿼리가 어떻게 영향받는가.
 - 관리자에게 모든 문서를 보여줄 때 Service 시그니처 설계.
 
@@ -309,7 +310,7 @@
 - ArgumentResolver 가 없다면 Controller 마다 반복되어야 할 코드.
 - JWT 단계로 진화하면 어떤 부분이 바뀌어야 하는가.
 
-## 35. Thymeleaf 화면 (TRD 2.7)
+## 35. Thymeleaf 화면 (PRD 2.7)
 
 파일: `starter/35-thymeleaf-views/ThymeleafViews.md`
 
@@ -349,7 +350,7 @@
 
 파일: `starter/39-interview-and-commit/InterviewAndCommit.md`
 
-- PRD 3.19 의 12 질문 중 핵심 8개에 30초 분량 답변.
+- TRD 3.19 의 12 질문 중 핵심 8개에 30초 분량 답변.
 - 커밋 메시지 타입(feat/fix/refactor/docs/test/chore/style).
 - “무엇” 이 아닌 “왜” 를 적는 메시지 원칙.
 - PR 템플릿 4섹션(무엇/왜/테스트/영향).

@@ -53,6 +53,7 @@
 | FR-LEAVE-005 | 휴가 승인 | 관리자, PENDING → APPROVED | `11-leave-approval` |
 | FR-LEAVE-006 | 휴가 반려 | 관리자, 반려 사유 필수 | `11-leave-approval` |
 | FR-LEAVE-007 | 휴가 상태 조회 | 상태 enum 기반 목록/상세 | `04-leave-entity`, `29-leave-my-cancel` |
+| FR-LEAVE-008 | 관리자 휴가 목록 조회 | 상태/직원 조건별 전체 휴가 조회 | `19-controller-leave`, `29-leave-my-cancel` |
 | FR-NOTICE-001 | 공지 등록 | ADMIN 만 작성 | `12-notice-service`, `26-notice-controller` |
 | FR-NOTICE-002 | 공지 목록 조회 | 중요 공지 우선 정렬 | `12-notice-service`, `26-notice-controller` |
 | FR-NOTICE-003 | 공지 상세 조회 | 조회수 증가 정책 | `12-notice-service`, `26-notice-controller` |
@@ -62,7 +63,7 @@
 | FR-APPROVAL-001 | 결재 문서 작성 | DRAFT 생성, 작성자/결재자 검증 | `13-approval-document` |
 | FR-APPROVAL-002 | 결재 요청 | DRAFT → PENDING | `13-approval-document`, `27-approval-controller` |
 | FR-APPROVAL-003 | 내 결재 목록 조회 | writerId 조건 | `30-approval-lists` |
-| FR-APPROVAL-004 | 결재 상세 조회 | 작성자 또는 결재자만 조회 | `30-approval-lists` |
+| FR-APPROVAL-004 | 결재 상세 조회 | 작성자/결재자/ADMIN 조회 | `30-approval-lists` |
 | FR-APPROVAL-005 | 결재 승인 | approver 검증, approvedAt 기록 | `14-approval-decision` |
 | FR-APPROVAL-006 | 결재 반려 | approver 검증, 반려 사유 필수 | `14-approval-decision` |
 | FR-APPROVAL-007 | 결재 상태 조회 | DRAFT/PENDING/APPROVED/REJECTED | `06-approval-entity`, `30-approval-lists` |
@@ -155,7 +156,7 @@
   - `passwordEncoder.matches(currentPassword, user.getPassword())`
   - 새 비밀번호를 `passwordEncoder.____(...)`
   - `user.changePassword(encodedPassword)`
-- Controller: `PATCH /api/users/me/____`
+- Controller: `PATCH /api/users/me/password`
 
 테스트 TODO:
 
@@ -369,7 +370,7 @@
 
 테스트 TODO:
 
-- 중복 부서명은 `DUPLICATE_DEPARTMENT_NAME` 또는 공통 중복 코드.
+- 중복 부서명은 `DUPLICATE_DEPARTMENT_NAME` 으로 응답한다.
 
 ## FR-DEPT-002 부서 목록 조회
 
@@ -522,7 +523,7 @@
 - Service:
   - 본인 여부 확인
   - 상태 검증
-- Controller: `PATCH /api/leaves/{leaveId}/____`
+- Controller: `PATCH /api/leaves/{leaveId}/cancel`
 
 테스트 TODO:
 
@@ -543,7 +544,7 @@
   - `leave.approve(approverEmployeeId)`
   - 승인자 ID 저장
   - 상태 `____`
-- Controller: `PATCH /api/admin/leaves/{leaveId}/____`
+- Controller: `PATCH /api/admin/leaves/{leaveId}/approve`
 
 테스트 TODO:
 
@@ -564,7 +565,7 @@
   - 휴가 조회
   - `leave.reject(approverEmployeeId, rejectReason)`
   - 상태 `____`
-- Controller: `PATCH /api/admin/leaves/{leaveId}/____`
+- Controller: `PATCH /api/admin/leaves/{leaveId}/reject`
 
 테스트 TODO:
 
@@ -587,6 +588,32 @@
 테스트 TODO:
 
 - status=PENDING 요청 시 승인/반려 건은 제외된다.
+
+## FR-LEAVE-008 관리자 휴가 목록 조회
+
+개념 빈칸:
+
+- 관리자 휴가 목록은 개인의 `/api/leaves/my` 와 달리 전체 직원의 휴가를 ____ 조건으로 조회한다.
+- 일반 사용자가 전체 휴가 목록을 볼 수 있으면 다른 직원의 사유/기간이 노출되는 ____ 문제가 생긴다.
+
+구현 TODO:
+
+- Controller: `GET /api/admin/leaves`
+- Query param: `status`, `employeeId`, `from`, `to`
+- 권한: `@PreAuthorize("hasRole('____')")`
+- Service:
+  - ADMIN 권한 확인
+  - status 와 employeeId 가 모두 있으면 `findByStatusAndEmployee_Id`
+  - status 만 있으면 `findByStatus`
+  - employeeId 만 있으면 `findByEmployee_Id`
+  - 조건이 없으면 `findAll(pageable)`
+- Response: `Page<LeaveResponse>`
+
+테스트 TODO:
+
+- ADMIN 은 전체 휴가 목록을 조회할 수 있다.
+- USER 가 `/api/admin/leaves` 를 호출하면 HTTP ____.
+- status=PENDING 조건을 주면 대기 중인 휴가만 반환된다.
 
 ---
 
@@ -747,7 +774,7 @@
   - 현재 상태가 DRAFT 인지 확인
   - 필수 필드가 비어 있지 않은지 확인
   - `document.submit()`
-- Controller: `PATCH /api/approvals/{approvalId}/____`
+- Controller: `PATCH /api/approvals/{approvalId}/submit`
 
 테스트 TODO:
 
@@ -775,20 +802,21 @@
 
 개념 빈칸:
 
-- 상세 조회는 작성자 또는 ____ 만 허용한다.
-- ADMIN 전체 조회 허용 여부는 별도 정책으로 ____ 해야 한다.
+- 상세 조회는 작성자, 결재자 또는 ____ 만 허용한다.
+- ADMIN 전체 조회 허용은 Service 에서 role 기반 예외로 ____ 해야 한다.
 
 구현 TODO:
 
 - Service:
   - 문서 조회
   - currentEmployeeId 가 writerId 또는 approverId 인지 확인
+  - currentRole 이 ADMIN 이면 전체 조회 허용
   - 아니면 `ErrorCode.____`
 - Controller: `GET /api/approvals/{approvalId}`
 
 테스트 TODO:
 
-- 작성자도 결재자도 아닌 사용자 접근은 HTTP ____.
+- 작성자도 결재자도 아니고 ADMIN 도 아닌 사용자 접근은 HTTP ____.
 
 ## FR-APPROVAL-005 결재 승인
 
@@ -805,7 +833,7 @@
   - currentEmployeeId 가 approverId 와 같은지 확인
   - 상태가 PENDING 인지 확인
   - `document.approve(currentEmployeeId)`
-- Controller: `PATCH /api/approvals/{approvalId}/____`
+- Controller: `PATCH /api/approvals/{approvalId}/approve`
 
 테스트 TODO:
 
@@ -826,7 +854,7 @@
   - 결재자 본인 확인
   - 상태 PENDING 확인
   - `document.reject(currentEmployeeId, rejectReason)`
-- Controller: `PATCH /api/approvals/{approvalId}/____`
+- Controller: `PATCH /api/approvals/{approvalId}/reject`
 
 테스트 TODO:
 
@@ -876,4 +904,3 @@
 - 이 기능에서 Controller 가 하면 안 되는 일은 무엇인가? ____
 - 이 기능에서 Service 가 반드시 검증해야 하는 것은 무엇인가? ____
 - 이 기능의 실패 케이스 테스트 2개는 무엇인가? ____
-

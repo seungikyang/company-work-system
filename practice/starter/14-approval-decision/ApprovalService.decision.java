@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/ApprovalService.java
-// 목표: 결재 승인 / 반려 처리. PRD/TRD 3.8.4, 3.10.3 참고.
+// 목표: 결재 승인 / 반려 처리. TRD 3.8.4, 3.10.3 참고.
 
 @Transactional
 public ApprovalResponse approve(Long currentEmployeeId, Long approvalId) {

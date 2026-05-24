@@ -1,10 +1,10 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/domain/User.java
 // 목표: 로그인 계정용 User 엔티티와 UserRole enum 을 채우세요.
-//       PRD/TRD 3.3.1, 3.6.1 참고.
+//       TRD 3.3.1, 3.6.1 참고.
 
 // ===== UserRole enum =====
 public enum UserRole {
-    // TODO 01: PRD 3.6.1 에서 정의한 세 가지 역할을 채우세요.
+    // TODO 01: TRD 3.6.1 에서 정의한 세 가지 역할을 채우세요.
     ____, ____, ____
 }
 

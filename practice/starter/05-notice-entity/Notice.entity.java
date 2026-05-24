@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/domain/Notice.java
-// 목표: 공지사항 엔티티를 채우세요. PRD/TRD 3.3.5, 3.5.5 참고.
+// 목표: 공지사항 엔티티를 채우세요. TRD 3.3.5, 3.5.5 참고.
 
 @Entity
 @Table(name = "notices")

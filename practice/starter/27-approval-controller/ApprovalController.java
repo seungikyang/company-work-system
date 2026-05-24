@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/controller/ApprovalController.java
-// 목표: 전자결재 REST API + DTO. PRD/TRD 3.7.6 참고.
+// 목표: 전자결재 REST API + DTO. TRD 3.7.6 참고.
 
 @RestController
 @RequestMapping("/api/approvals")
@@ -47,8 +47,9 @@ public class ApprovalController {
     @GetMapping("/{approvalId}")
     public ApprovalResponse detail(
             @CurrentEmployee Long currentEmployeeId,
+            @CurrentUserRole UserRole currentRole,
             @PathVariable Long approvalId) {
-        return approvalService.detail(currentEmployeeId, approvalId);
+        return approvalService.detail(currentEmployeeId, currentRole, approvalId);
     }
 
     @PatchMapping("/{approvalId}/approve")

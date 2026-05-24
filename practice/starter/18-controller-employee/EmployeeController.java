@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/controller/EmployeeController.java
-// 목표: 직원 관리 REST API 의 매핑을 채우세요. PRD/TRD 3.7.2 참고.
+// 목표: 직원 관리 REST API 의 매핑을 채우세요. TRD 3.7.2 참고.
 
 // TODO 01: REST 컨트롤러 + 공통 prefix.
 @____
@@ -35,6 +35,7 @@ public class EmployeeController {
 
     // TODO 06: 직원 상세 조회. URL 의 식별자를 어떤 어노테이션으로 받나?
     @GetMapping("/{employeeId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public EmployeeResponse detail(@____ Long employeeId) {
         return employeeService.detail(employeeId);
     }

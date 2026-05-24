@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/controller/NoticeController.java
-// 목표: 공지사항 REST API + DTO. PRD/TRD 3.7.5 참고.
+// 목표: 공지사항 REST API + DTO. TRD 3.7.5 참고.
 
 @RestController
 @RequestMapping("/api/notices")

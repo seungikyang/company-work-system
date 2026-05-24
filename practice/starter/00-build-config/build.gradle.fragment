@@ -12,7 +12,7 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    // TODO 02: PRD 3.1 의 Java 버전을 채우세요.
+    // TODO 02: TRD 3.1 의 Java 버전을 채우세요.
     sourceCompatibility = JavaVersion.____
 }
 

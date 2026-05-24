@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/domain/ApprovalDocument.java
-// 목표: 전자결재 문서 엔티티를 채우세요. PRD/TRD 3.3.6, 3.6.4, 3.8.4 참고.
+// 목표: 전자결재 문서 엔티티를 채우세요. TRD 3.3.6, 3.6.4, 3.8.4 참고.
 //
 // 상태 전이 그래프(직접 그려보세요):
 //   ____  →  ____  →  ____

@@ -1,7 +1,7 @@
 // 실제 구현 위치 예:
 //   - src/main/java/com/example/companywork/controller/LeaveController.java       (USER)
 //   - src/main/java/com/example/companywork/controller/AdminLeaveController.java  (ADMIN)
-// 목표: 휴가 신청자와 관리자의 경로/권한을 명확히 분리해 보세요. PRD/TRD 3.7.4 참고.
+// 목표: 휴가 신청자와 관리자의 경로/권한을 명확히 분리해 보세요. TRD 3.7.4 참고.
 
 // ===== 일반 사용자용 =====
 @RestController
@@ -32,7 +32,16 @@ public class LeaveController {
         return leaveService.findMyLeaves(currentEmployeeId, pageable);
     }
 
-    // TODO 03: 휴가 신청 취소(PENDING 만). 어떤 HTTP 메서드와 경로가 자연스러울까요?
+    // TODO 03: 휴가 상세. 본인 또는 ADMIN 만 조회할 수 있습니다.
+    @GetMapping("/{leaveId}")
+    public LeaveResponse detail(
+            @CurrentEmployee Long currentEmployeeId,
+            @CurrentUserRole UserRole currentRole,
+            @PathVariable Long leaveId) {
+        return leaveService.detail(currentEmployeeId, currentRole, leaveId);
+    }
+
+    // TODO 04: 휴가 신청 취소(PENDING 만). 어떤 HTTP 메서드와 경로가 자연스러울까요?
     @____("/{leaveId}/cancel")
     public LeaveResponse cancel(
             @CurrentEmployee Long currentEmployeeId,
@@ -44,14 +53,14 @@ public class LeaveController {
 
 // ===== 관리자용 =====
 @RestController
-@RequestMapping("____") // TODO 04: 관리자 휴가 API 의 prefix 를 정해 보세요. 예: /api/admin/leaves
+@RequestMapping("____") // TODO 05: 관리자 휴가 API 의 prefix 를 정해 보세요. 예: /api/admin/leaves
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 public class AdminLeaveController {
 
     private final LeaveService leaveService;
 
-    // TODO 05: 관리자 휴가 목록 (상태/직원 등 조건).
+    // TODO 06: 관리자 휴가 목록 (상태/직원 등 조건).
     @GetMapping
     public Page<LeaveResponse> list(
             @RequestParam(required = false) ApprovalStatus status,
@@ -60,7 +69,7 @@ public class AdminLeaveController {
         return leaveService.findForAdmin(status, employeeId, pageable);
     }
 
-    // TODO 06: 휴가 승인. 상태 변경 동사형 경로(/approve)는 REST 순수주의 관점의 단점이 있지만 의미가 분명합니다.
+    // TODO 07: 휴가 승인. 상태 변경 동사형 경로(/approve)는 REST 순수주의 관점의 단점이 있지만 의미가 분명합니다.
     @PatchMapping("/{leaveId}/____")
     public LeaveResponse approve(
             @CurrentUser Long approverUserId,
@@ -68,7 +77,7 @@ public class AdminLeaveController {
         return leaveService.approve(approverUserId, leaveId);
     }
 
-    // TODO 07: 휴가 반려. 반려 사유를 body 로 받습니다.
+    // TODO 08: 휴가 반려. 반려 사유를 body 로 받습니다.
     @PatchMapping("/{leaveId}/____")
     public LeaveResponse reject(
             @CurrentUser Long approverUserId,
