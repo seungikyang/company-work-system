@@ -70,3 +70,11 @@ public Page<LeaveResponse> findForAdmin(ApprovalStatus status, Long employeeId, 
 //     A:
 // Q3. 'CANCELED' 라는 별도 상태를 두는 편이 'REJECTED' 로 합치는 것보다 좋은 점은?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - IDOR 이중 방어: ① Service 에서 소유자/ADMIN 검증 ② Repository 쿼리에 employeeId 조건(findByEmployee_Id).
+//   URL 의 leaveId 만 믿고 findById 후 반환하면 남의 휴가가 새어나간다.
+// - findForAdmin 의 if 분기는 조건 조합(status/employeeId)을 다룬다. 기간(from/to)까지 늘면 조합 폭발 →
+//   Querydsl/Specification 으로 동적 쿼리 1개로 합친다.
+// - cancelByOwner() 는 본인+PENDING 만 허용. 승인된 휴가를 취소 가능하게 두면 이미 반영된 일정/통계가 깨진다.
+// - CANCELED 별도 상태 = "본인 취소" 와 "관리자 반려" 를 통계/이력에서 구분.

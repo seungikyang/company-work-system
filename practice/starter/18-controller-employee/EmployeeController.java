@@ -65,3 +65,9 @@ public class EmployeeController {
 //     A:
 // Q3. PUT 과 PATCH 의 의미 차이를 한 줄로 설명해 보세요.
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - 권한 다층: @PreAuthorize(1차, HTTP 경계) + Service requireAdmin(2차). Controller 에만 두면 Service 재사용 경로가 무방비.
+// - 201 Created + Location 헤더: ServletUriComponentsBuilder 로 새 자원 URI 를 헤더에 담으면 REST 규약에 맞다.
+// - PUT = 전체 교체(누락 필드는 비워짐), PATCH = 부분 갱신. 직원 수정은 의도에 맞는 쪽을 선택.
+// - 삭제는 204 No Content(응답 본문 없음). 목록은 Page<EmployeeResponse> 로 — 엔티티 직접 노출 금지.

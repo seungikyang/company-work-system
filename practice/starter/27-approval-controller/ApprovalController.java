@@ -109,3 +109,9 @@ public record ApprovalResponse(
 //     A:
 // Q3. 결재자 본인이 아닌 사람이 /pending 을 호출하면 어떻게 막혀야 하는가?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - /my(작성자가 보는 내 문서, 로그인 누구나) vs /pending(결재자가 처리할 문서, APPROVER/ADMIN) — 관점·권한이 다르다.
+// - @PreAuthorize 는 "역할" 만 거른다. "이 문서의 결재자 본인인가" 는 Service 의 approverId 검증으로 — 역할 통과해도 남의 문서는 못 봄(IDOR).
+// - findPendingForApprover 는 currentEmployeeId 를 approverId 조건으로 써서 "내가 결재할 것" 만 반환 → 권한 어노테이션만으로 부족한 부분을 데이터로 보강.
+// - 작성과 submit 을 분리해 임시저장 표현. createDraft 는 201, 상태 전이는 PATCH + 동사형 경로.

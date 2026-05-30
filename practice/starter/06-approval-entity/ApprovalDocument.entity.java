@@ -105,3 +105,18 @@ public class ApprovalDocument {
         this.rejectReason = reason;
     }
 }
+
+// 학습 질문 (면접 대비):
+// Q1. 결재 상태 머신(DRAFT→PENDING→APPROVED/REJECTED)에서 "허용되지 않는 전이"의 예를 두 개 들고,
+//     그것을 어디에서(Entity/Service/DB) 막는 것이 가장 견고한지 말해 보세요.
+//     A:
+// Q2. 작성자=결재자 금지 검증을 Entity createDraft() 에 둔 것과 Service 에 둔 것의 차이는?
+//     DB 제약으로 표현하기 어려운 이유는 무엇인가요?
+//     A:
+// Q3. approvedAt 을 nullable 로 둔 이유는? 만약 NOT NULL + 기본값으로 두면 어떤 의미가 왜곡되나요?
+//     A:
+// Q4. DRAFT 와 PENDING 을 굳이 분리하면 어떤 사용자 기능(임시저장 등)을 자연스럽게 표현할 수 있나요?
+//     A:
+// Q5. writerId.equals(approverId) 처럼 Long 을 == 가 아니라 equals 로 비교해야 하는 이유는?
+//     (Long 캐시 범위 -128~127 함정)
+//     A:

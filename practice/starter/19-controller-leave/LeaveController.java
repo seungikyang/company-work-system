@@ -94,3 +94,10 @@ public class AdminLeaveController {
 //     A:
 // Q3. 권한 체크를 어디(필터/AOP/Service)에서 할지, 다층 방어를 위한 권장 패턴은?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - /api/leaves(USER) vs /api/admin/leaves(ADMIN) 분리 → 권한 정책이 경로에 드러나 SecurityFilterChain 설정이 단순.
+//   단점은 컨트롤러/경로 중복.
+// - 인증 사용자 주입 진화: @SessionAttribute/HttpSession → @AuthenticationPrincipal → 직접 만든 @CurrentEmployee.
+// - 상태 전이는 PATCH + 동사형 경로(/cancel, /approve, /reject). PUT 은 전체 교체 의미라 부적절.
+// - IDOR 방지: detail/cancel 은 "본인 또는 ADMIN" 여부를 Service 에서 소유자 검증(URL 의 id 를 신뢰하지 않는다).

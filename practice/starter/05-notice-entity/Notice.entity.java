@@ -66,3 +66,16 @@ public class Notice {
         this.viewCount = this.viewCount + 1;
     }
 }
+
+// 학습 질문 (면접 대비):
+// Q1. content 를 VARCHAR 가 아니라 @Lob / TEXT 로 두는 기준은? VARCHAR(255) 로 두면 언제 터지나요?
+//     A:
+// Q2. 조회수 증가를 GET 상세 조회 안에서 처리하면 검색봇/링크 미리보기로 viewCount 가 부풀 수 있습니다.
+//     대안(별도 PATCH /view, 중복 집계 방지)을 한 가지 제시해 보세요.
+//     A:
+// Q3. read 100개 동시 요청에서 this.viewCount + 1 방식이 카운트를 누락하는 과정을 단계로 설명하고,
+//     원자적 UPDATE 쿼리가 왜 안전한지 말해 보세요. (31장 @Modifying 과 연결)
+//     A:
+// Q4. 중요 공지를 상단에 고정하려면 정렬을 어떻게 줘야 하나요?
+//     important 가 boolean 인데 true 를 먼저 두려면 어떤 방향 정렬이 필요한가요?
+//     A:

@@ -113,3 +113,13 @@ Controller  ──▶  Service  ──▶  Repository  ──▶  Domain
 - Q2. Controller 가 Repository 를 직접 호출하면 어떤 단점이 있을까?
 - Q3. Entity 가 Service 를 의존하면 어떤 문제가 생길까? (순환 의존)
 - Q4. DTO 를 별도 패키지가 아니라 각 도메인 폴더의 `dto/` 서브패키지로 두면 어떤 장단점이 있을까?
+
+---
+
+## 7. 심화 노트 (면접 답변 포인트)
+
+- **반드시 지켜야 할 화살표 방향**: 의존은 항상 상위→하위(Controller→Service→Repository→Domain). Domain 은 누구도 의존하지 않는 가장 안정적인 핵이어야 한다(자신은 Service/Repository 를 import 하지 않음). 역방향 의존이 생기면 순환 의존·테스트 불가로 이어진다.
+- **가장 빠지기 쉬운 안티패턴**: Controller 가 Repository 를 직접 호출하는 것. "Service 가 한 줄 wrap 만 하니 생략하자" 는 핑계로 시작되지만, 트랜잭션 경계와 비즈니스 검증을 둘 곳이 사라져 로직이 Controller 로 샌다.
+- **Service 가 HttpSession/HttpServletRequest 를 직접 다루지 않기**: 웹 기술이 Service 로 새면 단위 테스트가 어려워진다. 인증 사용자는 Controller 에서 꺼내 `Long currentUserId` 같은 순수 값으로 Service 에 넘긴다(34장 ArgumentResolver).
+- **Layer-first → Feature-first 전환선**: 도메인이 6개를 넘어 한 폴더(controller/)에 클래스가 30개씩 쌓이면 도메인 우선으로 바꾼다. 학습 단계는 계층 우선이 책임을 익히기 쉽다.
+- **Service 에서 트랜잭션을 여는 이유**: "하나의 비즈니스 작업 = 하나의 트랜잭션" 이라 비즈니스 경계인 Service 가 트랜잭션 경계와 일치한다. Controller(너무 넓음)나 Repository(너무 좁음)는 경계가 어긋난다.

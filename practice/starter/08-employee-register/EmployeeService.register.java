@@ -55,3 +55,10 @@ public EmployeeResponse register(EmployeeCreateRequest request) {
 //     A:
 // Q3. 중복 이메일 검증을 했는데도 unique 제약을 두는 이유는?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - 같은 메서드 = 같은 물리 트랜잭션. userRepository.save 후 employee.save 에서 RuntimeException 이 나면
+//   둘 다 rollback (트러블슈팅 3.16.2 의 "부분 저장" 케이스).
+// - checked exception 은 기본 commit → 필요하면 @Transactional(rollbackFor = Exception.class).
+// - save 순서: User 를 먼저 영속화해야 Employee 의 FK(user_id)가 결정된다.
+// - 정규화(trim().toLowerCase())는 중복검사 "전에" 1회 — User@x.com 과 user@x.com 분리 사고 방지.

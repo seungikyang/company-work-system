@@ -112,3 +112,10 @@ public final class PageMapper {
 //
 // Q4. MapStruct / ModelMapper 같은 자동 매핑 도구를 도입할 만한 시점은?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - 단방향 의존(DTO → Entity 변환은 OK, Entity → DTO import 는 금지): Entity 가 DTO 를 알면 도메인이 표현계층에 묶여
+//   응답 모양이 바뀔 때마다 Entity 가 흔들린다.
+// - Entity 직접 반환 3대 사고: ① password 등 내부 필드 노출 ② LAZY 프록시 직렬화 실패/N+1 ③ 양방향 연관 JSON 무한 루프.
+// - 필드 1:1 금지 이유: 응답엔 필요한 것만(보안·페이로드). departmentName 처럼 연관을 평탄화해 클라이언트가 쓰기 쉽게.
+// - record 는 불변 + equals/hashCode/toString 자동 → 응답 DTO 에 적합. MapStruct 는 DTO 수가 많고 변환이 단순 반복일 때.

@@ -93,3 +93,10 @@ class LeaveFlowTest {
 //     A:
 // Q3. 통합 테스트에서 시간(LocalDateTime.now()) 같은 비결정성을 다루는 패턴은?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - @SpringBootTest(전체 컨텍스트, 진짜 통합) vs @WebMvcTest(웹 레이어만, 빠름, Service 는 @MockBean).
+//   "이 테스트가 무엇을 보장하나" 에 따라 범위를 고른다.
+// - @Transactional 테스트는 각 메서드 후 자동 롤백 → 테스트 격리. 단점: 실제 커밋 시점 동작(AFTER_COMMIT 이벤트, 트리거)은 검증 못 함.
+// - 권한 실패 403(인가 실패) 와 인증 누락 401 을 구분해서 단정한다.
+// - 비결정성: LocalDateTime.now() 는 Clock 주입으로 고정. 응답 JSON 에서 leaveId 를 파싱해 다음 요청에 체이닝.

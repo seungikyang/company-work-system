@@ -51,3 +51,11 @@ public class EmployeeCreateRequest {
 //     A:
 // Q3. 응답 DTO 와 요청 DTO 를 같은 클래스로 두면 무슨 문제가 생기나?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - @NotNull(null 만 차단) / @NotEmpty(null+빈 문자열, 공백 " " 은 통과) / @NotBlank(null+빈+공백 모두 차단).
+//   문자열 필수값엔 @NotBlank 가 정답.
+// - @Valid 는 Controller 파라미터에 붙어야 동작: body 는 @Valid @RequestBody, PathVariable/RequestParam 검증은
+//   클래스에 @Validated + ConstraintViolationException 처리.
+// - 요청/응답 DTO 분리: 응답 스펙을 바꿔도 요청 계약이 안 깨지고, password 같은 입력 전용 필드가 응답에 새지 않는다.
+// - hireDate 미래 금지는 @PastOrPresent. 사번 포맷은 @Pattern(정규식). 형식 검증은 DTO, 비즈니스 규칙은 Service.

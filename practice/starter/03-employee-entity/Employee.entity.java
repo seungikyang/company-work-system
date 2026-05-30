@@ -82,3 +82,16 @@ public class Employee {
         return this.status == EmployeeStatus.____;
     }
 }
+
+// 학습 질문 (면접 대비):
+// Q1. @ManyToOne 의 fetch 기본값은 EAGER 입니다. 왜 굳이 LAZY 로 바꿀까요?
+//     직원 목록 100건을 조회할 때 EAGER 면 무슨 일이 벌어지나요? (N+1)
+//     A:
+// Q2. 퇴사를 DELETE 가 아니라 status=RESIGNED(soft delete)로 두는 이유를,
+//     이 직원이 과거에 신청한 휴가/결재 기록과 연결해 설명해 보세요.
+//     A:
+// Q3. Service 가 employee.setStatus(...) 를 직접 부르지 않고 resign()/changeDepartment() 같은
+//     도메인 메서드를 두는 이유는? (캡슐화/불변식)
+//     A:
+// Q4. isActive() 같은 판단 로직을 Service 의 if 문이 아니라 Entity 에 두면 무엇이 좋아질까요?
+//     A:

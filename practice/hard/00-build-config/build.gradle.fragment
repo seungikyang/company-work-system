@@ -1,0 +1,48 @@
+// 실제 위치 후보: build.gradle (Spring Boot 3.x / Gradle)
+// 목표: 의존성 묶음을 거의 백지에서. 막히면 starter/00-build-config, answers.md 0장.
+
+plugins {
+    id 'java'
+    // TODO 01: Spring Boot + Dependency Management 플러그인.
+    id '____' version '3.3.0'
+    id '____'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    // TODO 02: TRD 3.1 Java 버전.
+    sourceCompatibility = JavaVersion.____
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    // TODO 03: REST/Tomcat/Jackson.
+    implementation 'org.springframework.boot:____'
+    // TODO 04: Entity/Repository/Hibernate.
+    implementation 'org.springframework.boot:____'
+    // TODO 05: @Valid/@NotBlank/@Email.
+    implementation 'org.springframework.boot:____'
+    // TODO 06: 서버 렌더링 템플릿.
+    implementation 'org.springframework.boot:____'
+    // TODO 07: 로컬/테스트 인메모리 DB.
+    runtimeOnly '____:h2'
+    // runtimeOnly 'com.mysql:mysql-connector-j'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') { useJUnitPlatform() }
+
+// 학습 질문 (직접 답):
+// Q1. "스타터" 가 단순 라이브러리와 다른 점은?
+//     A:
+// Q2. dependency-management 플러그인이 있으면 version 을 생략하는 이유(BOM)?
+//     A:
+// Q3. javax.* → jakarta.* 변경이 Validation/JPA 코드에 주는 영향?
+//     A:
+
+// 자가 채점:
+// □ org.springframework.boot version, io.spring.dependency-management
+// □ JavaVersion.VERSION_17  □ starter-web/data-jpa/validation/thymeleaf  □ com.h2database:h2

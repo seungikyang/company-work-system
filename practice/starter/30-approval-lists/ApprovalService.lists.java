@@ -46,3 +46,10 @@ public ApprovalResponse detail(Long currentEmployeeId, UserRole currentRole, Lon
 //     A:
 // Q3. 관리자에게 모든 문서를 보여줄 때, Service 시그니처를 어떻게 두는 게 깔끔할까?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - /my(writerId 조건) vs /pending(approverId + status=PENDING) — 쿼리 조건이 달라 한 메서드에서 분기하지 않고 분리.
+// - detail 권한: writer/approver/ADMIN 셋 다 아니면 ACCESS_DENIED(403). @PreAuthorize 의 hasAnyRole 을 통과한 APPROVER 라도
+//   "남의 결재 문서" 면 차단된다 → "역할" 과 "소유/담당" 은 다른 검사.
+// - 권한 위임(approverId 변경)이 생기면 pending 은 현재 approverId 기준이라 위임 즉시 새 결재자에게 노출된다.
+// - 관리자 전체 조회는 시그니처에 UserRole 을 받아 ADMIN 분기를 명시하는 편이 읽기 쉽다.

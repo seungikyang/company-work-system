@@ -31,4 +31,18 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     // - 메서드 이름이 너무 길어지면 @Query("SELECT e FROM Employee e ...") 로 풀어쓰는 것도 방법입니다.
     // - Sort 기준을 클라이언트가 자유롭게 지정하게 두면, 인덱스 없는 컬럼으로 정렬당해 느려질 수 있습니다.
     //   허용 컬럼 목록을 두는 패턴을 검토하세요.
+
+    // 학습 질문 (면접 대비):
+    // Q1. findByUser_Email 의 밑줄(_)은 무엇을 의미하나요? Employee→User→email 처럼
+    //     연관 엔티티의 속성을 타고 들어가는 nested property 쿼리를 직접 만들어 보세요.
+    //     A:
+    // Q2. existsByX 와 findByX 는 같은 조건이라도 생성되는 SQL/비용이 다릅니다.
+    //     "중복 여부만 알면 될 때" exists 를 쓰는 것이 왜 유리한가요?
+    //     A:
+    // Q3. findByUser_NameContainingOrEmployeeNumberContaining 처럼 메서드 이름이 길어질 때
+    //     @Query 또는 Querydsl 로 옮기는 "기준선"은 무엇이라고 생각하나요?
+    //     A:
+    // Q4. Page<Employee> 를 그대로 Controller 응답으로 내보내면 안 되는 이유는?
+    //     (Entity 직접 노출 + LAZY 직렬화) — 32장 Page.map 과 연결.
+    //     A:
 }

@@ -78,3 +78,9 @@ public class NoticeService {
 //     A:
 // Q3. 조회수 증가를 별도 트랜잭션으로 분리하려면 어떤 어노테이션 옵션을 쓰면 좋을까요?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - 권한 다층: Controller @PreAuthorize(1차, HTTP 경계) + Service accessGuard.requireAdmin(2차, 내부호출 우회 방지).
+//   Controller 에만 두면 Service 재사용 경로가 무방비.
+// - 중요공지 정렬은 (important DESC, created_at DESC) 복합 인덱스로 비용↓.
+// - 조회수 분리 3안: REQUIRES_NEW 별도 트랜잭션 / 원자적 UPDATE 쿼리 / PATCH 분리(GET 멱등성 유지).

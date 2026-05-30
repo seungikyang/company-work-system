@@ -88,3 +88,9 @@ public class DepartmentService {
 //     A:
 // Q3. 부서 상세에서 소속 직원까지 N+1 없이 가져오려면 어떤 방법이 있나?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - 부서 목록은 List 전체 조회(부서는 소수). 운영에서 1000개+ 면 페이징 + 본부/팀 그룹화로 확장.
+// - 삭제 정책 3안: ① 거부(DEPARTMENT_HAS_EMPLOYEES, 학습 기본) ② 기본 부서로 이동 ③ FK NULL 허용. 비즈니스 규칙으로 명문화.
+// - detail 의 members 를 Pageable.unpaged() 로 가져와 직원마다 user 를 접근하면 N+1 → fetch join / @EntityGraph 로 한 번에.
+// - 이름 변경 시 중복검사는 "자기 자신 제외"(newName != 현재 이름일 때만 existsByName) — 안 그러면 자기 이름으로도 막힌다.

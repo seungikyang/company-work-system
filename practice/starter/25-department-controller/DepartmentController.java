@@ -87,3 +87,17 @@ public record DepartmentDetailResponse(
         }
     }
 }
+
+// 학습 질문 (면접 대비):
+// Q1. 부서 목록은 List 인데 직원 목록은 Page 입니다. 무엇으로 이 차이를 결정했나요?
+//     A:
+// Q2. 부서 수정에 PUT 과 PATCH 중 무엇을 골랐고, 그 근거는?
+//     A:
+// Q3. DepartmentDetailResponse 안에 MemberItem 을 nested record 로 둔 이유는? (Employee 를 그대로 안 쓰는 이유)
+//     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - 권한 다층: @PreAuthorize("hasRole('ADMIN')")(1차) + Service accessGuard.requireAdmin(2차).
+// - List(부서=소수) vs Page(직원=다수) — 데이터 규모로 컬렉션 타입을 정한다.
+// - nested record(MemberItem)는 응답 모양을 명확히 하고, 직원 엔티티의 user.password 같은 필드 노출을 막는다(요약 필드만).
+// - 부서 등록은 201 Created, 삭제는 204 No Content.

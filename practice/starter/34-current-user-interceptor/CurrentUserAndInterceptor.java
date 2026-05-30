@@ -104,3 +104,11 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
 //     A:
 // Q4. JWT 단계로 진화하면 이 ArgumentResolver 는 어떻게 바뀌어야 하나?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - ArgumentResolver 가 없으면 Controller 마다 session.getAttribute("USER_ID") + null 체크 + (Long) 캐스팅이 반복된다.
+//   이 중복을 한 곳에 모으는 것이 ArgumentResolver 의 목적.
+// - 실행 순서: Servlet Filter → DispatcherServlet → Interceptor.preHandle → ArgumentResolver → Controller 메서드.
+//   (인증 누락 차단은 Interceptor 에서 1차, 주입 실패는 ArgumentResolver 에서 2차)
+// - @AuthenticationPrincipal(Security 표준, SecurityContext 에서 추출) vs @CurrentUser(직접 만든 세션 기반). 같은 목적, 다른 출처.
+// - JWT 진화: ArgumentResolver 가 세션 대신 SecurityContextHolder.getContext().getAuthentication() 에서 사용자 정보를 꺼내도록 바뀐다.

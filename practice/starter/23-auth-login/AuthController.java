@@ -92,3 +92,11 @@ public record MyInfoResponse(
 //     A:
 // Q3. LoginResponse 에 사용자 ID 를 노출해도 괜찮은가? (idor 공격 관점)
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - /api/auth/login 은 permitAll: 로그인 자체가 "인증을 획득하는" 과정이라 인증을 요구하면 순환에 빠진다.
+//   단, 입력 검증 + (가능하면) 로그인 시도 율제한(rate limit)은 필요.
+// - 내 정보/비번 변경은 URL 에 userId 를 받지 않고 세션의 USER_ID 를 쓴다 → 남의 id 로 조회하는 IDOR 차단.
+// - LoginResponse 에 userId 노출 자체는 취약점이 아니다. 핵심은 "서버가 요청마다 세션/토큰의 id 를 신뢰하고
+//   URL 의 id 는 신뢰하지 않는다" 는 원칙.
+// - 응답 본문이 없으면 204 No Content(로그아웃/비번변경).

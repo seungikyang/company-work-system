@@ -115,3 +115,18 @@ public class LeaveRequest {
         this.status = ApprovalStatus.REJECTED; // 또는 별도의 CANCELED 상태를 새로 정의해도 좋습니다.
     }
 }
+
+// 학습 질문 (면접 대비):
+// Q1. 상태 검증(PENDING 인지)을 approve()/reject() 같은 Entity 도메인 메서드에 두는 것과
+//     Service 의 if 문에만 두는 것은 어떤 차이가 있나요? Service 에만 두면 어떤 우회 버그가 가능한가요?
+//     (TRD 3.16.1 트러블슈팅과 연결)
+//     A:
+// Q2. 휴가 status 는 결재와 같은 ApprovalStatus 를 공유하지만 DRAFT 는 쓰지 않습니다.
+//     enum 을 공유하는 것의 장점과, 휴가에 DRAFT 가 노출될 때의 위험을 말해 보세요.
+//     A:
+// Q3. 두 관리자가 같은 PENDING 휴가를 "동시에" 승인하면 어떤 일이 벌어질까요?
+//     낙관적 락(@Version) 과 비관적 락 중 무엇으로 막을 수 있을까요?
+//     A:
+// Q4. 취소를 REJECTED 로 재사용하는 것과 별도 CANCELED 상태를 추가하는 것 중
+//     "휴가 통계/이력"관점에서 무엇이 더 정확할까요?
+//     A:

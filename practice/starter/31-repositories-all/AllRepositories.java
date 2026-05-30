@@ -107,4 +107,13 @@ public interface ApprovalDocumentRepository extends JpaRepository<ApprovalDocume
     //     A:
     // Q3. 중간에 컬럼명이 바뀌었을 때, 메서드 이름 쿼리는 어떻게 깨지는가? (Property → Column 매핑 관점)
     //     A:
+    //
+    // 심화 노트 (면접 답변 포인트):
+    // - 메서드 이름 파싱: 키워드(findBy/existsBy/countBy + And/Or/Containing/OrderBy)와 엔티티 "속성명"으로 JPQL 생성.
+    //   DB 컬럼명(view_count)이 아니라 필드명(viewCount) 기준 → @Column 매핑이 컬럼 변경을 흡수한다.
+    //   하지만 필드명을 바꾸면 메서드 이름도 함께 깨진다(컴파일타임 검증이 약함).
+    // - @Modifying 벌크 UPDATE(increaseViewCount)는 영속성 컨텍스트를 우회한다 → 1차 캐시와 불일치 가능.
+    //   필요하면 @Modifying(clearAutomatically = true).
+    // - existsOverlapping 의 (start <= :end AND end >= :start) 가 "두 구간이 겹친다"의 표준 조건.
+    // - 조건이 동적(있을 수도 없을 수도)이면 메서드 이름 폭발 → Querydsl(타입 안전) 로 옮기는 게 정석.
 }

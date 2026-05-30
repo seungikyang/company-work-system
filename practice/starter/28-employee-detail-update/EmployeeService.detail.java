@@ -65,3 +65,10 @@ public void delete(Long employeeId, boolean hardDelete) {
 //     A:
 // Q3. soft delete (RESIGNED) 와 hard delete 의 트레이드오프를 한 줄로 정리해 보세요.
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - open-in-view 함정: true 면 LAZY 연관이 뷰 렌더 시점까지 풀려 편하지만 영속성 컨텍스트/커넥션을 오래 점유한다.
+//   Service 안에서 DTO 까지 변환해 반환하면 트랜잭션 경계 안에서 LAZY 가 안전하게 초기화된다.
+// - 도메인 메서드(changeDepartment/updateProfile) vs setter: 규칙을 엔티티에 모아 호출부가 검증을 잊지 못하게.
+// - soft(RESIGNED) vs hard delete: soft 는 휴가/결재/공지의 과거 참조 보존(인사 시스템 표준), hard 는 FK 무결성 위험.
+// - employee.getUser().changeName(...) 은 Employee 를 통해 User 를 바꾸는 부수효과 — 같은 트랜잭션 dirty checking 으로 함께 반영.

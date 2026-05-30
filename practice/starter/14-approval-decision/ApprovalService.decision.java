@@ -35,3 +35,9 @@ public ApprovalResponse reject(Long currentEmployeeId, Long approvalId, Approval
 //     A:
 // Q3. approvedAt 을 LocalDateTime.now() 로 직접 채우는 대신 시계(Clock) 를 주입하면 어떤 이점이 있나?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - 도메인 메서드로 옮겨도 Service 는 사라지지 않는다: 권한(APPROVER/ADMIN), 트랜잭션, 외부 의존(알림)은 Service 책임.
+//   엔티티는 "자기 상태 전이 규칙" 만 담는다.
+// - 결재자 본인 검증(approverId.equals(current))이 빠지면 URL 만 알면 누구나 승인하는 권한 누락(IDOR).
+// - Clock 주입 시 테스트에서 시간 고정 → approvedAt 을 결정적으로 단정 가능(가산점).

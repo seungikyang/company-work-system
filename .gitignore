@@ -40,5 +40,10 @@ HELP.md
 application-local.yml
 application-secret.yml
 
-# Claude / agents work
+# Claude / agents work (하네스는 로컬 전용)
 .claude/
+CLAUDE.md
+
+# Harness 중간 산출물 (재실행/감사용, 커밋 불필요)
+practice/_workspace/
+practice/_workspace_prev/

@@ -45,3 +45,14 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// 학습 질문 (면접 대비):
+// Q1. spring-boot-starter-web 하나에 Tomcat, Spring MVC, Jackson 이 함께 들어옵니다.
+//     "스타터(starter)"가 단순 라이브러리와 다른 점은 무엇일까요?
+//     A:
+// Q2. io.spring.dependency-management 플러그인이 있으면 의존성 version 을 대부분 생략할 수 있습니다.
+//     왜 버전을 직접 적지 않는 편이 안전할까요? (BOM 개념)
+//     A:
+// Q3. Spring Boot 3.x 로 올리면서 javax.* 가 jakarta.* 로 바뀌었습니다.
+//     이 변경이 Validation/JPA 코드에 구체적으로 어떤 영향을 줄까요?
+//     A:

@@ -41,3 +41,10 @@ public LeaveResponse reject(Long approverUserId, Long leaveId, LeaveRejectReques
 //     A:
 // Q3. 승인 후 직원에게 알림을 보내야 한다면, 어디서 트리거하는 게 안전할까요?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - approve()/reject() 도메인 메서드 안에 (상태검증 + 승인자세팅 + 상태전이)를 모으면 Service 는 조회→호출만.
+//   검증을 빠뜨릴 경로가 사라진다.
+// - 동시 승인: 낙관적 락(@Version, 충돌 드물 때 가벼움) vs 비관적 락(SELECT FOR UPDATE, 충돌 잦을 때).
+//   휴가 승인은 충돌이 드물어 낙관적이 적합.
+// - 승인 알림은 커밋 후. dirty checking 으로 save 호출 없이도 트랜잭션 종료 시 반영됨.

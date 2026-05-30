@@ -104,3 +104,11 @@ public record ErrorResponse(
 //     A:
 // Q3. BusinessException 을 Checked Exception 으로 만들면 어떤 불편이 생길까?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - status(HTTP) = 프록시/모니터링/브라우저가 보는 전송계층 신호. code(비즈니스) = 같은 404 안에서도
+//   EMPLOYEE_NOT_FOUND vs DEPARTMENT_NOT_FOUND 처럼 원인을 구분하는 신호. 클라이언트는 code 로 분기.
+// - BusinessException extends RuntimeException → @Transactional 기본 롤백 대상.
+//   Checked 로 만들면 호출부마다 try-catch 강제 + 기본 커밋이라 롤백을 놓치기 쉽다.
+// - ErrorResponse 는 (status, code, message, timestamp) 4필드 + errors(검증 실패 시만). 스펙(TRD 3.9) 고정.
+// - code 에 enum.name() 을 그대로 노출하면 프론트가 안정적으로 분기할 수 있다(메시지는 사람용, code 는 기계용).

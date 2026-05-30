@@ -95,3 +95,13 @@ TRD 3.11.3 의 권한 표를 직접 다시 채워 봅니다.
 - Q2. DB unique 제약이 있는데도 Service 에서 `existsByEmail` 을 호출하는 이유는?
 - Q3. 도메인 메서드(`leave.approve()`) 안에서 IllegalStateException 을 던지면, ErrorCode 매핑은 어디에서 해야 일관성이 유지될까?
 - Q4. 비즈니스 규칙이 늘어나면 Service 메서드가 비대해진다. 어떤 리팩터링 방향이 있을까? (도메인 서비스, 정책 객체, Specification 패턴)
+
+---
+
+## 8. 심화 노트 (면접 답변 포인트)
+
+- **다층 방어가 중복이 아닌 이유**: 각 층이 막는 실패 모드가 다르다. D(DTO)=형식이 틀린 요청을 빠르게 400 으로, S(Service)=상태/권한/관계 흐름, E(Entity)=어느 호출 경로로 와도 깨지지 않는 불변식, DB=동시성 race 까지. 한 층을 우회해도 다음 층이 잡는다.
+- **"PENDING 검증을 Service 에만" 두면**: 다른 Service 메서드나 배치가 `leave.approve()` 를 직접 호출하는 경로가 생기면 그 검증을 빠뜨려 이미 승인된 휴가를 또 승인하는 버그가 재발한다(38장 트러블슈팅 1번). 그래서 도메인 메서드 안에 둔다.
+- **exists + DB unique**: exists 는 "친절한 에러 메시지를 빨리" 주기 위한 UX 용, unique 는 "동시성에서도 보장" 하는 무결성 용. 둘은 역할이 달라 둘 다 둔다.
+- **IllegalStateException → BusinessException 변환**: 도메인 메서드가 던진 `IllegalStateException` 을 그대로 두면 GlobalExceptionHandler 에서 ErrorCode 로 일관 매핑하기 어렵다. 도메인 경계에서 `BusinessException(INVALID_STATUS)` 로 변환하거나, 핸들러에 `IllegalStateException` 매핑을 추가한다.
+- **Service 비대화 리팩터링**: 규칙이 늘면 ① 도메인 서비스(여러 엔티티에 걸친 규칙) ② 정책 객체(LeavePolicy 등) ③ Specification(동적 조회 조건) 으로 분리한다.

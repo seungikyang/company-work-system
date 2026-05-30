@@ -41,3 +41,9 @@ public LeaveResponse request(Long currentEmployeeId, LeaveCreateRequest request)
 //     A:
 // Q3. 신청 직후 알림을 보내야 한다면, 트랜잭션 안에서 보낼지 밖에서 보낼지?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - 날짜 검증 다층: DTO @AssertTrue(즉시 400) → Entity create(불변식) → Service(INVALID_DATE_RANGE 일관 변환).
+// - 기간 겹침(확장): 같은 직원의 PENDING/APPROVED 기간과 겹치면 차단 — startDate <= reqEnd AND endDate >= reqStart.
+// - 알림은 커밋 후(@TransactionalEventListener AFTER_COMMIT). 트랜잭션 안에서 보내면 롤백돼도 알림이 이미 나가는 모순.
+// - 퇴사 직원 차단은 employee.isActive() 로 도메인에 캡슐화 → false 면 ACCESS_DENIED.

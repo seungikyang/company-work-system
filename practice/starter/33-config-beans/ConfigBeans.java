@@ -94,3 +94,10 @@ public class WebMvcConfig implements ____ {
 //     A:
 // Q4. Spring Boot 의 자동 설정만으로 PasswordEncoder 가 자동 등록되지 않는 이유는?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - @EnableJpaAuditing 이 없으면 AuditingEntityListener 가 콜백을 받지 못해 createdAt 이 null → 33장 트러블슈팅 직결.
+//   엔티티의 @EntityListeners(AuditingEntityListener.class) 와 "둘 다" 있어야 동작.
+// - PasswordEncoder 가 자동 등록 안 되는 이유: 어떤 인코더(BCrypt/Argon2/Pbkdf2)를 쓸지는 정책이라 Spring 이 임의로 정하지 않는다 → 명시적 @Bean.
+// - 1차(세션 인터셉터)와 2차(SecurityFilterChain)를 동시에 켜면 인증 책임이 두 곳에 흩어져 디버깅이 어렵다 → 단계 전환.
+// - WebMvcConfigurer: addInterceptors(요청 진입 전후 가로채기) + addArgumentResolvers(컨트롤러 인자 주입).

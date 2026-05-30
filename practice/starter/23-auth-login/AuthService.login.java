@@ -79,3 +79,12 @@ public class AuthService {
 //     A:
 // Q4. login() 에 @Transactional(readOnly=true) 를 단 이유와 changePassword() 에는 빼고 그냥 @Transactional 을 단 이유는?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - 사용자 열거(enumeration) 방지: "없는 이메일" 과 "비번 틀림" 을 같은 메시지 + 같은 status(401)로 응답.
+//   여유가 있으면 응답 시간도 비슷하게(timing attack 방지) — 존재하지 않아도 dummy 해시 비교.
+// - matches(raw, encoded): BCrypt 는 encoded 안에 박힌 salt 를 꺼내 raw 를 같은 salt 로 해시한 뒤 비교한다.
+//   그래서 평문 == 비교가 불가능하고, DB 가 털려도 원문 복원이 어렵다.
+// - Session Fixation: 로그인 "전" 발급된 세션 ID 를 공격자가 피해자에게 심어두면 로그인 후 그 세션을 탈취당한다.
+//   → 로그인 직후 request.changeSessionId() 로 세션 ID 재발급.
+// - login()/me() 는 조회라 readOnly=true, changePassword() 는 쓰기라 일반 @Transactional.

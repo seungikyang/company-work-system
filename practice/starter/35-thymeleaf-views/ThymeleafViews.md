@@ -150,3 +150,13 @@ REST API 와 Thymeleaf 페이지를 같은 프로젝트에 두는 패턴:
 - Q2. JSP 와 Thymeleaf 의 가장 큰 차이는?
 - Q3. Thymeleaf 의 `th:object`, `th:field` 가 일반 form 과 다른 점은?
 - Q4. 페이지가 깨졌을 때 Spring Boot 기본 에러 페이지를 커스텀하려면 어디에 어떤 템플릿을 두면 될까요? (templates/error/*.html)
+
+---
+
+## 7. 심화 노트 (면접 답변 포인트)
+
+- **th:text vs th:utext (XSS)**: `th:text` 는 `<`, `>`, `&` 를 escape 해 안전하다. `th:utext` 는 raw HTML 을 그대로 출력하므로 사용자 입력(공지 본문 등)에 쓰면 `<script>` 가 실행되는 **저장형 XSS** 가 된다. utext 는 관리자가 만든 신뢰된 HTML 에만.
+- **SSR(Thymeleaf) vs SPA(React)**: SSR 은 초기 로딩이 빠르고 SEO 에 유리하며 배포가 단순(백엔드 한 덩어리). SPA 는 풍부한 상호작용과 프론트/백 분리가 강점이지만 빌드·CORS·인증 토큰 관리가 늘어난다. 백엔드 포트폴리오 데모로는 SSR 이 가볍다.
+- **th:object / th:field**: 폼과 DTO 를 바인딩하고 검증 실패 시 필드별 에러 메시지를 자동 연결한다. 일반 `<input name=>` 보다 바인딩·에러 표시가 자동화된다.
+- **화면도 인증이 필요**: `/leaves/admin` 같은 보호 화면은 JSON API 와 똑같이 인터셉터/Security 로 컨트롤러 진입 전에 막는다. "화면이라 그냥 보여준다" 가 가장 흔한 보안 구멍.
+- **에러 페이지 커스텀**: `templates/error/404.html`, `templates/error/5xx.html` 을 두면 Spring Boot 가 자동으로 매핑한다.

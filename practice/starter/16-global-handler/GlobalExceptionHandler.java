@@ -54,3 +54,11 @@ public class GlobalExceptionHandler {
 // Q3. Spring Security 의 인증/인가 예외(AccessDeniedException, AuthenticationException) 는
 //     ExceptionTranslationFilter 가 먼저 잡기 때문에 여기서 못 잡을 수 있다. 어디서 변환해야 할까?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - @RestControllerAdvice = @ControllerAdvice + @ResponseBody → 예외 변환 결과를 JSON 으로 응답.
+// - 핸들러 매칭은 "더 구체적인 예외 타입" 우선. BusinessException → MethodArgumentNotValid →
+//   ConstraintViolation → Exception(최종 안전망) 순으로 좁은 것부터 둔다.
+// - Security 예외는 필터 단계(ExceptionTranslationFilter)에서 발생해 Advice 보다 앞선다 →
+//   AuthenticationEntryPoint(401) / AccessDeniedHandler(403) 에서 같은 ErrorResponse 포맷으로 변환해야 일관성 유지.
+// - 최종 Exception 핸들러: stack trace 는 log.error 로만 남기고 응답엔 INTERNAL_ERROR(500) 만. 내부정보 노출 금지.

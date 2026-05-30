@@ -52,3 +52,8 @@ public ApprovalResponse submit(Long currentEmployeeId, Long approvalId) {
 //     A:
 // Q3. doc.submit() 안의 상태 검증을 Service 가 if 로 하도록 바꾸면 어떤 단점이 있을까?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - 작성자=결재자 이중 방어: Service equals(친절한 에러) + Entity createDraft(불변식). 어느 경로든 차단.
+// - 결재자 ACTIVE 검증: RESIGNED 직원을 결재자로 두면 상신 후 영원히 대기하는 문서가 생긴다.
+// - DRAFT/PENDING 분리 = 임시저장 UX + submit() 시점에 필수필드(제목/내용/결재자) 재검증 게이트.

@@ -1,0 +1,42 @@
+# 실제 위치 후보: src/main/resources/application.yml
+# 목표: 로컬 학습용 H2 + JPA 설정을 거의 백지에서. 막히면 starter/00-build-config, answers.md 0장.
+
+spring:
+  datasource:
+    # TODO 01: 인메모리 H2 URL (이름 testdb).
+    url: jdbc:h2:mem:____
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      # TODO 02: 브라우저 H2 콘솔 접속 허용 값.
+      enabled: ____
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      # TODO 03: 로컬은 매 실행 스키마 재생성, 운영은? (create/validate/none 비교)
+      ddl-auto: ____
+    properties:
+      hibernate:
+        # TODO 04: SQL 줄바꿈/들여쓰기.
+        format_sql: ____
+    # TODO 05: 콘솔에 실행 SQL 출력.
+    show-sql: ____
+
+app:
+  security:
+    session-timeout: ${APP_SESSION_TIMEOUT:1800}
+
+# 학습 질문 (직접 답):
+# Q1. ddl-auto 의 create/create-drop/update/validate/none 을 한 줄씩 구분.
+#     A:
+# Q2. show-sql=true 와 logging.level.org.hibernate.SQL=debug 의 차이?
+#     A:
+# Q3. 토큰/비번을 yml 에 하드코딩하면 안 되는 이유 + 환경변수+기본값 패턴의 장점?
+#     A:
+
+# 자가 채점:
+# □ jdbc:h2:mem:testdb  □ enabled: true  □ ddl-auto: create(로컬)/validate(운영)  □ format_sql: true  □ show-sql: true

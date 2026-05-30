@@ -63,3 +63,15 @@ public class User {
         this.password = ____;
     }
 }
+
+// 학습 질문 (면접 대비):
+// Q1. 로그인 계정(User)과 인사 정보(Employee)를 한 테이블이 아니라 둘로 나눈 이유는? (면접 Q3)
+//     A:
+// Q2. @Enumerated(EnumType.STRING) 대신 ORDINAL 을 쓰면 운영 중 enum 에 값을 추가/재정렬할 때
+//     어떤 사고가 날 수 있을까요?
+//     A:
+// Q3. password 컬럼 길이를 100 이 아니라 255 로 잡는 이유는? (BCrypt 결과 길이와 연결해서)
+//     A:
+// Q4. createdAt 을 updatable=false 로 둔 이유, 그리고 @CreatedDate 가 동작하려면
+//     설정 어디에 무엇이 켜져 있어야 하나요? (33장 @EnableJpaAuditing 와 연결)
+//     A:

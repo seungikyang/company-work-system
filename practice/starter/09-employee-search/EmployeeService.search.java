@@ -36,3 +36,10 @@ public Page<EmployeeResponse> search(String keyword, Long departmentId, Pageable
 //     A:
 // Q3. 정렬 기준을 클라이언트가 자유롭게 지정할 때 발생할 수 있는 위험은?
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - @Transactional(readOnly=true) → Hibernate flush 모드 MANUAL, dirty checking 생략 → 성능 + 의도 표현.
+// - 이 if 분기는 keyword+departmentId 동시 입력 시 부서조건을 못 건다(학습용 한계).
+//   실무는 Querydsl/Specification 으로 동적 조건을 1회 쿼리에 결합.
+// - page.map(...) 은 content 만 DTO 로 바꾸고 totalElements/totalPages 등 메타를 유지한다.
+//   List 로 바꾸면 프론트 페이지네이션이 깨진다.

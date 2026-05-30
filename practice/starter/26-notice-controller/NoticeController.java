@@ -86,3 +86,10 @@ public record NoticeResponse(
 //     A:
 // Q3. 공지 본문(content)을 응답 list 에 그대로 포함하면 어떤 단점이 있을까? (페이로드 크기)
 //     A:
+//
+// 심화 노트 (면접 답변 포인트):
+// - 목록 vs 상세 DTO 분리: 목록에 content(TEXT)까지 넣으면 페이로드가 폭증한다 → 목록은 title/important/createdAt 요약 DTO,
+//   상세만 풀 DTO. NoticeResponse 를 목록에도 쓰는 현재 코드는 학습용 단순화.
+// - @PageableDefault(size=20): 클라이언트가 size 를 빠뜨려도 안전한 기본값. 무제한 size 로 전체를 끌어오는 사고 방지.
+// - GET 상세의 조회수 증가는 GET 의 멱등성(부수효과 없음) 원칙과 충돌 → PATCH /{id}/view 분리 또는 중복집계 방지.
+// - 공지 수정은 PRD 상 PUT. 작성자 무관하게 ADMIN 권한이 수정의 핵심 기준.

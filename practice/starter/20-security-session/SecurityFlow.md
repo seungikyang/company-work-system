@@ -124,3 +124,13 @@ public PasswordEncoder passwordEncoder() {
 - [ ] 1차/2차/3차 보안 흐름을 도식 없이 말로 설명할 수 있는가?
 - [ ] BCrypt 가 단순 SHA-256 보다 안전한 이유를 한 줄로 답할 수 있는가?
 - [ ] 권한 검사가 다층(필터 → 어노테이션 → 서비스 가드)으로 있어야 하는 이유를 답할 수 있는가?
+
+---
+
+## 심화 노트 (면접 답변 포인트)
+
+- **BCrypt vs SHA-256**: BCrypt 는 **salt 를 자동 포함**하고 **work factor(cost)** 로 의도적으로 느리게 만들어 무차별 대입(brute force)을 어렵게 한다. SHA-256 은 빠르고 salt 가 없어 같은 비밀번호가 같은 해시 → 레인보우 테이블에 취약하다. "비밀번호 해시는 빠르면 안 된다" 가 핵심.
+- **세션의 스케일아웃 한계**: 세션은 서버 메모리에 상태를 둔다. 인스턴스를 늘리면 sticky session 또는 Redis 세션 공유가 필요하다. JWT 는 상태를 토큰(클라이언트)에 두어 무상태 → 수평 확장이 쉽다. 대가는 **강제 로그아웃이 어렵다**(블랙리스트 / 짧은 만료 + RefreshToken 으로 보완).
+- **CSRF disable 조건**: 세션+쿠키 인증은 브라우저가 쿠키를 자동 전송하므로 CSRF 토큰이 필요하다. JWT 를 `Authorization` 헤더로 보내면 쿠키 자동 전송이 아니라서 CSRF 위험이 줄어 disable 할 수 있다. (H2 콘솔 사용을 위해 disable 하는 것과는 이유가 다르다)
+- **hasRole vs hasAuthority**: `hasRole("ADMIN")` 은 내부적으로 `ROLE_ADMIN` 권한을 찾는다(접두사 자동 부여). `hasAuthority("ROLE_ADMIN")` 은 접두사를 직접 적는다. 권한 문자열을 어떻게 저장했는지와 맞춰야 한다.
+- **다층 권한**: 필터(인증 — 누구인가) → `@PreAuthorize`(인가 — 역할) → Service 가드(도메인 권한·소유자 — 본인 데이터인가). 각 층이 다른 질문에 답한다.
