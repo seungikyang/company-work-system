@@ -1,6 +1,6 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/domain/User.java
 // 목표: 로그인 계정용 User 엔티티와 UserRole enum 을 "거의 백지" 에서 작성. TRD 3.3.1, 3.6.1.
-// 막히면 starter/01-user-entity, answers.md 1장, spec-index 2~3장 참고.
+// 막히면 starter/01-user-entity, answers.md 1장, 루트 PRD/TRD 3.3.1·3.6.1 참고.
 
 // ===== UserRole enum =====
 // TODO 01: 세 가지 역할.

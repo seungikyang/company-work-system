@@ -8,18 +8,30 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // TODO 01: 로그인. 세션 기반 로그인에서는 HttpSession 을 어떻게 주입받나요?
+    // TODO 01: 로그인. 자격 증명 검증 후 새 세션 ID 로 인증 상태를 저장하세요.
     @PostMapping("/login")
     public LoginResponse login(
-            @Valid @RequestBody LoginRequest request,
-            ____ session) {
-        return authService.login(request, session);
+            @Valid @RequestBody LoginRequest loginRequest,
+            HttpServletRequest request) {
+
+        LoginResponse response = authService.login(loginRequest);
+
+        HttpSession session = request.getSession(true);
+        // TODO 02: 로그인 전 세션 ID 를 그대로 쓰지 않도록 재발급하세요.
+        request.____();
+        session.setAttribute("USER_ID", response.userId());
+        session.setAttribute("USER_ROLE", response.role());
+
+        return response;
     }
 
-    // TODO 02: 로그아웃. 응답 body 가 없으면 어떤 상태 코드가 자연스럽나요?
+    // TODO 03: 로그아웃. 기존 세션이 있을 때만 안전하게 폐기하세요.
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpSession session) {
-        authService.logout(session);
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.____();
+        }
         return ResponseEntity.____().build();
     }
 }
@@ -33,14 +45,14 @@ class UserController {
 
     private final AuthService authService;
 
-    // TODO 03: 내 정보 조회. 현재 로그인한 사용자 ID 는 어떻게 꺼낼까요?
+    // TODO 04: 내 정보 조회. 현재 로그인한 사용자 ID 는 어떻게 꺼낼까요?
     //          (학습용 세션: @SessionAttribute("USER_ID"), Security: @AuthenticationPrincipal …)
     @GetMapping("/me")
     public MyInfoResponse me(@SessionAttribute(name = "USER_ID", required = true) Long currentUserId) {
         return authService.me(currentUserId);
     }
 
-    // TODO 04: 비밀번호 변경. 응답 body 가 없으면 어떤 상태 코드?
+    // TODO 05: 비밀번호 변경. 응답 body 가 없으면 어떤 상태 코드?
     @PatchMapping("/me/password")
     public ResponseEntity<Void> changePassword(
             @SessionAttribute("USER_ID") Long currentUserId,
@@ -65,7 +77,7 @@ public record LoginResponse(Long userId, String email, String name, UserRole rol
 
 public record PasswordChangeRequest(
         @NotBlank String currentPassword,
-        // TODO 05: 새 비밀번호 길이 제약을 채우세요.
+        // TODO 06: 새 비밀번호 길이 제약을 채우세요.
         @NotBlank @Size(min = ____, max = 64) String newPassword
 ) { }
 
@@ -92,10 +104,13 @@ public record MyInfoResponse(
 //     A:
 // Q3. LoginResponse 에 사용자 ID 를 노출해도 괜찮은가? (idor 공격 관점)
 //     A:
+// Q4. 세션 생성/폐기를 Service 가 아니라 Controller 에 둔 이유는?
+//     A:
 //
 // 심화 노트 (면접 답변 포인트):
 // - /api/auth/login 은 permitAll: 로그인 자체가 "인증을 획득하는" 과정이라 인증을 요구하면 순환에 빠진다.
 //   단, 입력 검증 + (가능하면) 로그인 시도 율제한(rate limit)은 필요.
+// - 세션은 HTTP 요청 생명주기에 속하므로 Controller 에서 생성/회전/폐기하고, Service 는 자격 증명 검증만 담당한다.
 // - 내 정보/비번 변경은 URL 에 userId 를 받지 않고 세션의 USER_ID 를 쓴다 → 남의 id 로 조회하는 IDOR 차단.
 // - LoginResponse 에 userId 노출 자체는 취약점이 아니다. 핵심은 "서버가 요청마다 세션/토큰의 id 를 신뢰하고
 //   URL 의 id 는 신뢰하지 않는다" 는 원칙.

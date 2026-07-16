@@ -29,6 +29,10 @@ dependencies {
     implementation 'org.springframework.boot:____'
     // TODO 07: 로컬/테스트 인메모리 DB.
     runtimeOnly '____:h2'
+    // TODO 08: 1차 세션 단계의 BCrypt 해시에 필요한 최소 보안 모듈.
+    implementation 'org.springframework.security:____'
+    // 2차 SecurityFilterChain/@PreAuthorize 단계에서 추가:
+    // implementation 'org.springframework.boot:spring-boot-starter-security'
     // runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -42,7 +46,10 @@ tasks.named('test') { useJUnitPlatform() }
 //     A:
 // Q3. javax.* → jakarta.* 변경이 Validation/JPA 코드에 주는 영향?
 //     A:
+// Q4. security-crypto 와 starter-security 를 단계별로 나누는 이유?
+//     A:
 
 // 자가 채점:
 // □ org.springframework.boot version, io.spring.dependency-management
 // □ JavaVersion.VERSION_17  □ starter-web/data-jpa/validation/thymeleaf  □ com.h2database:h2
+// □ spring-security-crypto(1차)  □ starter-security(2차)

@@ -105,10 +105,11 @@
   - 이메일을 `trim().toLowerCase()` 로 ____ 한다.
   - 사용자를 찾지 못하면 `ErrorCode.____` 또는 로그인 실패 전용 코드를 던진다.
   - 비밀번호 불일치도 같은 메시지로 응답한다.
-  - 성공 시 세션에 `USER_ID`, `USER_ROLE` 을 저장한다.
-  - 세션 고정 공격 방지를 위해 `request.____()` 를 호출한다.
+  - 검증에 성공하면 비밀번호가 없는 `LoginResponse`를 반환한다.
 - Controller:
   - `POST /api/auth/____`
+  - 세션 고정 공격 방지를 위해 `request.____()` 를 호출한다.
+  - 세션에 `USER_ID`, `USER_ROLE` 을 저장한다.
   - 성공 응답에는 비밀번호를 절대 포함하지 않는다.
 
 테스트 TODO:
@@ -125,8 +126,9 @@
 
 구현 TODO:
 
-- Service: `session.____()` 로 기존 세션을 폐기한다.
+- Service에는 로그아웃용 Servlet API 의존성을 두지 않는다.
 - Controller: `POST /api/auth/____`
+- Controller가 기존 세션을 조회해 `session.____()`로 폐기한다.
 - 응답: 본문 없이 `204 No Content` 또는 메시지 포함 `200 OK` 중 팀 컨벤션을 정한다.
 
 테스트 TODO:

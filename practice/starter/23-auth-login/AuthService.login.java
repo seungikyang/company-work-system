@@ -11,7 +11,7 @@ public class AuthService {
 
     // ===== 로그인 =====
     @Transactional(readOnly = true)
-    public LoginResponse login(LoginRequest request, HttpSession session) {
+    public LoginResponse login(LoginRequest request) {
 
         String email = request.getEmail().trim().toLowerCase();
 
@@ -25,20 +25,9 @@ public class AuthService {
             throw new BusinessException(ErrorCode.AUTHENTICATION_REQUIRED, "이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        // TODO 03: 1차(세션) 구현. 세션에 사용자 ID 와 Role 을 저장하세요.
-        session.setAttribute("USER_ID", user.____());
-        session.setAttribute("USER_ROLE", user.getRole());
-
-        // TODO 04: 세션 고정 공격 방지를 위해 로그인 직후 세션 ID 를 재발급해야 합니다.
-        //          (학습용 세션 구현에서는 request.changeSessionId() 또는 session.invalidate() 후 재발급)
-
+        // 세션 생성과 ID 재발급은 웹 기술을 아는 Controller 에서 처리합니다.
+        // Service 는 자격 증명 검증과 응답 생성에만 집중합니다.
         return LoginResponse.from(user);
-    }
-
-    // ===== 로그아웃 =====
-    public void logout(HttpSession session) {
-        // TODO 05: 어떤 메서드로 세션을 종료해야 안전한가요?
-        session.____();
     }
 
     // ===== 내 정보 조회 =====
@@ -60,12 +49,12 @@ public class AuthService {
         User user = userRepository.findById(currentUserId)
             .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        // TODO 06: 현재 비밀번호 확인. 본인이 맞는지 한 번 더 검증해야 합니다.
+        // TODO 03: 현재 비밀번호 확인. 본인이 맞는지 한 번 더 검증해야 합니다.
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new BusinessException(ErrorCode.____, "현재 비밀번호가 일치하지 않습니다.");
         }
 
-        // TODO 07: 새 비밀번호를 해시해 반영하세요.
+        // TODO 04: 새 비밀번호를 해시해 반영하세요.
         user.changePassword(passwordEncoder.____(request.getNewPassword()));
     }
 }
@@ -79,12 +68,13 @@ public class AuthService {
 //     A:
 // Q4. login() 에 @Transactional(readOnly=true) 를 단 이유와 changePassword() 에는 빼고 그냥 @Transactional 을 단 이유는?
 //     A:
+// Q5. AuthService 가 HttpSession/HttpServletRequest 를 직접 다루지 않게 한 이유는?
+//     A:
 //
 // 심화 노트 (면접 답변 포인트):
 // - 사용자 열거(enumeration) 방지: "없는 이메일" 과 "비번 틀림" 을 같은 메시지 + 같은 status(401)로 응답.
 //   여유가 있으면 응답 시간도 비슷하게(timing attack 방지) — 존재하지 않아도 dummy 해시 비교.
 // - matches(raw, encoded): BCrypt 는 encoded 안에 박힌 salt 를 꺼내 raw 를 같은 salt 로 해시한 뒤 비교한다.
 //   그래서 평문 == 비교가 불가능하고, DB 가 털려도 원문 복원이 어렵다.
-// - Session Fixation: 로그인 "전" 발급된 세션 ID 를 공격자가 피해자에게 심어두면 로그인 후 그 세션을 탈취당한다.
-//   → 로그인 직후 request.changeSessionId() 로 세션 ID 재발급.
+// - Session Fixation 방어와 세션 저장은 AuthController 책임. Service 에 Servlet API 를 넣지 않아 단위 테스트를 단순하게 유지한다.
 // - login()/me() 는 조회라 readOnly=true, changePassword() 는 쓰기라 일반 @Transactional.

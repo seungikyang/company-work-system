@@ -14,10 +14,11 @@ TRD 3.11 에서 정의한 1차/2차/3차 보안 진화를 직접 채워봅니다
 1. 클라이언트가 POST /api/auth/login 으로 email + password 전송
 2. AuthService 가 ____Repository.findByEmail(email) 로 사용자 조회
 3. passwordEncoder.____(rawPassword, user.getPassword()) 로 비밀번호 검증
-4. 성공 시 HttpSession 에 사용자 ID 와 Role 저장
+4. AuthController 가 request.____() 로 세션 ID 를 재발급
+5. AuthController 가 HttpSession 에 사용자 ID 와 Role 저장
    session.setAttribute("USER_ID", user.getId());
    session.setAttribute("USER_ROLE", user.getRole());
-5. 이후 요청마다 ____Interceptor 가 세션을 확인하여 currentUser 를 구성
+6. 이후 요청마다 ____Interceptor 가 세션을 확인하여 currentUser 를 구성
 ```
 
 ### TODO

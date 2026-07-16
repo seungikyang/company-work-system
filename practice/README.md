@@ -44,7 +44,7 @@
 
 | 순서 | 영역 | starter 파일 | 핵심 개념 |
 |---|---|---|---|
-| 00 | 빌드/설정 | `00-build-config/*` | Spring Boot 의존성, JPA 설정, 환경 변수 |
+| 00 | 빌드/설정 | `00-build-config/*` | Spring Boot 의존성, JPA 설정, 단계별 보안 의존성 |
 | 01 | 도메인 | `01-user-entity/User.entity.java` | User 엔티티와 UserRole enum |
 | 02 | 도메인 | `02-department-entity/Department.entity.java` | Department 엔티티, 부서명 unique |
 | 03 | 도메인 | `03-employee-entity/Employee.entity.java` | Employee 엔티티, FK, EmployeeStatus |

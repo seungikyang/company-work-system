@@ -9,16 +9,26 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // TODO 01: 세션 기반 로그인 — HttpSession 주입.
+    // TODO 01: 인증 후 세션 생성 + Session Fixation 방어 + ID/Role 저장.
     @PostMapping("/login")
-    public LoginResponse login(@Valid @RequestBody LoginRequest request, ____ session) {
-        return authService.login(request, session);
+    public LoginResponse login(
+            @Valid @RequestBody LoginRequest loginRequest,
+            ____ request) {
+        LoginResponse response = authService.login(loginRequest);
+        HttpSession session = request.getSession(____);
+        request.____();
+        session.setAttribute("USER_ID", response.____());
+        session.setAttribute("USER_ROLE", response.____());
+        return response;
     }
 
-    // TODO 02: 로그아웃 — body 없으면 status?
+    // TODO 02: 로그아웃 — 세션이 있을 때만 폐기, body 없으면 status?
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpSession session) {
-        authService.logout(session);
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(____);
+        if (session != null) {
+            session.____();
+        }
         return ResponseEntity.____().build();
     }
 }
@@ -82,6 +92,9 @@ public record MyInfoResponse(
 //     A:
 // Q3. LoginResponse 에 userId 를 노출해도 괜찮은가? (IDOR 관점)
 //     A:
+// Q4. Service 에 HttpSession 을 넘기지 않는 이유는?
+//     A:
 
 // 자가 채점:
-// □ HttpSession 주입  □ noContent()  □ @SessionAttribute  □ noContent()  □ @Size(min=8)
+// □ HttpServletRequest  □ getSession(true)  □ changeSessionId()  □ response.userId()/role()
+// □ getSession(false)+invalidate  □ noContent()  □ @SessionAttribute  □ @Size(min=8)

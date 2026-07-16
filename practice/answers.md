@@ -31,6 +31,8 @@
 - `spring-boot-starter-validation` 은 `@Valid` 와 Hibernate Validator(jakarta.validation) 를 활성화한다.
 - `h2` 는 인메모리/파일 DB 로, 로컬과 테스트에서 별도 설치 없이 빠르게 띄울 수 있다.
 - `spring-boot-starter-thymeleaf` 는 서버 렌더링용. 화면 요구사항(2.7) 을 위해 사용한다.
+- `spring-security-crypto` 는 1차 세션 구현에서 `PasswordEncoder`와 BCrypt만 쓰는 최소 의존성이다.
+- `spring-boot-starter-security` 는 2차 단계에서 `SecurityFilterChain`, 인증 필터, `@PreAuthorize`까지 적용할 때 추가한다.
 - `ddl-auto: create` 는 시작할 때마다 스키마를 새로 만들기 때문에 로컬 학습용에 가깝다. 운영은 `validate` 또는 `none` 이 안전하다.
 - Spring Boot 3.x 부터 패키지가 `javax.*` → `jakarta.*` 로 바뀌었다. 검증 어노테이션도 `jakarta.validation.constraints` 를 쓴다.
 
@@ -276,7 +278,7 @@
 
 ## 20. 보안 흐름
 
-- 1차: 로그인 성공 → `session.setAttribute("userId", user.getId())` → 보호 자원은 `HandlerInterceptor` 에서 세션 검사.
+- 1차: Service가 자격 증명을 검증 → Controller가 세션 ID를 재발급하고 사용자 ID/Role 저장 → 보호 자원은 `HandlerInterceptor`에서 세션 검사.
 - 2차: `SecurityFilterChain` 에 `formLogin` + `BCryptPasswordEncoder` + 권한 매핑(`hasRole("ADMIN")`).
 - 3차: JWT 발급 → Authorization 헤더 검사 → `UsernamePasswordAuthenticationToken` 으로 SecurityContext 구성. 서버는 무상태로 유지된다.
 - 세션 → JWT 진화의 핵심은 **상태를 어디에 둘 것인가**(서버 메모리 vs 클라이언트 토큰).
@@ -290,6 +292,7 @@
 ## 21. 통합 테스트
 
 - `@SpringBootTest` + `@AutoConfigureMockMvc` 로 컨텍스트를 띄우고, `MockMvc.perform(...)` 으로 요청을 흘려보낸다.
+- 1차 세션 인증 테스트는 로그인 결과의 `MockHttpSession`을 꺼내 `.session(...)`으로 다음 요청에 연결한다.
 - 응답 JSON 에서 다음 요청에 쓸 값은 `andReturn().getResponse().getContentAsString()` → ObjectMapper 로 파싱한다.
 - 권한 실패는 `andExpect(status().isForbidden())` 또는 `.is(403)` 로 검증한다.
 
@@ -309,21 +312,23 @@
 **심화·면접 답변:**
 - **README 의 기준은 "클론 후 5분 실행"**: 실행 방법(`./gradlew bootRun`)·기본 포트·H2 콘솔 경로·시드 계정(admin/employee)을 명시한다. 면접관이 가장 먼저 보는 문서라 여기서 막히면 코드도 안 본다.
 - **트러블슈팅이 곧 면접 무기**: 문제→원인→해결→배운 점 4단 + 코드 diff. 이 프로젝트의 대표 3건은 휴가 중복 승인(상태 검증 위치), 직원 부분 저장(@Transactional), LazyInitializationException(DTO 변환 시점)이다 — TRD 3.19 Q12("가장 어려웠던 문제")의 답이 그대로 나온다.
-- **API 명세 진화**: 손으로 적은 Markdown(필드 의미를 직접 사고) → `springdoc-openapi` 자동 생성(`/swagger-ui.html`). 어느 쪽이든 인증 헤더 형식(`Authorization: Bearer ...`)을 반드시 적는다.
+- **API 명세 진화**: 손으로 적은 Markdown(필드 의미를 직접 사고) → `springdoc-openapi` 자동 생성(`/swagger-ui.html`). 현재 구현이 세션이면 `JSESSIONID` 쿠키, JWT면 `Authorization: Bearer ...`처럼 실제 인증 전달 방식을 반드시 적는다.
 - **커밋/PR 도 포트폴리오**: "왜" 를 적은 커밋과 4섹션 PR 이 협업 역량을 보여준다(39장).
 
 ## 23. 인증 — 로그인 / 로그아웃 / 내 정보 / 비밀번호 변경
 
 - 로그인 실패 메시지에서 “이메일” / “비번” 구분을 안 하는 이유: 공격자가 이메일 존재 여부를 사용자 열거에 이용할 수 있다. → 동일 메시지로 응답.
 - `passwordEncoder.matches(raw, encoded)` 는 같은 salt 로 다시 해시한 결과를 비교하므로 평문 비교가 불가능하다.
-- 로그인 직후 `request.changeSessionId()` 로 세션 ID 를 새로 발급해야 Session Fixation 공격을 막을 수 있다.
-- `logout()` 은 `session.invalidate()` 로 세션 자체를 폐기한다.
+- Service는 이메일 정규화·사용자 조회·비밀번호 검증에 집중하고, Servlet API를 직접 다루지 않는다.
+- Controller는 로그인 직후 `request.changeSessionId()`로 세션 ID를 새로 발급하고 사용자 ID/Role을 저장한다.
+- Controller의 로그아웃 엔드포인트는 기존 세션이 있을 때 `session.invalidate()`로 세션 자체를 폐기한다.
 - 비밀번호 변경은 “현재 비번 확인” + “새 비번 해시 저장” 두 단계. 변경 후 기존 세션을 만료시키는 정책도 검토.
 
 **심화·면접 답변:**
 - **사용자 열거 방지의 두 축**: 메시지 통일(“이메일 또는 비밀번호가 올바르지 않습니다”) + 응답 시간 통일. 존재하지 않는 이메일이면 더미 해시를 한 번 비교해 timing 차이를 없앤다. 상태코드는 401.
 - **matches 동작 원리**: BCrypt 해시 문자열(`$2a$10$salt+hash`)에서 salt 를 꺼내 raw 를 같은 salt·cost 로 해시한 뒤 비교한다. 그래서 같은 비밀번호도 매번 다른 해시가 저장되지만 검증은 가능하다.
 - **Session Fixation 시나리오**: 공격자가 자기 세션 ID 를 피해자 브라우저에 심음 → 피해자가 그 세션으로 로그인 → 공격자가 같은 세션 ID 로 접근해 탈취. `changeSessionId()` 로 로그인 직후 ID 를 바꾸면 차단.
+- **계층 책임 분리**: 세션 생성·회전·폐기는 HTTP 요청 생명주기를 아는 Controller가 담당하고, Service는 순수한 값과 도메인 객체만 다뤄 단위 테스트와 재사용을 단순하게 한다.
 - **readOnly 구분 이유**: `login()`/`me()` 는 조회만 하므로 `readOnly=true`(flush 생략), `changePassword()` 는 비밀번호를 바꾸는 쓰기라 일반 `@Transactional`.
 
 ## 24. 부서 Service
@@ -475,7 +480,7 @@
 **심화·면접 답변:**
 - **의존 방향 한 줄 정리**: 화살표는 항상 상위→하위(Controller→Service→Repository→Domain), 역방향 금지. Domain 은 아무것도 import 하지 않는 가장 안정적인 핵이라 어느 계층에서도 안전하게 재사용된다.
 - **Controller→Repository 직접 호출이 위험한 이유**: 트랜잭션 경계와 비즈니스 검증을 둘 곳(Service)이 사라져 로직이 Controller 로 샌다. 처음엔 "한 줄 wrap" 이지만 곧 검증·트랜잭션이 필요해지면서 Controller 가 비대해진다.
-- **Service 가 HttpSession 을 직접 다루지 않기**: 웹 기술이 Service 로 새면 단위 테스트가 불가능해진다. Controller 가 인증 사용자를 꺼내 `Long currentUserId` 순수 값으로 넘긴다(34장).
+- **Service 가 HttpSession 을 직접 다루지 않기**: 웹 기술이 Service 로 새면 단위 테스트와 재사용이 어려워진다. Controller 가 인증 사용자를 꺼내 `Long currentUserId` 순수 값으로 넘긴다(34장).
 - **트랜잭션이 Service 인 이유**: "비즈니스 작업 1개 = 트랜잭션 1개" 라 비즈니스 경계인 Service 가 트랜잭션 경계와 일치한다.
 
 ## 37. 비즈니스 규칙 매트릭스

@@ -14,17 +14,17 @@ class LeaveFlowTest {
     @DisplayName("직원이 휴가를 신청하면 관리자가 승인까지 갈 수 있다")
     void leaveRequest_then_adminApprove_flow() throws Exception {
 
-        String employeeToken = loginAs("employee@test.com", "pass1234!");
-        String adminToken    = loginAs("admin@test.com", "adminpw!");
+        MockHttpSession employeeSession = loginAs("employee@test.com", "pass1234!");
+        MockHttpSession adminSession    = loginAs("admin@test.com", "adminpw!");
 
         Map<String, Object> body = Map.of(
             "leaveType", "ANNUAL", "startDate", "2026-06-01",
             "endDate", "2026-06-03", "reason", "개인 사유"
         );
 
-        // TODO 01: 인증 헤더 형식.
+        // TODO 01: 로그인 세션 재사용.
         MvcResult requestResult = mockMvc.perform(post("/api/leaves")
-                .header("Authorization", "____ " + employeeToken)
+                .____(employeeSession)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
             // TODO 02: 새 자원 생성 status.
@@ -37,13 +37,13 @@ class LeaveFlowTest {
             .get("____").asLong();
 
         mockMvc.perform(patch("/api/admin/leaves/{leaveId}/approve", leaveId)
-                .header("Authorization", "Bearer " + adminToken))
+                .session(adminSession))
             .andExpect(status().isOk())
             // TODO 04: 승인 후 상태.
             .andExpect(jsonPath("$.status").value("____"));
 
         mockMvc.perform(get("/api/leaves/{leaveId}", leaveId)
-                .header("Authorization", "Bearer " + employeeToken))
+                .session(employeeSession))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value("APPROVED"));
     }
@@ -51,10 +51,10 @@ class LeaveFlowTest {
     @Test
     @DisplayName("일반 사용자가 관리자 API 를 호출하면 403 이 떨어진다")
     void user_cannot_call_admin_api() throws Exception {
-        String userToken = loginAs("employee@test.com", "pass1234!");
+        MockHttpSession userSession = loginAs("employee@test.com", "pass1234!");
         // TODO 05: 권한 실패 status.
         mockMvc.perform(get("/api/admin/leaves")
-                .header("Authorization", "Bearer " + userToken))
+                .session(userSession))
             .andExpect(status().is____());
     }
 
@@ -64,15 +64,15 @@ class LeaveFlowTest {
         // TODO 06: 신청 → 승인 → 재승인 시도. 응답 body 의 code 필드에 담길 ErrorCode 는?
     }
 
-    private String loginAs(String email, String password) throws Exception {
+    private MockHttpSession loginAs(String email, String password) throws Exception {
         Map<String, String> body = Map.of("email", email, "password", password);
         MvcResult result = mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
             .andExpect(status().isOk())
             .andReturn();
-        return objectMapper.readTree(result.getResponse().getContentAsString())
-            .get("token").asText();
+        // TODO 07: 생성된 세션 추출.
+        return (MockHttpSession) result.getRequest().getSession(____);
     }
 }
 
@@ -83,6 +83,9 @@ class LeaveFlowTest {
 //     A:
 // Q3. 시간(now()) 같은 비결정성을 테스트에서 다루는 패턴은?
 //     A:
+// Q4. JWT 단계에서는 세션 대신 무엇을 전달하나?
+//     A:
 
 // 자가 채점:
-// □ "Bearer"  □ isCreated()  □ "leaveId"  □ "APPROVED"  □ isForbidden()  □ 재승인 code=INVALID_STATUS
+// □ .session(employeeSession)  □ isCreated()  □ "leaveId"  □ "APPROVED"
+// □ isForbidden()  □ getSession(false)  □ 재승인 code=INVALID_STATUS

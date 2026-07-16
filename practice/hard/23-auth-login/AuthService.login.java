@@ -11,7 +11,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = ____)
-    public LoginResponse login(LoginRequest request, HttpSession session) {
+    public LoginResponse login(LoginRequest request) {
 
         String email = request.getEmail().____().____();
 
@@ -24,17 +24,8 @@ public class AuthService {
             throw new BusinessException(ErrorCode.AUTHENTICATION_REQUIRED, "이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        // TODO 03: 세션에 ID/Role 저장.
-        session.setAttribute("USER_ID", user.____());
-        session.setAttribute("USER_ROLE", user.getRole());
-
-        // TODO 04: Session Fixation 방지 — 로그인 직후 세션 ID 재발급 (request.changeSessionId()).
+        // 세션 생성/회전/저장은 Controller 책임.
         return LoginResponse.from(user);
-    }
-
-    public void logout(HttpSession session) {
-        // TODO 05: 세션 폐기.
-        session.____();
     }
 
     @Transactional(readOnly = true)
@@ -49,11 +40,11 @@ public class AuthService {
     public void changePassword(Long currentUserId, PasswordChangeRequest request) {
         User user = userRepository.findById(currentUserId)
             .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-        // TODO 06: 현재 비번 확인.
+        // TODO 03: 현재 비번 확인.
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new BusinessException(ErrorCode.____, "현재 비밀번호가 일치하지 않습니다.");
         }
-        // TODO 07: 새 비번 해시 후 반영.
+        // TODO 04: 새 비번 해시 후 반영.
         user.changePassword(passwordEncoder.____(request.getNewPassword()));
     }
 }
@@ -65,7 +56,9 @@ public class AuthService {
 //     A:
 // Q3. 비밀번호 변경 후 기존 세션/토큰은 어떻게 처리?
 //     A:
+// Q4. Service 에서 Servlet API 를 제거하면 테스트와 계층 책임에 어떤 장점이 있나?
+//     A:
 
 // 자가 채점:
-// □ login readOnly=true  □ AUTHENTICATION_REQUIRED  □ passwordEncoder.matches  □ user.getId()
-// □ session.invalidate()  □ USER_NOT_FOUND  □ passwordEncoder.encode
+// □ login readOnly=true  □ AUTHENTICATION_REQUIRED  □ passwordEncoder.matches
+// □ Service 에 HttpSession 없음  □ USER_NOT_FOUND  □ passwordEncoder.encode

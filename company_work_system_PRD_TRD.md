@@ -353,6 +353,7 @@ office-management-system
 | View | Thymeleaf |
 | Database | H2, MySQL |
 | ORM | Spring Data JPA |
+| Security | 1차 `spring-security-crypto` + 세션, 2차 Spring Security, 3차 JWT |
 | Build | Gradle |
 | Test | JUnit 5 |
 | Version Control | Git / GitHub |
@@ -888,11 +889,12 @@ Service 메서드에 `@Transactional`을 적용한다.
 
 ### 3.11.1 1차 구현
 
-포트폴리오 초기 버전에서는 세션 또는 단순 로그인 방식으로 구현한다.
+포트폴리오 초기 버전에서는 BCrypt 비밀번호 검증과 `HttpSession`을 사용하는 세션 로그인으로 구현한다. Service는 자격 증명을 검증하고, Controller는 HTTP 세션의 생성·회전·폐기를 담당한다.
 
 ```text
-로그인 성공
-→ Session에 userId 저장
+AuthService에서 이메일/비밀번호 검증 성공
+→ AuthController에서 세션 ID 재발급
+→ Session에 userId와 role 저장
 → 요청 시 Session에서 사용자 확인
 ```
 
@@ -943,6 +945,7 @@ JWT Access Token
 | 휴가 신청 API 테스트 | 휴가 신청 요청과 응답 확인 |
 | 휴가 승인 API 테스트 | 승인 후 상태 변경 확인 |
 | 공지사항 API 테스트 | 공지 CRUD 확인 |
+| 세션 인증 흐름 테스트 | 로그인 세션을 재사용해 보호 API 호출 확인 |
 | 권한 테스트 | 일반 사용자가 관리자 API 접근 시 실패 확인 |
 
 ### 3.12.3 수동 테스트 시나리오

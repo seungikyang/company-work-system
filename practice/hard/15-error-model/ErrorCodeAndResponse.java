@@ -1,5 +1,5 @@
 // 실제 구현 위치 예: exception/ErrorCode.java, BusinessException.java, ErrorResponse.java
-// 목표: 공통 에러 모델을 거의 백지에서. TRD 3.9. (HttpStatus 매핑은 spec-index 6장과 일치)
+// 목표: 공통 에러 모델을 거의 백지에서. HttpStatus 매핑은 루트 PRD/TRD 3.9와 일치시킵니다.
 // 막히면 starter/15-error-model, answers.md 15장 참고.
 
 // ===== ErrorCode ===== (각 코드의 HttpStatus 를 직접 채우세요)

@@ -36,6 +36,12 @@ dependencies {
     // TODO 07: 로컬/테스트용 인메모리 DB
     runtimeOnly '____:h2'
 
+    // TODO 08: 1차 세션 단계에서도 BCrypt 비밀번호 해시에 필요한 최소 보안 모듈
+    implementation 'org.springframework.security:____'
+
+    // 2차 Spring Security 단계에서 SecurityFilterChain / @PreAuthorize 를 활성화할 때 추가
+    // implementation 'org.springframework.boot:spring-boot-starter-security'
+
     // 운영용 DB 드라이버 (학습 단계에서는 주석 처리 가능)
     // runtimeOnly 'com.mysql:mysql-connector-j'
 
@@ -55,4 +61,7 @@ tasks.named('test') {
 //     A:
 // Q3. Spring Boot 3.x 로 올리면서 javax.* 가 jakarta.* 로 바뀌었습니다.
 //     이 변경이 Validation/JPA 코드에 구체적으로 어떤 영향을 줄까요?
+//     A:
+// Q4. 1차 세션 단계에서 spring-security-crypto 만 사용하고, 2차 단계에서
+//     spring-boot-starter-security 를 추가하는 이유는 무엇일까요?
 //     A:

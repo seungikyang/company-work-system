@@ -35,6 +35,7 @@
 - `starter/00-build-config/application.yml.fragment`
 
 - Spring Web, Spring Data JPA, Validation, Thymeleaf, H2 의존성의 역할을 구분한다.
+- 1차 세션 단계의 BCrypt에는 `spring-security-crypto`, 2차 보안 단계에는 `spring-boot-starter-security`가 필요한 이유를 구분한다.
 - Java 17 / Spring Boot 3.x 조합과 `javax` → `jakarta` 변경을 인지한다.
 - `ddl-auto` 옵션의 의미(create/create-drop/update/validate/none)를 구분한다.
 - 로컬 H2 콘솔 활성화 설정을 채운다.
@@ -211,6 +212,7 @@
 파일: `starter/21-test-flow/LeaveFlowTest.java`
 
 - MockMvc 로 로그인 → 휴가 신청 → 관리자 승인 → 결과 확인 흐름을 채운다.
+- 1차 세션 단계에서는 로그인 요청에서 얻은 `MockHttpSession`을 다음 요청에 재사용한다.
 - 응답 JSON 에서 다음 요청에 쓸 값(leaveId 등)을 어떻게 꺼낼지.
 - 권한 실패 테스트(USER 가 ADMIN API 호출)를 어떻게 작성할지.
 
@@ -231,8 +233,9 @@
 - `starter/23-auth-login/AuthController.java`
 
 - 이메일 정규화 후 사용자 조회, `passwordEncoder.matches()` 로 비번 검증.
-- 세션 기반 인증(`HttpSession`) 에서 사용자 ID / Role 저장.
-- 세션 고정 공격(Session Fixation) 방지를 위한 세션 ID 재발급 시점.
+- Service는 이메일과 비밀번호를 검증하고 `LoginResponse`를 반환한다.
+- Controller는 `HttpSession`을 생성하고 사용자 ID / Role을 저장한다.
+- Controller에서 세션 고정 공격(Session Fixation) 방지를 위해 세션 ID를 재발급한다.
 - 로그인 실패 메시지를 “이메일 vs 비밀번호” 로 구분하지 않는 이유.
 - 비밀번호 변경 시 현재 비밀번호 확인 + 새 비밀번호 해시.
 

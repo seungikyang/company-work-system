@@ -17,7 +17,7 @@ public class DepartmentService {
 
         String name = request.getName().trim();
 
-        // TODO 02: 부서명 중복 확인. ErrorCode 는 새로 만들어도 좋습니다.
+        // TODO 02: 부서명 중복 확인. 15장의 공통 ErrorCode 기준을 사용합니다.
         if (departmentRepository.existsByName(name)) {
             throw new BusinessException(ErrorCode.____, "이미 존재하는 부서명입니다.");
         }
