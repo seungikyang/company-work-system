@@ -48,4 +48,4 @@
 - [x] 사용자 문서 15개와 내부 기록 문서 3개 재검증
 - [x] 실제 감사 결과를 `history.html`에 추가
 - [x] 전체 정적 검증과 변경 파일 전수 검토
-- [ ] 의미 단위 커밋 후 `origin/main`에 `git push`
+- [x] 의미 단위 커밋 후 `origin/main`에 `git push`
