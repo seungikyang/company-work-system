@@ -508,8 +508,8 @@
   <main class="page">
     <section class="summary-grid" aria-label="히스토리 요약">
       <article class="summary-card">
-        <strong>10</strong>
-        <span>최초 생성부터 최종 배포 확인까지 연결된 Git 단계</span>
+        <strong>11</strong>
+        <span>최초 생성부터 코드·문서 전수 감사까지 연결된 Git 단계</span>
       </article>
       <article class="summary-card">
         <strong>40</strong>
@@ -564,13 +564,37 @@
         <h2 id="timeline-title">변경 타임라인</h2>
         <p>
           커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
-          워크북 사용 흐름의 변화와 대표 배포 확인 이력 10개를 기록하며,
+          워크북 사용 흐름의 변화와 대표 배포 확인 이력 11개를 기록하며,
           이 페이지의 단순 이력 동기화 같은 관리 커밋은 생략할 수 있습니다.
         </p>
       </div>
 
       <ol class="timeline">
         <li class="history-item latest">
+          <time class="history-date" datetime="2026-07-17">2026.07.17</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">전수 감사</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/4a818c7b25dd50277b6bc651205d9e2005bd6962"
+              >4a818c7</a>
+            </div>
+            <h3>세션 인증 워크북과 전 문서 정합성 보완</h3>
+            <p>
+              추적 파일 90개와 코드·설정 조각 70개를 전수 확인하고, 1차 세션
+              인증의 계층 책임과 테스트·의존성 설명을 같은 기준으로 맞췄습니다.
+            </p>
+            <ul>
+              <li>Starter·Hard 35개 경로와 40개 학습 챕터 범위 검증</li>
+              <li>AuthService와 AuthController의 인증 책임 분리</li>
+              <li>MockHttpSession 통합 테스트와 단계별 보안 의존성 정렬</li>
+              <li>Markdown 18개 문서의 링크·표·취업 증거 흐름 재검증</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
           <time class="history-date" datetime="2026-07-16">2026.07.16</time>
           <article class="history-card">
             <div class="history-meta">
@@ -853,7 +877,7 @@
 
   <footer class="page">
     <p>Java 백엔드 취업 포트폴리오 워크북</p>
-    <p>마지막 문서 갱신일 <time datetime="2026-07-16">2026년 7월 16일</time></p>
+    <p>마지막 문서 갱신일 <time datetime="2026-07-17">2026년 7월 17일</time></p>
   </footer>
 </body>
 </html>
