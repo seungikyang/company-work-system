@@ -38,4 +38,4 @@
 - [x] 전체 문서의 5단계 통과 기준과 증거 ID 유지 확인
 - [x] `history.html`에 누락된 최신 실제 커밋 반영
 - [x] 전체 Markdown과 HTML 구조 재검증
-- [ ] 변경사항 커밋 후 `origin/main`에 `git push`
+- [x] 변경사항 커밋 후 `origin/main`에 `git push`

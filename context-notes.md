@@ -198,3 +198,9 @@
 - Markdown 18개 파일의 상대 링크와 표 열 수 검사 통과.
 - `history.html`의 로컬 링크 9개, 실제 Git 커밋 링크 10개, 중복 ID, 태그 중첩, CSS 중괄호 검사 통과.
 - `git diff --check` 통과.
+
+### 배포 결과
+
+- `587e6a4 docs: 최신 워크북 이력 동기화` 커밋을 생성했다.
+- `git push origin main`이 성공해 `22c5c96..587e6a4 main -> main`으로 반영됐다.
+- 이력 동기화와 체크리스트 갱신 같은 관리 커밋은 `history.html`의 프로그램 주요 단계 수에 포함하지 않는다.
