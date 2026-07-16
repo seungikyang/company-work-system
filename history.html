@@ -508,8 +508,8 @@
   <main class="page">
     <section class="summary-grid" aria-label="히스토리 요약">
       <article class="summary-card">
-        <strong>8</strong>
-        <span>최초 생성부터 증거 추적 고도화까지 확인된 Git 단계</span>
+        <strong>10</strong>
+        <span>최초 생성부터 최종 배포 확인까지 연결된 Git 단계</span>
       </article>
       <article class="summary-card">
         <strong>40</strong>
@@ -564,14 +564,57 @@
         <h2 id="timeline-title">변경 타임라인</h2>
         <p>
           커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
-          최신 항목은 전 문서에 반영된 취업 증거 추적 체계입니다. 워크북
-          사용 흐름의 변화와 대표 배포 확인 이력을 기록하며, 체크리스트
-          동기화 같은 관리 커밋은 생략할 수 있습니다.
+          워크북 사용 흐름의 변화와 대표 배포 확인 이력 10개를 기록하며,
+          이 페이지의 단순 이력 동기화 같은 관리 커밋은 생략할 수 있습니다.
         </p>
       </div>
 
       <ol class="timeline">
         <li class="history-item latest">
+          <time class="history-date" datetime="2026-07-16">2026.07.16</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">최종 배포</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/22c5c96cac77d31c463a115f7b0c1d9ea21a1dd7"
+              >22c5c96</a>
+            </div>
+            <h3>취업 워크북 보완 결과 원격 반영</h3>
+            <p>
+              최종 체크리스트와 검증 결과를 기록하고 취업 증거 추적 체계와
+              변경 히스토리를 원격 <code>main</code>에 반영했습니다.
+            </p>
+            <ul>
+              <li>Markdown 18개 문서와 히스토리 구조 최종 검증</li>
+              <li><code>HEAD</code>와 <code>origin/main</code> 일치 확인</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
+          <time class="history-date" datetime="2026-07-16">2026.07.16</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">히스토리 확장</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/0d96064911cfaee2188d8b4b5e74cbbae0e157cd"
+              >0d96064</a>
+            </div>
+            <h3>5단계 취업 준비 흐름과 프로그램 지도 반영</h3>
+            <p>
+              변경 히스토리에 준비·설계·구현·검증·지원 흐름과 실제 Git
+              단계, 주요 워크북 링크를 시각적으로 정리했습니다.
+            </p>
+            <ul>
+              <li>취업 준비 5단계 흐름 카드 추가</li>
+              <li>기능 구현과 면접 워크북을 프로그램 지도에 연결</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
           <time class="history-date" datetime="2026-07-16">2026.07.16</time>
           <article class="history-card">
             <div class="history-meta">

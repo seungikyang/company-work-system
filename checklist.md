@@ -31,3 +31,11 @@
 - [x] Markdown 링크·표·용어와 HTML 구조 검증
 - [x] 변경사항 검토 후 의미 단위 커밋
 - [x] `origin/main`에 `git push`
+
+## 2026-07-16 최종 목적 재점검
+
+- [x] 작업 트리와 `HEAD`, `origin/main` 일치 확인
+- [x] 전체 문서의 5단계 통과 기준과 증거 ID 유지 확인
+- [x] `history.html`에 누락된 최신 실제 커밋 반영
+- [x] 전체 Markdown과 HTML 구조 재검증
+- [ ] 변경사항 커밋 후 `origin/main`에 `git push`
