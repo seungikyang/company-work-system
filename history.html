@@ -1,0 +1,674 @@
+<!-- 취업 포트폴리오 워크북 프로그램의 변경 이력을 보여주는 정적 문서 -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta
+    name="description"
+    content="Java 백엔드 취업 포트폴리오 워크북의 실제 Git 기반 변경 이력"
+  >
+  <title>워크북 변경 히스토리</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #152018;
+      --muted: #5f6c63;
+      --paper: #f4f1e8;
+      --surface: #fffdf7;
+      --line: #d8d4c7;
+      --green: #1f5f45;
+      --green-soft: #dcebdd;
+      --orange: #d86d31;
+      --orange-soft: #f8e5d7;
+      --navy: #19324b;
+      --shadow: 0 18px 50px rgba(43, 48, 40, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(rgba(31, 95, 69, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31, 95, 69, 0.04) 1px, transparent 1px),
+        var(--paper);
+      background-size: 24px 24px;
+      color: var(--ink);
+      font-family:
+        "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR",
+        system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 72px 0 46px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 16px;
+      color: var(--green);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 28px;
+      height: 2px;
+      background: var(--orange);
+      content: "";
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 820px;
+      margin-bottom: 18px;
+      font-family: Georgia, "Noto Serif KR", serif;
+      font-size: clamp(2.6rem, 7vw, 5.6rem);
+      font-weight: 700;
+      letter-spacing: -0.06em;
+      line-height: 0.98;
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      margin-bottom: 30px;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 46px;
+      padding: 0 18px;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      background: var(--surface);
+      font-weight: 750;
+      text-decoration: none;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .button.primary {
+      border-color: var(--green);
+      background: var(--green);
+      color: white;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      box-shadow: 0 7px 0 rgba(21, 32, 24, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin: 0 0 70px;
+    }
+
+    .summary-card {
+      min-height: 156px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 253, 247, 0.90);
+      box-shadow: var(--shadow);
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--green);
+      font-family: Georgia, "Noto Serif KR", serif;
+      font-size: 2.4rem;
+      line-height: 1;
+    }
+
+    .summary-card span {
+      color: var(--muted);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-heading h2 {
+      margin-bottom: 0;
+      font-family: Georgia, "Noto Serif KR", serif;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+    }
+
+    .section-heading p {
+      max-width: 440px;
+      margin-bottom: 0;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .timeline {
+      position: relative;
+      margin: 0 0 76px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .timeline::before {
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      left: 127px;
+      width: 2px;
+      background: var(--line);
+      content: "";
+    }
+
+    .history-item {
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      gap: 48px;
+      position: relative;
+      padding: 0 0 34px;
+    }
+
+    .history-item::before {
+      position: absolute;
+      top: 10px;
+      left: 119px;
+      width: 14px;
+      height: 14px;
+      border: 3px solid var(--paper);
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 2px var(--green);
+      content: "";
+    }
+
+    .history-item.latest::before {
+      background: var(--orange);
+      box-shadow: 0 0 0 2px var(--orange);
+    }
+
+    .history-date {
+      padding-top: 4px;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .history-card {
+      padding: 26px 28px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--surface);
+    }
+
+    .latest .history-card {
+      border-color: rgba(216, 109, 49, 0.55);
+      background: linear-gradient(135deg, var(--surface), var(--orange-soft));
+    }
+
+    .history-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+
+    .tag,
+    .commit {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 0.77rem;
+      font-weight: 800;
+    }
+
+    .tag {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .latest .tag {
+      background: var(--orange);
+      color: white;
+    }
+
+    .commit {
+      background: #ece9df;
+      color: var(--navy);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      text-decoration: none;
+    }
+
+    .history-card h3 {
+      margin-bottom: 9px;
+      font-size: 1.28rem;
+      letter-spacing: -0.02em;
+    }
+
+    .history-card p {
+      margin-bottom: 14px;
+      color: var(--muted);
+    }
+
+    .history-card ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .history-card li + li {
+      margin-top: 5px;
+    }
+
+    .program-map {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 70px;
+    }
+
+    .map-card {
+      display: block;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--surface);
+      text-decoration: none;
+    }
+
+    .map-card small {
+      color: var(--orange);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .map-card h3 {
+      margin: 7px 0 8px;
+    }
+
+    .map-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .map-card:hover,
+    .map-card:focus-visible {
+      border-color: var(--green);
+      box-shadow: var(--shadow);
+    }
+
+    .rule {
+      margin-bottom: 74px;
+      padding: 30px;
+      border-radius: 24px;
+      background: var(--navy);
+      color: white;
+    }
+
+    .rule h2 {
+      margin-bottom: 10px;
+      font-family: Georgia, "Noto Serif KR", serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+    }
+
+    .rule p {
+      max-width: 760px;
+      margin-bottom: 0;
+      color: #dce6ef;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 28px 0 44px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    footer p {
+      margin: 0;
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(100% - 28px, 1120px);
+      }
+
+      .hero {
+        padding-top: 48px;
+      }
+
+      .summary-grid,
+      .program-map {
+        grid-template-columns: 1fr;
+      }
+
+      .section-heading {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .section-heading p {
+        text-align: left;
+      }
+
+      .timeline::before {
+        left: 8px;
+      }
+
+      .history-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding-left: 34px;
+      }
+
+      .history-item::before {
+        left: 0;
+      }
+
+      .history-date {
+        text-align: left;
+      }
+
+      .history-card {
+        padding: 22px;
+      }
+
+      footer {
+        flex-direction: column;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .hero-actions {
+        display: none;
+      }
+
+      .summary-card,
+      .history-card,
+      .map-card {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="page">
+      <p class="eyebrow">Company Work System Workbook</p>
+      <h1>워크북이 취업 결과물로 자라온 기록</h1>
+      <p class="hero-copy">
+        이 페이지는 Java 백엔드 취업 포트폴리오 워크북의 실제 Git 이력을
+        바탕으로 작성한 변경 기록입니다. 기술 문제 모음에서 시작해 구현 증거,
+        문서화, 면접 준비를 연결하는 프로그램으로 발전한 과정을 보여줍니다.
+      </p>
+      <nav class="hero-actions" aria-label="주요 문서">
+        <a class="button primary" href="./README.md">프로그램 안내</a>
+        <a class="button" href="./practice/job-preparation-workbook.md">통합 워크북</a>
+        <a class="button" href="./company_work_system_PRD_TRD.md">PRD / TRD</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="summary-grid" aria-label="히스토리 요약">
+      <article class="summary-card">
+        <strong>6</strong>
+        <span>최초 생성부터 이번 문서 보완까지 기록한 주요 단계</span>
+      </article>
+      <article class="summary-card">
+        <strong>40</strong>
+        <span>도메인부터 면접 준비까지 연결된 기술 학습 챕터</span>
+      </article>
+      <article class="summary-card">
+        <strong>1</strong>
+        <span>코드·테스트·Git·문서를 한곳에서 추적하는 취업 목표</span>
+      </article>
+    </section>
+
+    <section aria-labelledby="timeline-title">
+      <div class="section-heading">
+        <h2 id="timeline-title">변경 타임라인</h2>
+        <p>
+          커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
+          최신 항목은 이 페이지를 포함한 현재 문서 보완 범위입니다.
+        </p>
+      </div>
+
+      <ol class="timeline">
+        <li class="history-item latest">
+          <time class="history-date" datetime="2026-07-16">2026.07.16</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">현재 업데이트</span>
+              <span class="commit">docs · workbook history</span>
+            </div>
+            <h3>워크북 프로그램 정의와 변경 히스토리 보완</h3>
+            <p>
+              저장소 자체와 구현 대상 시스템의 역할을 분리하고,
+              모든 핵심 문서를 취업 증거 중심의 학습 흐름으로 맞췄습니다.
+            </p>
+            <ul>
+              <li>워크북 프로그램과 사내 업무관리 시스템의 개념 구분</li>
+              <li>문제·정답·기능 구현·진행 기록의 공통 학습 루프 정리</li>
+              <li>실제 Git 이력을 보여주는 <code>history.html</code> 추가</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
+          <time class="history-date" datetime="2026-07-16">2026.07.16</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">취업 흐름</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/f08763e12de3328d43c4a0f1643c76b2155feb31"
+              >f08763e</a>
+            </div>
+            <h3>취업 포트폴리오 워크북 흐름 정리</h3>
+            <p>
+              루트 진입 문서와 취업 준비 통합 워크북을 추가해 학습 결과를
+              코드·테스트·문서·면접 답변으로 연결했습니다.
+            </p>
+            <ul>
+              <li>루트 README와 완료·졸업 기준 추가</li>
+              <li>목표, 구현 증거, 지원 준비를 관리하는 통합 워크북 추가</li>
+              <li>존재하지 않는 내부 참조 제거</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
+          <time class="history-date" datetime="2026-05-31">2026.05.31</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">난이도 확장</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/4379abe7fcc052f842d96afec25b42fa801aa40b"
+              >4379abe</a>
+            </div>
+            <h3>전 챕터 심화 해설과 Hard 모드 추가</h3>
+            <p>
+              구조 확인용 Starter와 백지 작성에 가까운 Hard 모드를 나누고,
+              기술 선택의 이유와 면접 포인트를 해설에 보강했습니다.
+            </p>
+            <ul>
+              <li>81개 파일 변경</li>
+              <li>최대 작성형 코드 워크북 추가</li>
+              <li>트레이드오프와 트러블슈팅 연결 강화</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
+          <time class="history-date" datetime="2026-05-25">2026.05.25</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">정합성</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/61cd0b6af81cb1d8a35c2f4cf334c5e893796b75"
+              >61cd0b6</a>
+            </div>
+            <h3>PRD와 실습 워크북 기준 통일</h3>
+            <p>
+              enum, API 경로, ErrorCode, 필드명이 문서와 코드 조각에서
+              같은 기준을 사용하도록 정리했습니다.
+            </p>
+            <ul>
+              <li>45개 파일의 명세 불일치 조정</li>
+              <li>문제와 정답 간 구현 기준 정렬</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
+          <time class="history-date" datetime="2026-05-25">2026.05.25</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">기능 추적</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/a718d3fe07fb34dd063e32c5dc1858f15c0b931a"
+              >a718d3f</a>
+            </div>
+            <h3>FR ID 기반 기능 구현 워크북 추가</h3>
+            <p>
+              요구사항을 화면과 API에서 Controller, Service, Repository,
+              Entity·DTO, 테스트까지 추적하는 구현 지도를 추가했습니다.
+            </p>
+            <ul>
+              <li>기능별 개념 빈칸과 구현 TODO 제공</li>
+              <li>Given·When·Then 테스트 계획 연결</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
+          <time class="history-date" datetime="2026-05-24">2026.05.24</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">최초 구성</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/62a7407b9f135b6b64b342967aba7d265d898703"
+              >62a7407</a>
+            </div>
+            <h3>PRD/TRD와 40개 학습 챕터 생성</h3>
+            <p>
+              사내 업무관리 시스템을 주제로 요구사항, 기술 설계, 문제,
+              정답, 단계별 코드 조각을 갖춘 워크북의 기반을 만들었습니다.
+            </p>
+            <ul>
+              <li>47개 파일과 5,634줄의 초기 학습 자료 추가</li>
+              <li>직원·부서·휴가·공지·전자결재 도메인 구성</li>
+            </ul>
+          </article>
+        </li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="map-title">
+      <div class="section-heading">
+        <h2 id="map-title">현재 프로그램 지도</h2>
+        <p>
+          각 문서는 하나의 취업 준비 루프에서 서로 다른 역할을 맡습니다.
+        </p>
+      </div>
+
+      <div class="program-map">
+        <a class="map-card" href="./practice/job-preparation-workbook.md">
+          <small>PLAN &amp; TRACK</small>
+          <h3>취업 준비 통합 워크북</h3>
+          <p>목표 직무, 역량 차이, 기능별 증거, 지원 가능 상태를 관리합니다.</p>
+        </a>
+        <a class="map-card" href="./company_work_system_PRD_TRD.md">
+          <small>SPECIFICATION</small>
+          <h3>PRD / TRD</h3>
+          <p>실습 주제의 요구사항, 도메인, API, 테스트 기준을 정의합니다.</p>
+        </a>
+        <a class="map-card" href="./practice/problems.md">
+          <small>PRACTICE</small>
+          <h3>문제와 난이도별 코드</h3>
+          <p>핵심 개념과 코드를 직접 작성한 뒤 실행 프로젝트로 옮깁니다.</p>
+        </a>
+        <a class="map-card" href="./practice/answers.md">
+          <small>REFLECT</small>
+          <h3>정답과 해설</h3>
+          <p>선택 이유, 대안, 트레이드오프를 확인하고 면접 언어로 바꿉니다.</p>
+        </a>
+      </div>
+    </section>
+
+    <aside class="rule">
+      <h2>히스토리 유지 원칙</h2>
+      <p>
+        워크북의 학습 구조, 완료 기준, 주요 문서가 바뀌면 이 페이지도 함께
+        갱신합니다. 커밋 기록은 사실에 근거해 작성하고, 아직 구현되지 않은
+        기능이나 검증하지 않은 결과는 완료 이력으로 표현하지 않습니다.
+      </p>
+    </aside>
+  </main>
+
+  <footer class="page">
+    <p>Java 백엔드 취업 포트폴리오 워크북</p>
+    <p>마지막 문서 갱신일 <time datetime="2026-07-16">2026년 7월 16일</time></p>
+  </footer>
+</body>
+</html>
