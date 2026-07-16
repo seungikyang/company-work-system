@@ -19,4 +19,4 @@
 - [x] 실제 커밋 기반 `history.html` 생성
 - [x] HTML과 Markdown 링크·구조 검증
 - [x] 변경사항 커밋
-- [ ] 원격 저장소에 `git push`
+- [x] 원격 저장소에 `git push`
