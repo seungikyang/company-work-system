@@ -30,4 +30,4 @@
 - [x] 실제 Git 이력 기반 `history.html` 최신화
 - [x] Markdown 링크·표·용어와 HTML 구조 검증
 - [x] 변경사항 검토 후 의미 단위 커밋
-- [ ] `origin/main`에 `git push`
+- [x] `origin/main`에 `git push`
