@@ -4,6 +4,8 @@
 
 기존 `practice/problems.md` 와 `practice/starter/` 가 코드 조각 중심이라면, 이 문서는 **FR ID → 화면/API → Controller → Service → Repository → Entity/DTO → 테스트** 흐름을 직접 채워보게 합니다.
 
+각 FR ID를 학습한 뒤에는 [취업 준비 통합 워크북](./job-preparation-workbook.md)의 `기능별 구현 증거`에 실제 코드 위치, 테스트 결과, 커밋과 설계 이유를 기록합니다. 빈칸 풀이만 끝낸 기능은 포트폴리오 완료로 표시하지 않습니다.
+
 ## 사용 규칙
 
 1. 각 기능의 `개념 빈칸`을 먼저 채운다.

@@ -1,17 +1,18 @@
-# Company Work System 학습 워크북
+# Company Work System 취업 포트폴리오 워크북
 
-이 폴더는 [company_work_system_PRD_TRD.md](../company_work_system_PRD_TRD.md)에 정의된 사내 업무관리 시스템의 기술/개념을 직접 채워보며 공부하는 TODO/빈칸 워크북입니다.
+이 폴더는 [company_work_system_PRD_TRD.md](../company_work_system_PRD_TRD.md)에 정의된 사내 업무관리 시스템의 기술과 개념을 직접 구현하며, Java 백엔드 취업에 사용할 코드·테스트·문서·면접 답변을 만드는 TODO/빈칸 워크북입니다.
 
-`bank-system/practice` 의 학습 방식을 참고하여, 완성 코드를 베끼는 대신 핵심 로직을 손으로 채워보는 것을 목표로 합니다.
+완성 코드를 베끼는 대신 핵심 로직을 손으로 채우고, 같은 흐름을 실행 프로젝트에 다시 구현하는 것을 목표로 합니다.
 
 ## 사용 방법
 
-1. [feature-implementation-workbook.md](./feature-implementation-workbook.md) 에서 기능 요구사항(FR ID)별 구현 흐름을 먼저 훑습니다.
-2. [problems.md](./problems.md) 를 열어 오늘 풀 문제를 고릅니다.
-3. `practice/starter/` 아래의 해당 파일에서 `TODO`와 `____` 빈칸을 채웁니다.
-4. 막히면 [company_work_system_PRD_TRD.md](../company_work_system_PRD_TRD.md) 의 관련 절(3.x)을 다시 읽습니다.
-5. 채운 다음 [answers.md](./answers.md) 로 의도를 확인합니다.
-6. 같은 흐름을 한 번 더 백지에서 작성해 봅니다.
+1. [job-preparation-workbook.md](./job-preparation-workbook.md) 에 목표 직무, 완료일, 현재 수준을 적습니다.
+2. [feature-implementation-workbook.md](./feature-implementation-workbook.md) 에서 기능 요구사항(FR ID)별 구현 흐름을 먼저 훑습니다.
+3. [problems.md](./problems.md) 를 열어 오늘 풀 문제를 고릅니다.
+4. `practice/starter/` 또는 `practice/hard/`의 해당 파일에서 `TODO`와 `____` 빈칸을 채웁니다.
+5. 이해한 내용을 본인의 실행 가능한 Spring Boot 프로젝트에 다시 구현하고 테스트합니다.
+6. 막히면 [company_work_system_PRD_TRD.md](../company_work_system_PRD_TRD.md) 의 관련 절과 [answers.md](./answers.md) 를 확인합니다.
+7. 통합 워크북에 코드 위치, 검증 결과, 커밋, 설계 이유를 기록합니다.
 
 이 폴더의 파일은 **컴파일 대상이 아니라 학습용 조각 코드**입니다. 패키지 선언과 import 는 일부러 생략했습니다.
 
@@ -78,7 +79,9 @@
 3주차: 15 ~ 19, 25 ~ 27, 31 ~ 34 (예외/DTO/Controller/Repository/Config/Interceptor)
 4주차: 20 ~ 22, 35 ~ 39 (보안/테스트/문서/뷰/구조/규칙/트러블슈팅/면접)
 
-## 진행도 자가 점검
+각 주차의 완료 여부는 읽은 챕터 수가 아니라 [취업 준비 통합 워크북](./job-preparation-workbook.md)에 남긴 실행 코드와 테스트 증거로 판단합니다.
+
+## 개념 자가 점검
 
 직접 풀고 나면 다음 질문에 짧게 답해 봅니다.
 
@@ -87,4 +90,4 @@
 - 이 응답을 Entity 그대로 두지 않고 DTO 로 감싼 이유는?
 - 이 상태값을 String 이 아닌 enum 으로 둔 이유는?
 
-답을 한 줄로 적을 수 있으면 그 문제는 졸업입니다.
+한 줄 답변은 개념 이해 확인입니다. 챕터를 완료하려면 실행 프로젝트 구현, 관련 테스트 통과, 검증 명령 기록, 커밋 또는 PR 링크까지 남겨야 합니다.

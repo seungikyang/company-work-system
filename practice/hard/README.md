@@ -12,7 +12,7 @@
 | 메서드명·Repository 이름 | 헤더 주석(`// 목표`)과 `// TODO NN` 가이드 |
 | 필드명 일부 | 학습 질문(직접 답 작성 영역) |
 
-> 답 힌트가 되는 "심화 노트" 는 hard 에서 **뺐다**. 막히면 같은 번호의 `starter/` 와 `answers.md`, `.claude/skills/spec-consistency-check/references/spec-index.md`(enum/경로/ErrorCode 정답)로 확인한다.
+> 답 힌트가 되는 "심화 노트" 는 hard 에서 **뺐다**. 막히면 같은 번호의 `starter/`, `answers.md`, 루트의 `company_work_system_PRD_TRD.md`에서 enum·경로·ErrorCode를 확인한다.
 
 ## 학습 루프 (권장)
 
@@ -23,7 +23,7 @@
 
 ## 자가 채점
 
-각 파일 하단 `// 자가 채점` 체크리스트로 핵심 항목을 스스로 확인한다. 모든 enum·ErrorCode·API 경로·필드명은 `spec-index.md` 와 일치해야 정답이다.
+각 파일 하단 `// 자가 채점` 체크리스트로 핵심 항목을 스스로 확인한다. 모든 enum·ErrorCode·API 경로·필드명은 `answers.md`와 루트의 `company_work_system_PRD_TRD.md`에 정의된 기준과 일치해야 한다.
 
 ## 진행 범위
 
