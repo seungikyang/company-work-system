@@ -122,6 +122,10 @@ Controller  ──▶  Service  ──▶  Repository  ──▶  Domain
 - [ ] Controller가 Repository를 직접 호출하지 않는지 검색으로 확인했다.
 - [ ] 구조 선택 이유와 개선 가능성을 [취업 준비 통합 워크북](../../job-preparation-workbook.md)에 기록했다.
 
+| 증거 ID | 구조 문서·코드 링크 | 확인 명령 | 발견한 예외 | 선택 이유 |
+|---|---|---|---|---|
+| E-DOC-ARCH |  |  |  |  |
+
 ---
 
 ## 7. 심화 노트 (면접 답변 포인트)

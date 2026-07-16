@@ -19,11 +19,12 @@
 
 1. [job-preparation-workbook.md](./job-preparation-workbook.md) 에 목표 직무, 완료일, 현재 수준을 적습니다.
 2. [feature-implementation-workbook.md](./feature-implementation-workbook.md) 에서 기능 요구사항(FR ID)별 구현 흐름을 먼저 훑습니다.
-3. [problems.md](./problems.md) 를 열어 오늘 풀 문제를 고릅니다.
-4. `practice/starter/` 또는 `practice/hard/`의 해당 파일에서 `TODO`와 `____` 빈칸을 채웁니다.
-5. 이해한 내용을 본인의 실행 가능한 Spring Boot 프로젝트에 다시 구현하고 테스트합니다.
-6. 막히면 [company_work_system_PRD_TRD.md](../company_work_system_PRD_TRD.md) 의 관련 절과 [answers.md](./answers.md) 를 확인합니다.
-7. 통합 워크북에 코드 위치, 검증 결과, 커밋, 설계 이유를 기록합니다.
+3. 오늘 구현할 FR ID를 고르고 `E-{FR ID}` 형식의 증거 ID를 만듭니다.
+4. [problems.md](./problems.md) 를 열어 연결된 문제를 고릅니다.
+5. `practice/starter/` 또는 `practice/hard/`의 해당 파일에서 `TODO`와 `____` 빈칸을 채웁니다.
+6. 이해한 내용을 본인의 실행 가능한 Spring Boot 프로젝트에 다시 구현하고 테스트합니다.
+7. 막히면 [company_work_system_PRD_TRD.md](../company_work_system_PRD_TRD.md) 의 관련 절과 [answers.md](./answers.md) 를 확인합니다.
+8. 통합 워크북에 증거 ID, 코드 위치, 검증 결과, 커밋, 설계 이유를 기록합니다.
 
 이 폴더의 파일은 **컴파일 대상이 아니라 학습용 조각 코드**입니다. 패키지 선언과 import 는 일부러 생략했습니다.
 
@@ -93,6 +94,18 @@
 4주차: 20 ~ 22, 35 ~ 39 (보안/테스트/문서/뷰/구조/규칙/트러블슈팅/면접)
 
 각 주차의 완료 여부는 읽은 챕터 수가 아니라 [취업 준비 통합 워크북](./job-preparation-workbook.md)에 남긴 실행 코드와 테스트 증거로 판단합니다.
+
+## 챕터 완료 기록
+
+각 챕터를 끝낼 때 아래 정보를 통합 워크북의 같은 증거 ID에 연결합니다.
+
+| 기록 | 작성 내용 |
+|---|---|
+| 채용 역량 | 이 챕터가 증명하는 공고 요구사항 |
+| 구현 | 실행 프로젝트의 파일 또는 코드 링크 |
+| 검증 | 실제 실행한 명령, 통과 결과, 확인일 |
+| Git | 한 가지 의도의 커밋 또는 PR 링크 |
+| 설명 | 선택 이유, 대안, 면접에서 말할 한 문장 |
 
 ## 개념 자가 점검
 

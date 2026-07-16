@@ -133,6 +133,11 @@ public PasswordEncoder passwordEncoder() {
 - [ ] 로그인 성공·실패와 USER의 ADMIN 접근 실패 테스트를 통과했다.
 - [ ] 보안 선택 이유와 확장 방향을 [취업 준비 통합 워크북](../../job-preparation-workbook.md)에 기록했다.
 
+| 증거 ID | 코드 위치 | 검증 명령·결과 | 마지막 확인일 | 면접 한 문장 |
+|---|---|---|---|---|
+| E-FR-USER-001 |  |  |  |  |
+| E-FR-USER-005 |  |  |  |  |
+
 ---
 
 ## 심화 노트 (면접 답변 포인트)
