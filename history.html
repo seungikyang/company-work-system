@@ -163,6 +163,45 @@
       color: var(--muted);
     }
 
+    .stage-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 70px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .stage-card {
+      min-height: 170px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--surface);
+    }
+
+    .stage-card strong {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 18px;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      place-items: center;
+    }
+
+    .stage-card h3 {
+      margin-bottom: 7px;
+    }
+
+    .stage-card p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
     .section-heading {
       display: flex;
       align-items: end;
@@ -389,6 +428,7 @@
       }
 
       .summary-grid,
+      .stage-flow,
       .program-map {
         grid-template-columns: 1fr;
       }
@@ -453,8 +493,9 @@
       <h1>워크북이 취업 결과물로 자라온 기록</h1>
       <p class="hero-copy">
         이 페이지는 Java 백엔드 취업 포트폴리오 워크북의 실제 Git 이력을
-        바탕으로 작성한 변경 기록입니다. 기술 문제 모음에서 시작해 구현 증거,
-        문서화, 면접 준비를 연결하는 프로그램으로 발전한 과정을 보여줍니다.
+        바탕으로 작성한 변경 기록입니다. 기술 문제 모음에서 시작해 채용 공고,
+        구현 증거, 문서화, 면접, 지원 결과를 연결하는 프로그램으로 발전한
+        과정을 보여줍니다.
       </p>
       <nav class="hero-actions" aria-label="주요 문서">
         <a class="button primary" href="./README.md">프로그램 안내</a>
@@ -467,17 +508,55 @@
   <main class="page">
     <section class="summary-grid" aria-label="히스토리 요약">
       <article class="summary-card">
-        <strong>6</strong>
-        <span>최초 생성부터 이번 문서 보완까지 기록한 주요 단계</span>
+        <strong>8</strong>
+        <span>최초 생성부터 증거 추적 고도화까지 확인된 Git 단계</span>
       </article>
       <article class="summary-card">
         <strong>40</strong>
         <span>도메인부터 면접 준비까지 연결된 기술 학습 챕터</span>
       </article>
       <article class="summary-card">
-        <strong>1</strong>
-        <span>코드·테스트·Git·문서를 한곳에서 추적하는 취업 목표</span>
+        <strong>5</strong>
+        <span>준비·설계·구현·검증·지원으로 이어지는 통과 단계</span>
       </article>
+    </section>
+
+    <section aria-labelledby="stage-title">
+      <div class="section-heading">
+        <h2 id="stage-title">현재 취업 준비 흐름</h2>
+        <p>
+          각 단계는 문서를 읽었다는 표시가 아니라 다음 단계로 넘길 수 있는
+          코드·테스트·문서 증거를 요구합니다.
+        </p>
+      </div>
+
+      <ol class="stage-flow">
+        <li class="stage-card">
+          <strong>1</strong>
+          <h3>준비</h3>
+          <p>목표 직무와 마감일을 정하고 채용 공고 3개의 공통 역량을 찾습니다.</p>
+        </li>
+        <li class="stage-card">
+          <strong>2</strong>
+          <h3>설계</h3>
+          <p>MVP, ERD, API, 상태 전이와 권한 정책을 구현 전에 결정합니다.</p>
+        </li>
+        <li class="stage-card">
+          <strong>3</strong>
+          <h3>구현</h3>
+          <p>FR ID별 실행 코드와 한 가지 의도의 커밋을 증거 ID에 연결합니다.</p>
+        </li>
+        <li class="stage-card">
+          <strong>4</strong>
+          <h3>검증</h3>
+          <p>성공·실패·권한·상태 전이 테스트와 실제 통과 명령을 남깁니다.</p>
+        </li>
+        <li class="stage-card">
+          <strong>5</strong>
+          <h3>지원</h3>
+          <p>README, 데모, 트러블슈팅과 30초·3분 설명을 최종 점검합니다.</p>
+        </li>
+      </ol>
     </section>
 
     <section aria-labelledby="timeline-title">
@@ -485,7 +564,7 @@
         <h2 id="timeline-title">변경 타임라인</h2>
         <p>
           커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
-          최신 항목은 이 페이지를 포함한 현재 문서 보완 범위입니다.
+          최신 항목은 전 문서에 반영된 취업 증거 추적 체계입니다.
         </p>
       </div>
 
@@ -494,17 +573,65 @@
           <time class="history-date" datetime="2026-07-16">2026.07.16</time>
           <article class="history-card">
             <div class="history-meta">
-              <span class="tag">현재 업데이트</span>
-              <span class="commit">docs · workbook history</span>
+              <span class="tag">증거 추적</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/401087012edb41db20452894decf3095600d9916"
+              >4010870</a>
             </div>
-            <h3>워크북 프로그램 정의와 변경 히스토리 보완</h3>
+            <h3>채용 공고에서 지원까지 증거 추적 체계 보완</h3>
             <p>
-              저장소 자체와 구현 대상 시스템의 역할을 분리하고,
-              모든 핵심 문서를 취업 증거 중심의 학습 흐름으로 맞췄습니다.
+              학습량이 아니라 실제 제출 가능한 결과물로 진행도를 판단하도록
+              전 문서의 완료 기준과 기록 방식을 통일했습니다.
             </p>
             <ul>
-              <li>워크북 프로그램과 사내 업무관리 시스템의 개념 구분</li>
+              <li>준비·설계·구현·검증·지원의 5단계 통과 기준 추가</li>
+              <li>기능·문서·트러블슈팅·면접 답변의 공통 증거 ID 도입</li>
+              <li>채용 공고, 주간 회고, 지원 현황을 통합 워크북에 연결</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
+          <time class="history-date" datetime="2026-07-16">2026.07.16</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">배포 기록</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/c5e3939e6ed2211675b8d7f3d017a6a9500fd615"
+              >c5e3939</a>
+            </div>
+            <h3>원격 배포 결과 기록</h3>
+            <p>
+              문서 보완 커밋의 원격 반영 결과를 체크리스트와 컨텍스트 노트에
+              남겨 다음 작업이 실제 배포 상태에서 이어지도록 했습니다.
+            </p>
+            <ul>
+              <li><code>origin/main</code> 갱신 결과 기록</li>
+              <li>로컬 Git 자격 증명과 푸시 성공 상태 확인</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
+          <time class="history-date" datetime="2026-07-16">2026.07.16</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">프로그램 정비</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/3cfbcc7237bef20e4c13e04269b5323f85a1b4f3"
+              >3cfbcc7</a>
+            </div>
+            <h3>워크북 프로그램 정의와 변경 히스토리 정비</h3>
+            <p>
+              저장소 자체와 구현 대상 시스템의 역할을 분리하고 모든 핵심
+              문서를 취업 증거 중심의 학습 흐름으로 맞췄습니다.
+            </p>
+            <ul>
               <li>문제·정답·기능 구현·진행 기록의 공통 학습 루프 정리</li>
+              <li>서술형 워크시트의 완료 증거와 다음 단계 보완</li>
               <li>실제 Git 이력을 보여주는 <code>history.html</code> 추가</li>
             </ul>
           </article>
@@ -643,6 +770,11 @@
           <h3>PRD / TRD</h3>
           <p>실습 주제의 요구사항, 도메인, API, 테스트 기준을 정의합니다.</p>
         </a>
+        <a class="map-card" href="./practice/feature-implementation-workbook.md">
+          <small>IMPLEMENT</small>
+          <h3>기능 구현 워크북</h3>
+          <p>FR ID를 코드 계층과 테스트로 분해하고 기능 증거 ID를 시작합니다.</p>
+        </a>
         <a class="map-card" href="./practice/problems.md">
           <small>PRACTICE</small>
           <h3>문제와 난이도별 코드</h3>
@@ -652,6 +784,14 @@
           <small>REFLECT</small>
           <h3>정답과 해설</h3>
           <p>선택 이유, 대안, 트레이드오프를 확인하고 면접 언어로 바꿉니다.</p>
+        </a>
+        <a
+          class="map-card"
+          href="./practice/starter/39-interview-and-commit/InterviewAndCommit.md"
+        >
+          <small>PRESENT</small>
+          <h3>면접·Git 워크북</h3>
+          <p>구현 증거를 30초 답변, 커밋, 리뷰 가능한 PR 설명으로 바꿉니다.</p>
         </a>
       </div>
     </section>
