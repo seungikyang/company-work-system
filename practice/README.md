@@ -8,7 +8,7 @@
 
 | 구성 | 하는 일 | 완료 증거 |
 |---|---|---|
-| [`../index.html`](../index.html) | 시작 순서와 00~39 챕터를 HTML 목차로 탐색 | 오늘 선택한 FR ID와 챕터 |
+| [`../index.html`](../index.html) | 목표와 오늘 할 일, 5단계와 00~39 챕터의 진행 상태를 작성·체크 | 오늘 선택한 FR ID와 챕터 |
 | `job-preparation-workbook.md` | 목표와 지원 준비 상태 관리 | 목표일, 역량 진단, 기능별 링크 |
 | `feature-implementation-workbook.md` | FR ID를 계층과 테스트로 분해 | 기능별 구현·테스트 계획 |
 | `problems.md` | 챕터별 기술 과제 선택 | 직접 작성한 답과 코드 |
@@ -18,7 +18,7 @@
 
 ## 사용 방법
 
-1. [HTML 학습 목차](../index.html)에서 전체 흐름을 확인하고 오늘 공부할 챕터를 고릅니다.
+1. [HTML 취업 워크북](../index.html)에서 목표를 적고 오늘 공부할 FR ID와 챕터를 고릅니다.
 2. [job-preparation-workbook.md](./job-preparation-workbook.md) 에 목표 직무, 완료일, 현재 수준을 적습니다.
 3. [feature-implementation-workbook.md](./feature-implementation-workbook.md) 에서 기능 요구사항(FR ID)별 구현 흐름을 먼저 훑습니다.
 4. 오늘 구현할 FR ID를 고르고 `E-{FR ID}` 형식의 증거 ID를 만듭니다.
