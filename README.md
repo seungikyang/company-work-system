@@ -2,6 +2,8 @@
 
 사내 업무관리 시스템을 직접 설계하고 구현하면서 Java·Spring Boot 백엔드 취업에 필요한 결과물을 만드는 실습형 워크북입니다.
 
+저장소를 내려받은 뒤 [`index.html`](./index.html)을 브라우저로 열면 처음 시작하는 순서, 60분 학습 루프, 00~39 전체 챕터를 HTML 목차에서 바로 따라갈 수 있습니다.
+
 ## 프로그램 정의
 
 이 저장소 자체는 완성된 사내 업무관리 애플리케이션이 아니라 취업 준비를 돕는 **워크북 프로그램**입니다. 사내 업무관리 시스템은 워크북에서 반복해서 설계·구현·검증하는 실습 주제입니다.
@@ -32,13 +34,14 @@
 
 ## 시작 순서
 
-1. [취업 준비 통합 워크북](./practice/job-preparation-workbook.md)에 목표 직무, 마감일, 현재 수준을 적습니다.
-2. [PRD/TRD](./company_work_system_PRD_TRD.md)에서 구현할 제품과 기술 기준을 확인합니다.
-3. [기능 구현 워크북](./practice/feature-implementation-workbook.md)에서 하나의 FR ID를 고르고 `E-{FR ID}` 증거 ID를 만듭니다.
-4. [문제 목록](./practice/problems.md)과 `starter/` 또는 `hard/` 파일로 직접 풉니다.
-5. 본인 프로젝트에 기능과 테스트를 구현하고 검증 명령을 실행합니다.
-6. 통합 워크북에 코드 위치, 테스트 결과, 커밋, 배운 점을 기록합니다.
-7. 막힌 부분만 [정답과 해설](./practice/answers.md)에서 확인한 뒤 본인 말로 다시 설명합니다.
+1. [HTML 학습 목차](./index.html)에서 전체 흐름을 확인하고 오늘 학습할 챕터를 고릅니다.
+2. [취업 준비 통합 워크북](./practice/job-preparation-workbook.md)에 목표 직무, 마감일, 현재 수준을 적습니다.
+3. [PRD/TRD](./company_work_system_PRD_TRD.md)에서 구현할 제품과 기술 기준을 확인합니다.
+4. [기능 구현 워크북](./practice/feature-implementation-workbook.md)에서 하나의 FR ID를 고르고 `E-{FR ID}` 증거 ID를 만듭니다.
+5. HTML 목차에서 `Starter` 또는 `Hard` 파일을 열어 직접 풉니다.
+6. 본인 프로젝트에 기능과 테스트를 구현하고 검증 명령을 실행합니다.
+7. 통합 워크북에 코드 위치, 테스트 결과, 커밋, 배운 점을 기록합니다.
+8. 막힌 부분만 [정답과 해설](./practice/answers.md)에서 확인한 뒤 본인 말로 다시 설명합니다.
 
 한 번의 학습 세션은 `목표 선택 → 직접 풀이 → 실행 프로젝트 구현 → 검증 → 증거 기록` 순서로 끝냅니다.
 
@@ -84,6 +87,7 @@
 
 | 문서 | 역할 |
 |---|---|
+| [HTML 학습 목차](./index.html) | 시작 순서, 60분 학습 루프, 40개 챕터를 브라우저에서 탐색 |
 | [취업 준비 통합 워크북](./practice/job-preparation-workbook.md) | 목표, 진행도, 구현 증거, 지원 준비 상태를 한곳에서 관리 |
 | [PRD/TRD](./company_work_system_PRD_TRD.md) | 제품 요구사항과 기술 설계 기준 |
 | [학습 워크북 안내](./practice/README.md) | 40개 챕터의 순서와 난이도 선택 |

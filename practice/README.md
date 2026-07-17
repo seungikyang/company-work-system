@@ -8,6 +8,7 @@
 
 | 구성 | 하는 일 | 완료 증거 |
 |---|---|---|
+| [`../index.html`](../index.html) | 시작 순서와 00~39 챕터를 HTML 목차로 탐색 | 오늘 선택한 FR ID와 챕터 |
 | `job-preparation-workbook.md` | 목표와 지원 준비 상태 관리 | 목표일, 역량 진단, 기능별 링크 |
 | `feature-implementation-workbook.md` | FR ID를 계층과 테스트로 분해 | 기능별 구현·테스트 계획 |
 | `problems.md` | 챕터별 기술 과제 선택 | 직접 작성한 답과 코드 |
@@ -17,14 +18,15 @@
 
 ## 사용 방법
 
-1. [job-preparation-workbook.md](./job-preparation-workbook.md) 에 목표 직무, 완료일, 현재 수준을 적습니다.
-2. [feature-implementation-workbook.md](./feature-implementation-workbook.md) 에서 기능 요구사항(FR ID)별 구현 흐름을 먼저 훑습니다.
-3. 오늘 구현할 FR ID를 고르고 `E-{FR ID}` 형식의 증거 ID를 만듭니다.
-4. [problems.md](./problems.md) 를 열어 연결된 문제를 고릅니다.
-5. `practice/starter/` 또는 `practice/hard/`의 해당 파일에서 `TODO`와 `____` 빈칸을 채웁니다.
-6. 이해한 내용을 본인의 실행 가능한 Spring Boot 프로젝트에 다시 구현하고 테스트합니다.
-7. 막히면 [company_work_system_PRD_TRD.md](../company_work_system_PRD_TRD.md) 의 관련 절과 [answers.md](./answers.md) 를 확인합니다.
-8. 통합 워크북에 증거 ID, 코드 위치, 검증 결과, 커밋, 설계 이유를 기록합니다.
+1. [HTML 학습 목차](../index.html)에서 전체 흐름을 확인하고 오늘 공부할 챕터를 고릅니다.
+2. [job-preparation-workbook.md](./job-preparation-workbook.md) 에 목표 직무, 완료일, 현재 수준을 적습니다.
+3. [feature-implementation-workbook.md](./feature-implementation-workbook.md) 에서 기능 요구사항(FR ID)별 구현 흐름을 먼저 훑습니다.
+4. 오늘 구현할 FR ID를 고르고 `E-{FR ID}` 형식의 증거 ID를 만듭니다.
+5. [problems.md](./problems.md) 를 읽고 HTML 목차에서 연결된 Starter 또는 Hard 파일을 엽니다.
+6. 해당 파일의 `TODO`와 `____` 빈칸을 채웁니다.
+7. 이해한 내용을 본인의 실행 가능한 Spring Boot 프로젝트에 다시 구현하고 테스트합니다.
+8. 막히면 [company_work_system_PRD_TRD.md](../company_work_system_PRD_TRD.md) 의 관련 절과 [answers.md](./answers.md) 를 확인합니다.
+9. 통합 워크북에 증거 ID, 코드 위치, 검증 결과, 커밋, 설계 이유를 기록합니다.
 
 이 폴더의 파일은 **컴파일 대상이 아니라 학습용 조각 코드**입니다. 패키지 선언과 import 는 일부러 생략했습니다.
 

@@ -49,3 +49,17 @@
 - [x] 실제 감사 결과를 `history.html`에 추가
 - [x] 전체 정적 검증과 변경 파일 전수 검토
 - [x] 의미 단위 커밋 후 `origin/main`에 `git push`
+
+## 2026-07-17 HTML 학습 목차 구축
+
+- [x] 실제 저장소 구조, 기존 학습 흐름, Git 상태 확인
+- [x] `plan.md`, `checklist.md`, `context-notes.md`에 작업 기준 기록
+- [x] 루트 `index.html`에 취업 워크북 시작 화면과 단계별 학습 흐름 추가
+- [x] 00~39 챕터를 주제별 목차와 실제 파일 링크로 연결
+- [x] README·학습 안내·히스토리에서 HTML 목차 연결
+- [x] HTML 링크·DOM 구조와 데스크톱·모바일 반응형 CSS 규칙 정적 검증
+- [ ] 데스크톱·모바일 브라우저 렌더링 확인은 로컬 URL 접근 정책 제한으로 미실행
+- [x] `history.html`에 HTML 목차 작업을 로컬 변경·배포 대기 상태로 기록
+- [ ] 의미 단위 커밋은 원본 `.git` 쓰기 제한으로 미생성
+- [ ] `origin/main` 푸시는 셸 DNS와 GitHub 연결 앱 쓰기 권한 제한으로 미실행
+- [ ] 제한 해제 후 `feat: HTML 학습 목차 추가` 커밋과 `git push origin main` 실행
