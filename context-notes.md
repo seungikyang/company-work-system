@@ -500,3 +500,9 @@
 - 루트에서 `686efee feat: 따라가는 학습과 구현 루프 연결` 커밋을 생성했다.
 - `history.html`의 최신 항목을 실제 커밋 링크 `686efeeedbf323dcb69570c10030c3e2b7ca52d8`에 연결했다.
 - 검증 중 생성된 Python bytecode cache는 삭제하고 `.gitignore`에 재발 방지 패턴을 추가했다.
+
+### 원격 반영 결과
+
+- 루트에서 강제 옵션 없이 `git push origin main`을 실행해 `5d9bf0b..80e18b3` 범위를 푸시했다.
+- 기능 커밋 `686efee`와 이력 동기화 커밋 `80e18b3`가 원격 `main`에 반영됐다.
+- 푸시 직후 로컬 `HEAD`와 `origin/main`이 모두 `80e18b3b45340409a462b9cc4c2c2df38658dcb0`으로 일치함을 확인했다.
