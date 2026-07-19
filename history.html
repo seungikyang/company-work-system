@@ -509,8 +509,8 @@
   <main class="page">
     <section class="summary-grid" aria-label="히스토리 요약">
       <article class="summary-card">
-        <strong>13</strong>
-        <span>최초 생성부터 취업 워크북 대시보드까지 연결된 Git 단계</span>
+        <strong>14</strong>
+        <span>최초 생성부터 따라가는 학습·구현 루프까지 연결된 Git 단계</span>
       </article>
       <article class="summary-card">
         <strong>40</strong>
@@ -565,13 +565,35 @@
         <h2 id="timeline-title">변경 타임라인</h2>
         <p>
           커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
-          워크북 사용 흐름의 변화와 대표 배포 확인 이력 13개를 기록하며,
+          워크북 사용 흐름의 변화와 대표 배포 확인 이력 14개를 기록하며,
           이 페이지의 단순 이력 동기화 같은 관리 커밋은 생략할 수 있습니다.
         </p>
       </div>
 
       <ol class="timeline">
         <li class="history-item latest">
+          <time class="history-date" datetime="2026-07-19">2026.07.19</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">검증 완료 · 배포 대기</span>
+            </div>
+            <h3>따라가는 학습·구현 루프 고도화</h3>
+            <p>
+              처음 방문한 사용자가 문서를 다시 찾지 않고 HTML 목차에서 목표 설정,
+              직접 풀이, 실행 프로젝트 구현, 검증과 취업 증거 기록까지 이어가도록
+              학습 동선을 보완했습니다.
+            </p>
+            <ul>
+              <li>목표부터 취업 증거까지 연결한 번호형 6단계 학습 목차</li>
+              <li>선택 챕터의 Hard·Starter·워크시트를 자동 연결하는 5단계 실행 패널</li>
+              <li>워크시트형 챕터의 직접 작성·정답 해설 분기 처리</li>
+              <li><code>python3 scripts/verify_workbook.py</code> 반복 검증 명령 추가</li>
+              <li>데스크톱 상태 복원과 390×844 모바일 상호작용 검증 통과</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
           <time class="history-date" datetime="2026-07-17">2026.07.17</time>
           <article class="history-card">
             <div class="history-meta">

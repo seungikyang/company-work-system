@@ -188,6 +188,7 @@
       border: 1px solid var(--ink);
       border-radius: 999px;
       background: var(--surface);
+      color: var(--ink);
       font-weight: 800;
       text-decoration: none;
       transition: box-shadow 160ms ease, transform 160ms ease;
@@ -473,6 +474,67 @@
       color: var(--muted);
     }
 
+    .learning-map {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 0 0 78px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .learning-map a {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 5px 13px;
+      height: 100%;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      text-decoration: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .learning-map a:hover {
+      border-color: var(--green);
+      box-shadow: 0 8px 0 rgba(24, 92, 69, 0.10);
+      transform: translateY(-2px);
+    }
+
+    .learning-map-number {
+      display: grid;
+      grid-row: 1 / 4;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      font-weight: 900;
+      place-items: center;
+    }
+
+    .learning-map strong {
+      font-size: 1rem;
+    }
+
+    .learning-map p,
+    .learning-map small {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .learning-map p {
+      font-size: 0.86rem;
+    }
+
+    .learning-map small {
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
     .stage-roadmap {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -641,6 +703,86 @@
       text-decoration: line-through;
     }
 
+    .selected-chapter-guide {
+      grid-column: 1 / -1;
+      padding: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .selected-chapter-guide h3 {
+      margin-bottom: 7px;
+      font-size: 1.25rem;
+    }
+
+    .selected-chapter-guide > p:not(.card-label) {
+      margin-bottom: 17px;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .selected-chapter-guide .card-label {
+      margin-bottom: 8px;
+      color: #ffca9e;
+    }
+
+    .chapter-loop {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .session .chapter-loop li {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-height: 138px;
+    }
+
+    .chapter-loop span {
+      color: #ffca9e;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.74rem;
+      font-weight: 900;
+    }
+
+    .chapter-loop strong {
+      font-size: 0.94rem;
+    }
+
+    .chapter-loop small {
+      flex: 1;
+      color: rgba(255, 255, 255, 0.66);
+      font-size: 0.76rem;
+    }
+
+    .chapter-loop a,
+    .chapter-loop button {
+      align-self: flex-start;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: white;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 850;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .selected-chapter-guide > button {
+      margin-top: 16px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #ffca9e;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 850;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
     .course-list {
       display: grid;
       gap: 16px;
@@ -723,6 +865,11 @@
 
     .chapter.is-complete {
       background: #f3f8f4;
+    }
+
+    .chapter.is-selected {
+      outline: 3px solid rgba(212, 104, 45, 0.55);
+      outline-offset: -3px;
     }
 
     .chapter.is-complete h3 {
@@ -886,6 +1033,11 @@
         grid-template-columns: 1fr;
       }
 
+      .learning-map,
+      .chapter-loop {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .chapter {
         grid-template-columns: 36px 48px 1fr;
       }
@@ -967,7 +1119,9 @@
 
       .metric-grid,
       .field-grid,
-      .stage-roadmap {
+      .stage-roadmap,
+      .learning-map,
+      .chapter-loop {
         grid-template-columns: 1fr;
       }
 
@@ -1006,6 +1160,7 @@
       .dashboard-card,
       .setup-card,
       .guide-card,
+      .selected-chapter-guide,
       .stage-step,
       .session,
       .course,
@@ -1023,6 +1178,7 @@
     <div class="page topbar-inner">
       <a class="brand" href="#top">Company Work System</a>
       <nav class="topnav" aria-label="페이지 목차">
+        <a href="#learning-map">학습 목차</a>
         <a href="#setup">내 목표</a>
         <a href="#roadmap">5단계 로드맵</a>
         <a href="#session">오늘 학습</a>
@@ -1108,6 +1264,67 @@
         테스트해야 포트폴리오 증거가 됩니다.
       </p>
     </aside>
+
+    <section id="learning-map" class="page" aria-labelledby="learning-map-title">
+      <div class="section-heading">
+        <h2 id="learning-map-title">한눈에 보는 6단계 학습 목차</h2>
+        <p>
+          처음에는 1번부터 순서대로 진행하세요. 다음 학습부터는 저장된 현황을
+          보고 멈춘 단계에서 바로 이어가면 됩니다.
+        </p>
+      </div>
+
+      <ol class="learning-map">
+        <li>
+          <a href="#setup">
+            <span class="learning-map-number">01</span>
+            <strong>취업 목표 정하기</strong>
+            <p>지원 직무, 마감일과 하루 학습 시간을 적습니다.</p>
+            <small>산출물 · 목표 직무와 학습 기한</small>
+          </a>
+        </li>
+        <li>
+          <a href="#roadmap">
+            <span class="learning-map-number">02</span>
+            <strong>현재 단계 찾기</strong>
+            <p>준비·설계·구현·검증·지원 중 지금 할 행동을 고릅니다.</p>
+            <small>산출물 · 현재 단계의 통과 기준</small>
+          </a>
+        </li>
+        <li>
+          <a href="#session">
+            <span class="learning-map-number">03</span>
+            <strong>오늘 학습 정하기</strong>
+            <p>FR ID, 챕터 하나와 완료 조건 한 문장을 정합니다.</p>
+            <small>산출물 · 60분 안에 끝낼 한 가지</small>
+          </a>
+        </li>
+        <li>
+          <a href="#curriculum">
+            <span class="learning-map-number">04</span>
+            <strong>문제부터 직접 풀기</strong>
+            <p>문제를 읽고 Hard를 시도한 뒤 Starter로 구조를 확인합니다.</p>
+            <small>산출물 · 직접 작성한 풀이와 질문</small>
+          </a>
+        </li>
+        <li>
+          <a href="./practice/feature-implementation-workbook.md">
+            <span class="learning-map-number">05</span>
+            <strong>본인 프로젝트에 구현하기</strong>
+            <p>배운 코드를 실행 가능한 Spring Boot 기능과 테스트로 옮깁니다.</p>
+            <small>산출물 · 실행 코드와 자동화 테스트</small>
+          </a>
+        </li>
+        <li>
+          <a href="#evidence">
+            <span class="learning-map-number">06</span>
+            <strong>검증하고 취업 증거 남기기</strong>
+            <p>통과 명령, 커밋과 선택 이유를 면접 근거로 기록합니다.</p>
+            <small>산출물 · E-{FR ID} 증거와 Git 기록</small>
+          </a>
+        </li>
+      </ol>
+    </section>
 
     <section id="setup" class="page" aria-labelledby="setup-title">
       <div class="section-heading">
@@ -1278,6 +1495,46 @@
           <li><label class="session-check"><input type="checkbox" data-session-check="record"><time>55–60분</time><span>검증 명령, 커밋과 배운 점을 증거 ID에 기록합니다.</span></label></li>
         </ol>
       </div>
+      <article id="selected-chapter-guide" class="selected-chapter-guide" aria-live="polite">
+        <p class="card-label">Selected Chapter Loop</p>
+        <h3 id="selected-chapter-title">오늘 볼 챕터를 선택하세요.</h3>
+        <p id="selected-chapter-copy">
+          선택하면 해당 챕터의 실제 학습 파일과 구현·검증 순서가 바로 연결됩니다.
+        </p>
+        <ol id="selected-chapter-loop" class="chapter-loop" hidden>
+          <li>
+            <span>01 · 이해</span>
+            <strong>문제 읽기</strong>
+            <small>요구사항과 모르는 용어를 먼저 표시합니다.</small>
+            <a href="./practice/problems.md">전체 문제 열기</a>
+          </li>
+          <li>
+            <span>02 · 시도</span>
+            <strong>직접 풀기</strong>
+            <small>정답을 보기 전에 빈칸과 핵심 로직을 작성합니다.</small>
+            <a id="selected-hard-link" href="#curriculum">Hard 열기</a>
+          </li>
+          <li>
+            <span>03 · 확인</span>
+            <strong>구조 비교하기</strong>
+            <small>막힌 부분만 Starter와 해설로 확인합니다.</small>
+            <a id="selected-starter-link" href="#curriculum">Starter 열기</a>
+          </li>
+          <li>
+            <span>04 · 구현</span>
+            <strong>프로그램에 옮기기</strong>
+            <small>본인의 실행 프로젝트에 같은 기능과 테스트를 작성합니다.</small>
+            <a href="./practice/feature-implementation-workbook.md">구현 워크북 열기</a>
+          </li>
+          <li>
+            <span>05 · 검증</span>
+            <strong>증거로 완료하기</strong>
+            <small>통과 명령, 커밋, 배운 점과 면접 한 문장을 남깁니다.</small>
+            <a href="./practice/job-preparation-workbook.md">증거 기록하기</a>
+          </li>
+        </ol>
+        <button id="show-selected-chapter" type="button" hidden>전체 목차에서 이 챕터 보기</button>
+      </article>
     </section>
 
     <section id="curriculum" class="page" aria-labelledby="curriculum-title">
@@ -1691,6 +1948,12 @@
       const stageCards = [...document.querySelectorAll("[data-stage]")];
       const chapterRows = [...document.querySelectorAll("[data-chapter]")];
       const todayChapter = document.querySelector("#today-chapter");
+      const selectedChapterTitle = document.querySelector("#selected-chapter-title");
+      const selectedChapterCopy = document.querySelector("#selected-chapter-copy");
+      const selectedChapterLoop = document.querySelector("#selected-chapter-loop");
+      const selectedHardLink = document.querySelector("#selected-hard-link");
+      const selectedStarterLink = document.querySelector("#selected-starter-link");
+      const showSelectedChapter = document.querySelector("#show-selected-chapter");
 
       const saveState = () => {
         if (!storageEnabled) return;
@@ -1770,6 +2033,40 @@
         nextLink.textContent = "지원 점검표 열기";
       };
 
+      const renderSelectedChapter = () => {
+        chapterRows.forEach((row) => {
+          row.classList.toggle("is-selected", row.dataset.chapter === state.today.chapter);
+        });
+
+        const row = chapterRows.find((item) => item.dataset.chapter === state.today.chapter);
+        if (!row) {
+          selectedChapterTitle.textContent = "오늘 볼 챕터를 선택하세요.";
+          selectedChapterCopy.textContent = "선택하면 해당 챕터의 실제 학습 파일과 구현·검증 순서가 바로 연결됩니다.";
+          selectedChapterLoop.hidden = true;
+          showSelectedChapter.hidden = true;
+          return;
+        }
+
+        const number = row.dataset.chapter;
+        const title = row.querySelector("h3").textContent;
+        const copy = row.querySelector("p").textContent;
+        const links = [...row.querySelectorAll(".chapter-links a")];
+        const hardLink = links.find((link) => link.getAttribute("href").includes("/hard/"));
+        const starterLink = links.find((link) => link.getAttribute("href").includes("/starter/"));
+        const worksheetLink = links[0];
+
+        selectedChapterTitle.textContent = `${number}. ${title} 학습 루프`;
+        selectedChapterCopy.textContent = `${copy} 아래 다섯 단계를 마치고 실제 테스트 증거가 있을 때 완료로 체크하세요.`;
+        selectedChapterLoop.hidden = false;
+        showSelectedChapter.hidden = false;
+        selectedHardLink.href = (hardLink || worksheetLink).getAttribute("href");
+        selectedHardLink.textContent = hardLink ? "Hard 열기" : "워크시트 직접 작성";
+        selectedStarterLink.href = hardLink && starterLink
+          ? starterLink.getAttribute("href")
+          : "./practice/answers.md";
+        selectedStarterLink.textContent = hardLink && starterLink ? "Starter 열기" : "정답과 해설 보기";
+      };
+
       const renderState = () => {
         document.querySelector("#target-role").value = state.profile.targetRole;
         document.querySelector("#target-deadline").value = state.profile.targetDeadline;
@@ -1796,6 +2093,7 @@
           button.setAttribute("aria-label", `${row.dataset.chapter}장 ${checked ? "완료 취소" : "완료 표시"}`);
         });
 
+        renderSelectedChapter();
         updateDashboard();
       };
 
@@ -1844,6 +2142,7 @@
         document.querySelector(selector).addEventListener("input", (event) => {
           state.today[key] = event.target.value;
           saveState();
+          if (key === "chapter") renderSelectedChapter();
         });
       });
 
@@ -1872,6 +2171,13 @@
         document.querySelectorAll(".course").forEach((course) => {
           course.open = false;
         });
+      });
+
+      showSelectedChapter.addEventListener("click", () => {
+        const row = chapterRows.find((item) => item.dataset.chapter === state.today.chapter);
+        if (!row) return;
+        row.closest(".course").open = true;
+        row.scrollIntoView({ behavior: "smooth", block: "center" });
       });
 
       if (!storageEnabled) {
