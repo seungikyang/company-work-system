@@ -131,6 +131,7 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
     )
     stages = re.findall(r'data-stage="([a-z]+)"', index)
     sessions = re.findall(r'data-session-check="([a-z]+)"', index)
+    test_results = re.findall(r'<option value="(fail|pass)">', index)
 
     require(chapters == [f"{number:02d}" for number in range(40)], "00~39 챕터 순서가 깨짐")
     require(len(chapter_blocks) == 40, "챕터 HTML 블록이 40개가 아님")
@@ -139,10 +140,13 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
         require("href=" in block, f"{number}장: 연결된 학습 파일이 없음")
     require(len(stages) == 5 and len(set(stages)) == 5, "취업 준비 단계가 5개가 아님")
     require(len(sessions) == 5 and len(set(sessions)) == 5, "오늘 학습 체크가 5개가 아님")
+    require(test_results == ["fail", "pass"], "검증 결과 실패·통과 선택지가 깨짐")
     require(index.count('class="learning-map-number"') == 6, "번호형 학습 목차가 6단계가 아님")
     require(index.count('<details class="course"') == 5, "전체 교재 코스가 5개가 아님")
     require("company-workbook-state-v1" in index, "브라우저 저장 키가 없음")
     require("renderSelectedChapter" in index, "선택 챕터 렌더링 함수가 없음")
+    require("renderVerificationStatus" in index, "검증 결과 렌더링 함수가 없음")
+    require("resetTodaySession" in index, "오늘 학습 초기화 함수가 없음")
 
     required_ids = {
         "learning-map",
@@ -152,12 +156,18 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
         "curriculum",
         "evidence",
         "today-chapter",
+        "today-test-command",
+        "today-test-result",
         "selected-chapter-title",
         "selected-chapter-copy",
         "selected-chapter-loop",
         "selected-hard-link",
         "selected-starter-link",
         "show-selected-chapter",
+        "verification-status",
+        "verification-status-title",
+        "verification-status-copy",
+        "reset-today-session",
     }
     require(required_ids <= index_parser.ids, f"필수 ID 누락 {sorted(required_ids - index_parser.ids)}")
 

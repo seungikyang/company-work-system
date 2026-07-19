@@ -726,6 +726,35 @@
       color: #ffca9e;
     }
 
+    .verification-feedback {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 4px solid rgba(255, 255, 255, 0.35);
+      border-radius: 0 14px 14px 0;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .verification-feedback[data-status="fail"] {
+      border-left-color: #ffca9e;
+      background: rgba(212, 104, 45, 0.16);
+    }
+
+    .verification-feedback[data-status="pass"] {
+      border-left-color: #8bd1af;
+      background: rgba(139, 209, 175, 0.13);
+    }
+
+    .verification-feedback strong,
+    .verification-feedback p {
+      display: block;
+    }
+
+    .verification-feedback p {
+      margin: 4px 0 0;
+      color: rgba(255, 255, 255, 0.70);
+      font-size: 0.82rem;
+    }
+
     .chapter-loop {
       grid-template-columns: repeat(5, minmax(0, 1fr));
     }
@@ -769,8 +798,14 @@
       text-underline-offset: 4px;
     }
 
-    .selected-chapter-guide > button {
+    .selected-chapter-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
       margin-top: 16px;
+    }
+
+    .selected-chapter-actions button {
       padding: 0;
       border: 0;
       background: transparent;
@@ -1137,6 +1172,11 @@
         grid-template-columns: 20px 56px 1fr;
       }
 
+      .selected-chapter-actions {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
       footer {
         flex-direction: column;
         gap: 8px;
@@ -1483,6 +1523,18 @@
             오늘의 완료 조건
             <textarea id="today-goal" placeholder="예: 휴가 신청 성공·중복 실패 테스트를 통과한다."></textarea>
           </label>
+          <label class="session-field">
+            실행할 검증 명령
+            <input id="today-test-command" type="text" placeholder="예: ./gradlew test" autocomplete="off">
+          </label>
+          <label class="session-field">
+            검증 결과
+            <select id="today-test-result">
+              <option value="">아직 실행하지 않음</option>
+              <option value="fail">실패 · 수정 후 같은 명령 재실행</option>
+              <option value="pass">통과 · 회귀 테스트와 증거 기록</option>
+            </select>
+          </label>
         </div>
       </div>
       <div class="session-plan">
@@ -1533,7 +1585,14 @@
             <a href="./practice/job-preparation-workbook.md">증거 기록하기</a>
           </li>
         </ol>
-        <button id="show-selected-chapter" type="button" hidden>전체 목차에서 이 챕터 보기</button>
+        <div id="verification-status" class="verification-feedback" data-status="idle" role="status">
+          <strong id="verification-status-title">검증 명령을 먼저 적으세요.</strong>
+          <p id="verification-status-copy">본인 프로젝트에서 반복 실행할 테스트나 빌드 명령 하나를 정합니다.</p>
+        </div>
+        <div class="selected-chapter-actions">
+          <button id="show-selected-chapter" type="button" hidden>전체 목차에서 이 챕터 보기</button>
+          <button id="reset-today-session" type="button">새 학습 시작 · 오늘 기록만 비우기</button>
+        </div>
       </article>
     </section>
 
@@ -1917,7 +1976,7 @@
       const storageKey = "company-workbook-state-v1";
       const emptyState = {
         profile: { targetRole: "", targetDeadline: "", dailyMinutes: "" },
-        today: { frId: "", chapter: "", goal: "" },
+        today: { frId: "", chapter: "", goal: "", testCommand: "", testResult: "" },
         stages: [],
         chapters: [],
         session: []
@@ -1954,6 +2013,10 @@
       const selectedHardLink = document.querySelector("#selected-hard-link");
       const selectedStarterLink = document.querySelector("#selected-starter-link");
       const showSelectedChapter = document.querySelector("#show-selected-chapter");
+      const verificationStatus = document.querySelector("#verification-status");
+      const verificationStatusTitle = document.querySelector("#verification-status-title");
+      const verificationStatusCopy = document.querySelector("#verification-status-copy");
+      const resetTodaySessionButton = document.querySelector("#reset-today-session");
 
       const saveState = () => {
         if (!storageEnabled) return;
@@ -2067,6 +2130,36 @@
         selectedStarterLink.textContent = hardLink && starterLink ? "Starter 열기" : "정답과 해설 보기";
       };
 
+      const renderVerificationStatus = () => {
+        const command = state.today.testCommand.trim();
+        const result = state.today.testResult;
+
+        if (!command) {
+          verificationStatus.dataset.status = "idle";
+          verificationStatusTitle.textContent = "검증 명령을 먼저 적으세요.";
+          verificationStatusCopy.textContent = "본인 프로젝트에서 반복 실행할 테스트나 빌드 명령 하나를 정합니다.";
+          return;
+        }
+
+        if (result === "fail") {
+          verificationStatus.dataset.status = "fail";
+          verificationStatusTitle.textContent = "실패는 다음 검증 루프의 시작입니다.";
+          verificationStatusCopy.textContent = `오류 메시지와 실패 입력을 기록하고 최소 수정 후 ${command} 명령을 다시 실행하세요.`;
+          return;
+        }
+
+        if (result === "pass") {
+          verificationStatus.dataset.status = "pass";
+          verificationStatusTitle.textContent = "검증이 통과했습니다. 증거로 마무리하세요.";
+          verificationStatusCopy.textContent = `${command} 결과와 회귀 테스트, 커밋과 배운 점을 E-{FR ID}에 연결하세요.`;
+          return;
+        }
+
+        verificationStatus.dataset.status = "idle";
+        verificationStatusTitle.textContent = `${command} 명령을 실행하세요.`;
+        verificationStatusCopy.textContent = "실패하면 실제 오류를 기록하고 최소 수정 후 같은 명령을 다시 실행합니다.";
+      };
+
       const renderState = () => {
         document.querySelector("#target-role").value = state.profile.targetRole;
         document.querySelector("#target-deadline").value = state.profile.targetDeadline;
@@ -2074,6 +2167,8 @@
         document.querySelector("#today-fr-id").value = state.today.frId;
         document.querySelector("#today-chapter").value = state.today.chapter;
         document.querySelector("#today-goal").value = state.today.goal;
+        document.querySelector("#today-test-command").value = state.today.testCommand;
+        document.querySelector("#today-test-result").value = state.today.testResult;
 
         document.querySelectorAll("[data-stage-check]").forEach((checkbox) => {
           const checked = state.stages.includes(checkbox.dataset.stageCheck);
@@ -2094,6 +2189,7 @@
         });
 
         renderSelectedChapter();
+        renderVerificationStatus();
         updateDashboard();
       };
 
@@ -2137,12 +2233,15 @@
       [
         ["#today-fr-id", "frId"],
         ["#today-chapter", "chapter"],
-        ["#today-goal", "goal"]
+        ["#today-goal", "goal"],
+        ["#today-test-command", "testCommand"],
+        ["#today-test-result", "testResult"]
       ].forEach(([selector, key]) => {
         document.querySelector(selector).addEventListener("input", (event) => {
           state.today[key] = event.target.value;
           saveState();
           if (key === "chapter") renderSelectedChapter();
+          if (key === "testCommand" || key === "testResult") renderVerificationStatus();
         });
       });
 
@@ -2179,6 +2278,17 @@
         row.closest(".course").open = true;
         row.scrollIntoView({ behavior: "smooth", block: "center" });
       });
+
+      const resetTodaySession = () => {
+        state.today = { ...emptyState.today };
+        state.session = [];
+        saveState();
+        renderState();
+        storageStatus.textContent = "오늘 학습 기록만 비웠습니다. 목표와 전체 진척도는 유지됩니다.";
+        document.querySelector("#today-fr-id").focus();
+      };
+
+      resetTodaySessionButton.addEventListener("click", resetTodaySession);
 
       if (!storageEnabled) {
         storageStatus.textContent = "브라우저 저장을 사용할 수 없어 이번 화면에서만 기록이 유지됩니다.";
