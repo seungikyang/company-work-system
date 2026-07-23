@@ -154,5 +154,6 @@
 - [x] 실행 가능한 저장소 루트·임시 경로 차단 가드 추가
 - [x] `AGENTS.md`에 모든 상태 변경 전 가드 실행 규칙 연결
 - [x] 루트 가드·셸 구문·워크북 검증·Git diff 검사
-- [ ] 의미 단위 커밋 후 강제 옵션 없이 `git push origin main`
-- [ ] 로컬 `HEAD`와 `origin/main` 일치 및 작업 트리 정리 확인
+- [x] `f13f92e chore: 저장소 루트 작업 가드 추가` 커밋 생성
+- [x] 강제 옵션 없이 `git push origin main` 실행
+- [x] 로컬 `HEAD`와 `origin/main` 일치 및 작업 트리 정리 확인

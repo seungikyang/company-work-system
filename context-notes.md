@@ -682,3 +682,10 @@
 - `python3 scripts/verify_workbook.py`와 `git diff --check`가 통과했다.
 - 관련 임시 clone·worktree·파일은 감사 시점에 0개였으므로 삭제할 대상도 0개였다.
 - 무관한 임시 파일이나 다른 저장소는 삭제하지 않았다.
+
+### 커밋과 원격 반영 결과
+
+- 루트에서 `f13f92e chore: 저장소 루트 작업 가드 추가` 커밋을 생성했다.
+- `git fetch origin main` 후 로컬이 5커밋 앞서고 뒤처짐 0개임을 확인했다.
+- 강제 옵션 없이 `git push origin main`을 실행해 `f84e370..f13f92e` 범위를 원격에 반영했다.
+- 푸시 후 다시 원격을 가져와 로컬 `HEAD`와 `origin/main`이 모두 `f13f92ea4ff067e12c333dbcd4a1b5e74d49312f`로 일치함을 확인했다.
