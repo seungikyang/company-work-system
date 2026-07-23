@@ -851,6 +851,36 @@
       text-underline-offset: 4px;
     }
 
+    .selected-chapter-actions button:disabled {
+      color: rgba(255, 255, 255, 0.36);
+      cursor: not-allowed;
+      text-decoration: none;
+    }
+
+    .chapter-sequence {
+      display: flex;
+      flex: 1 1 100%;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .chapter-sequence[hidden] {
+      display: none;
+    }
+
+    .chapter-sequence span {
+      color: rgba(255, 255, 255, 0.68);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+
     .course-list {
       display: grid;
       gap: 16px;
@@ -1209,6 +1239,12 @@
       .selected-chapter-actions {
         align-items: flex-start;
         flex-direction: column;
+      }
+
+      .chapter-sequence {
+        align-items: flex-start;
+        flex-direction: column;
+        width: 100%;
       }
 
       footer {
@@ -1634,6 +1670,11 @@
           <p id="verification-status-copy">본인 프로젝트에서 반복 실행할 테스트나 빌드 명령 하나를 정합니다.</p>
         </div>
         <div class="selected-chapter-actions">
+          <div id="chapter-sequence" class="chapter-sequence" aria-label="연속 챕터 탐색" hidden>
+            <button id="previous-chapter" type="button">← 이전 챕터</button>
+            <span id="chapter-position" aria-live="polite">0 / 40</span>
+            <button id="next-chapter" type="button">다음 챕터 →</button>
+          </div>
           <button id="show-selected-chapter" type="button" hidden>전체 목차에서 이 챕터 보기</button>
           <button id="reset-today-session" type="button">새 학습 시작 · 오늘 기록만 비우기</button>
         </div>
@@ -2059,6 +2100,10 @@
       const selectedChapterLoop = document.querySelector("#selected-chapter-loop");
       const selectedHardLink = document.querySelector("#selected-hard-link");
       const selectedStarterLink = document.querySelector("#selected-starter-link");
+      const chapterSequence = document.querySelector("#chapter-sequence");
+      const chapterPosition = document.querySelector("#chapter-position");
+      const previousChapterButton = document.querySelector("#previous-chapter");
+      const nextChapterButton = document.querySelector("#next-chapter");
       const showSelectedChapter = document.querySelector("#show-selected-chapter");
       const verificationStatus = document.querySelector("#verification-status");
       const verificationStatusTitle = document.querySelector("#verification-status-title");
@@ -2154,10 +2199,14 @@
           selectedChapterCopy.textContent = "선택하면 해당 챕터의 실제 학습 파일과 구현·검증 순서가 바로 연결됩니다.";
           selectedCareerContract.hidden = true;
           selectedChapterLoop.hidden = true;
+          chapterSequence.hidden = true;
           showSelectedChapter.hidden = true;
           return;
         }
 
+        const index = chapterRows.indexOf(row);
+        const previousRow = chapterRows[index - 1];
+        const nextRow = chapterRows[index + 1];
         const number = row.dataset.chapter;
         const title = row.querySelector("h3").textContent;
         const copy = row.querySelector("p").textContent;
@@ -2172,6 +2221,16 @@
         selectedCareerCheck.textContent = row.dataset.careerCheck;
         selectedCareerContract.hidden = false;
         selectedChapterLoop.hidden = false;
+        chapterSequence.hidden = false;
+        chapterPosition.textContent = `${index + 1} / ${chapterRows.length}`;
+        previousChapterButton.disabled = !previousRow;
+        previousChapterButton.textContent = previousRow
+          ? `← ${previousRow.dataset.chapter}. ${previousRow.querySelector("h3").textContent}`
+          : "← 이전 챕터 없음";
+        nextChapterButton.disabled = !nextRow;
+        nextChapterButton.textContent = nextRow
+          ? `${nextRow.dataset.chapter}. ${nextRow.querySelector("h3").textContent} →`
+          : "다음 챕터 없음 →";
         showSelectedChapter.hidden = false;
         selectedHardLink.href = (hardLink || worksheetLink).getAttribute("href");
         selectedHardLink.textContent = hardLink ? "Hard 열기" : "워크시트 직접 작성";
@@ -2328,6 +2387,25 @@
         if (!row) return;
         row.closest(".course").open = true;
         row.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+
+      const selectChapterAt = (index) => {
+        const row = chapterRows[index];
+        if (!row) return;
+        state.today.chapter = row.dataset.chapter;
+        todayChapter.value = state.today.chapter;
+        saveState();
+        renderSelectedChapter();
+      };
+
+      previousChapterButton.addEventListener("click", () => {
+        const index = chapterRows.findIndex((row) => row.dataset.chapter === state.today.chapter);
+        selectChapterAt(index - 1);
+      });
+
+      nextChapterButton.addEventListener("click", () => {
+        const index = chapterRows.findIndex((row) => row.dataset.chapter === state.today.chapter);
+        selectChapterAt(index + 1);
       });
 
       const resetTodaySession = () => {

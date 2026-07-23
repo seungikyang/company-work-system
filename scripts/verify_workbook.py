@@ -165,9 +165,17 @@ def validate_program_folders(index_parser: HtmlContractParser) -> tuple[int, int
         require(first_line.startswith(("//", "#")), f"{relative}: 역할을 설명하는 첫 줄이 없음")
         if path.suffix in {".java", ".fragment"}:
             require(
+                re.search(r"^(//|#) 목표:", content, flags=re.MULTILINE) is not None,
+                f"{relative}: 프로그램 학습 목표 헤더가 없음",
+            )
+            require(
                 "TODO" in content or "____" in content,
                 f"{relative}: 직접 작성할 TODO 또는 빈칸이 없음",
             )
+        if path.suffix == ".md":
+            require("## 챕터 계약" in content, f"{relative}: 챕터 계약이 없음")
+            for label in ("학습 목표", "취업 결과물", "완료 검증"):
+                require(f"| {label} |" in content, f"{relative}: 챕터 계약의 {label}이 없음")
         require(path.resolve() in linked_targets, f"{relative}: index.html 전수 목차 링크가 없음")
 
     for hard_file in (path for path in program_files if HARD_ROOT in path.parents):
@@ -208,6 +216,13 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
         require("href=" in block, f"{number}장: 연결된 학습 파일이 없음")
         require(output_match is not None, f"{number}장: 취업 결과물 계약이 없음")
         require(check_match is not None, f"{number}장: 완료 검증 계약이 없음")
+        for raw in re.findall(r'href="([^"]+)"', block):
+            program_match = re.search(r"\./practice/(?:starter|hard)/(\d{2})-", raw)
+            if program_match:
+                require(
+                    program_match.group(1) == number,
+                    f"{number}장: 다른 번호의 프로그램 폴더 링크 {raw}",
+                )
     require(len(stages) == 5 and len(set(stages)) == 5, "취업 준비 단계가 5개가 아님")
     require(len(sessions) == 5 and len(set(sessions)) == 5, "오늘 학습 체크가 5개가 아님")
     require(test_results == ["fail", "pass"], "검증 결과 실패·통과 선택지가 깨짐")
@@ -217,6 +232,7 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
     require("renderSelectedChapter" in index, "선택 챕터 렌더링 함수가 없음")
     require("renderVerificationStatus" in index, "검증 결과 렌더링 함수가 없음")
     require("resetTodaySession" in index, "오늘 학습 초기화 함수가 없음")
+    require("selectChapterAt" in index, "연속 챕터 탐색 함수가 없음")
 
     required_ids = {
         "learning-map",
@@ -236,6 +252,10 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
         "selected-chapter-loop",
         "selected-hard-link",
         "selected-starter-link",
+        "chapter-sequence",
+        "chapter-position",
+        "previous-chapter",
+        "next-chapter",
         "show-selected-chapter",
         "verification-status",
         "verification-status-title",
@@ -315,8 +335,9 @@ def main() -> int:
     print("워크북 검증 통과")
     print(f"- HTML 2개와 로컬 링크 {html_links}개")
     print(f"- Markdown 상대 링크 {markdown_links}개")
-    print(f"- 프로그램 폴더 {program_folders}개와 HTML에 전수 연결된 학습 파일 {program_files}개")
+    print(f"- 내부 목표·계약과 HTML 연결이 있는 프로그램 폴더 {program_folders}개·학습 파일 {program_files}개")
     print("- 학습 목차 6단계, 취업 로드맵 5단계, 취업 결과물 계약이 있는 챕터 40개, 세션 체크 5개")
+    print("- 00~39 이전·다음 연속 탐색과 챕터 번호별 프로그램 폴더 대응")
     print(f"- 실제 Git 커밋에 연결된 대표 변경 이력 {history_items}개")
     print("- JavaScript 구문·DOM ID 계약과 920px·680px 반응형 분기")
     return 0
