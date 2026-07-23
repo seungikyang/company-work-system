@@ -12,19 +12,19 @@
 | `job-preparation-workbook.md` | 목표와 지원 준비 상태 관리 | 목표일, 역량 진단, 기능별 링크 |
 | `feature-implementation-workbook.md` | FR ID를 계층과 테스트로 분해 | 기능별 구현·테스트 계획 |
 | `problems.md` | 챕터별 기술 과제 선택 | 직접 작성한 답과 코드 |
-| `starter/`, `hard/` | 난이도별 코드 작성 연습 | 채운 코드와 학습 질문 답변 |
+| `starter/`, `hard/` | 73개 폴더의 난이도별 코드 작성 연습 | HTML에 표시된 취업 결과물과 완료 검증 |
 | `answers.md` | 선택 이유와 트레이드오프 확인 | 본인 말로 다시 쓴 설명 |
 | [`../history.html`](../history.html) | 워크북 프로그램 발전 과정 확인 | Git 기반 변경 타임라인 |
 
 ## 사용 방법
 
-1. [HTML 취업 워크북](../index.html)에서 목표를 적고 오늘 공부할 FR ID와 챕터를 고릅니다.
+1. [HTML 취업 워크북](../index.html)에서 목표를 적고 오늘 공부할 FR ID와 챕터를 고른 뒤, 선택 패널의 취업 결과물과 완료 검증을 확인합니다.
 2. [job-preparation-workbook.md](./job-preparation-workbook.md) 에 목표 직무, 완료일, 현재 수준을 적습니다.
 3. [feature-implementation-workbook.md](./feature-implementation-workbook.md) 에서 기능 요구사항(FR ID)별 구현 흐름을 먼저 훑습니다.
 4. 오늘 구현할 FR ID를 고르고 `E-{FR ID}` 형식의 증거 ID를 만듭니다.
 5. [problems.md](./problems.md) 를 읽고 HTML 목차에서 연결된 Starter 또는 Hard 파일을 엽니다.
 6. 해당 파일의 `TODO`와 `____` 빈칸을 채웁니다.
-7. 이해한 내용을 본인의 실행 가능한 Spring Boot 프로젝트에 다시 구현하고 테스트합니다.
+7. 선택 패널에 표시된 취업 결과물을 본인의 실행 가능한 Spring Boot 프로젝트에 다시 구현하고, 표시된 완료 검증을 테스트합니다.
 8. 막히면 [company_work_system_PRD_TRD.md](../company_work_system_PRD_TRD.md) 의 관련 절과 [answers.md](./answers.md) 를 확인합니다.
 9. 통합 워크북에 증거 ID, 코드 위치, 검증 결과, 커밋, 설계 이유를 기록합니다.
 
@@ -118,4 +118,4 @@
 - 이 응답을 Entity 그대로 두지 않고 DTO 로 감싼 이유는?
 - 이 상태값을 String 이 아닌 enum 으로 둔 이유는?
 
-한 줄 답변은 개념 이해 확인입니다. 챕터를 완료하려면 실행 프로젝트 구현, 관련 테스트 통과, 검증 명령 기록, 커밋 또는 PR 링크까지 남겨야 합니다.
+한 줄 답변은 개념 이해 확인입니다. 챕터를 완료하려면 HTML 선택 패널의 취업 결과물을 실행 프로젝트에 구현하고, 표시된 완료 검증과 관련 회귀 테스트를 통과한 뒤 검증 명령 기록, 커밋 또는 PR 링크까지 남겨야 합니다.

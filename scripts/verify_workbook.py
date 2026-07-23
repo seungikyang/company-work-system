@@ -11,6 +11,9 @@ import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 HTML_FILES = (ROOT / "index.html", ROOT / "history.html")
+STARTER_ROOT = ROOT / "practice" / "starter"
+HARD_ROOT = ROOT / "practice" / "hard"
+CODE_CHAPTERS = tuple([*range(20), 21, *range(23, 35)])
 VOID_TAGS = {
     "area",
     "base",
@@ -117,6 +120,66 @@ def validate_markdown_links() -> int:
     return checked
 
 
+def validate_program_folders(index_parser: HtmlContractParser) -> tuple[int, int]:
+    starter_directories = sorted(path for path in STARTER_ROOT.iterdir() if path.is_dir())
+    hard_directories = sorted(path for path in HARD_ROOT.iterdir() if path.is_dir())
+    expected_starter = [f"{number:02d}" for number in range(40)]
+    expected_hard = [f"{number:02d}" for number in CODE_CHAPTERS]
+
+    def validate_directory_sequence(paths: list[Path], expected: list[str], mode: str) -> None:
+        names = [path.name for path in paths]
+        for name in names:
+            require(
+                re.fullmatch(r"\d{2}-[a-z0-9-]+", name) is not None,
+                f"{mode}: 프로그램 폴더 이름 형식 오류 {name}",
+            )
+        require(
+            [name[:2] for name in names] == expected,
+            f"{mode}: 프로그램 폴더 번호가 예상 범위와 다름",
+        )
+
+    validate_directory_sequence(starter_directories, expected_starter, "Starter")
+    validate_directory_sequence(hard_directories, expected_hard, "Hard")
+
+    linked_targets = set()
+    for raw in index_parser.links:
+        if is_external(raw):
+            continue
+        path_part = urlsplit(raw).path
+        if path_part:
+            linked_targets.add((ROOT / unquote(path_part)).resolve())
+
+    program_files: list[Path] = []
+    for directory in [*starter_directories, *hard_directories]:
+        files = sorted(path for path in directory.iterdir() if path.is_file())
+        require(bool(files), f"{directory.relative_to(ROOT)}: 학습 파일이 없음")
+        program_files.extend(files)
+
+    require(len(program_files) == 77, f"프로그램 학습 파일이 77개가 아님: {len(program_files)}개")
+    for path in program_files:
+        relative = path.relative_to(ROOT)
+        require(path.suffix in {".java", ".fragment", ".md"}, f"{relative}: 지원하지 않는 학습 파일 형식")
+        content = path.read_text(encoding="utf-8")
+        require(bool(content.strip()), f"{relative}: 빈 학습 파일")
+        first_line = content.splitlines()[0].strip()
+        require(first_line.startswith(("//", "#")), f"{relative}: 역할을 설명하는 첫 줄이 없음")
+        if path.suffix in {".java", ".fragment"}:
+            require(
+                "TODO" in content or "____" in content,
+                f"{relative}: 직접 작성할 TODO 또는 빈칸이 없음",
+            )
+        require(path.resolve() in linked_targets, f"{relative}: index.html 전수 목차 링크가 없음")
+
+    for hard_file in (path for path in program_files if HARD_ROOT in path.parents):
+        starter_pair = STARTER_ROOT / hard_file.relative_to(HARD_ROOT)
+        require(
+            starter_pair.exists(),
+            f"{hard_file.relative_to(ROOT)}: 같은 경로의 Starter 파일이 없음",
+        )
+
+    return len(starter_directories) + len(hard_directories), len(program_files)
+
+
 def extract_single(text: str, tag: str) -> str:
     matches = re.findall(rf"<{tag}(?:\s[^>]*)?>([\s\S]*?)</{tag}>", text, flags=re.IGNORECASE)
     require(len(matches) == 1, f"index.html: 인라인 {tag}가 1개가 아님")
@@ -126,7 +189,7 @@ def extract_single(text: str, tag: str) -> str:
 def validate_index_contract(index: str, index_parser: HtmlContractParser) -> None:
     chapters = re.findall(r'data-chapter="(\d{2})"', index)
     chapter_blocks = re.findall(
-        r'<li class="chapter" data-chapter="(\d{2})">([\s\S]*?)</li>',
+        r'<li class="chapter"([^>]*)>([\s\S]*?)</li>',
         index,
     )
     stages = re.findall(r'data-stage="([a-z]+)"', index)
@@ -135,9 +198,16 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
 
     require(chapters == [f"{number:02d}" for number in range(40)], "00~39 챕터 순서가 깨짐")
     require(len(chapter_blocks) == 40, "챕터 HTML 블록이 40개가 아님")
-    for number, block in chapter_blocks:
+    for attributes, block in chapter_blocks:
+        number_match = re.search(r'data-chapter="(\d{2})"', attributes)
+        output_match = re.search(r'data-career-output="([^"]+)"', attributes)
+        check_match = re.search(r'data-career-check="([^"]+)"', attributes)
+        require(number_match is not None, "챕터 행에 번호가 없음")
+        number = number_match.group(1)
         require('class="chapter-links"' in block, f"{number}장: 학습 링크 영역이 없음")
         require("href=" in block, f"{number}장: 연결된 학습 파일이 없음")
+        require(output_match is not None, f"{number}장: 취업 결과물 계약이 없음")
+        require(check_match is not None, f"{number}장: 완료 검증 계약이 없음")
     require(len(stages) == 5 and len(set(stages)) == 5, "취업 준비 단계가 5개가 아님")
     require(len(sessions) == 5 and len(set(sessions)) == 5, "오늘 학습 체크가 5개가 아님")
     require(test_results == ["fail", "pass"], "검증 결과 실패·통과 선택지가 깨짐")
@@ -160,6 +230,9 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
         "today-test-result",
         "selected-chapter-title",
         "selected-chapter-copy",
+        "selected-career-contract",
+        "selected-career-output",
+        "selected-career-check",
         "selected-chapter-loop",
         "selected-hard-link",
         "selected-starter-link",
@@ -188,6 +261,7 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
     require(style.count("{") == style.count("}"), "CSS 중괄호 수가 맞지 않음")
     require("@media (max-width: 920px)" in style, "태블릿 반응형 분기가 없음")
     require("@media (max-width: 680px)" in style, "모바일 반응형 분기가 없음")
+    require(".career-contract" in style, "취업 결과물 계약 반응형 스타일이 없음")
 
 
 def main() -> int:
@@ -197,11 +271,13 @@ def main() -> int:
     markdown_links = validate_markdown_links()
     index = (ROOT / "index.html").read_text(encoding="utf-8")
     validate_index_contract(index, parsers[ROOT / "index.html"])
+    program_folders, program_files = validate_program_folders(parsers[ROOT / "index.html"])
 
     print("워크북 검증 통과")
     print(f"- HTML 2개와 로컬 링크 {html_links}개")
     print(f"- Markdown 상대 링크 {markdown_links}개")
-    print("- 학습 목차 6단계, 취업 로드맵 5단계, 링크가 있는 챕터 40개, 세션 체크 5개")
+    print(f"- 프로그램 폴더 {program_folders}개와 HTML에 전수 연결된 학습 파일 {program_files}개")
+    print("- 학습 목차 6단계, 취업 로드맵 5단계, 취업 결과물 계약이 있는 챕터 40개, 세션 체크 5개")
     print("- JavaScript 구문·DOM ID 계약과 920px·680px 반응형 분기")
     return 0
 
