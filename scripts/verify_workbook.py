@@ -264,6 +264,43 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
     require(".career-contract" in style, "취업 결과물 계약 반응형 스타일이 없음")
 
 
+def validate_history_contract(history: str) -> int:
+    item_count = len(re.findall(r'<li class="history-item(?: latest)?">', history))
+    commit_count = history.count('class="commit"')
+    latest_count = history.count('<li class="history-item latest">')
+    dates = re.findall(r'<time class="history-date" datetime="(\d{4}-\d{2}-\d{2})">', history)
+    summary_match = re.search(
+        r'<section class="summary-grid"[\s\S]*?<article class="summary-card">\s*'
+        r"<strong>(\d+)</strong>",
+        history,
+    )
+    updated_match = re.search(
+        r'마지막 문서 갱신일\s*<time datetime="(\d{4}-\d{2}-\d{2})">',
+        history,
+    )
+
+    require(item_count > 0, "history.html: 대표 이력이 없음")
+    require(commit_count == item_count, "history.html: 커밋 링크 수와 대표 이력 수가 다름")
+    require(latest_count == 1, "history.html: latest 대표 이력이 1개가 아님")
+    require(len(dates) == item_count, "history.html: 날짜 수와 대표 이력 수가 다름")
+    require(dates[0] == max(dates), "history.html: 최신 날짜가 타임라인 첫 항목이 아님")
+    require(summary_match is not None, "history.html: 대표 이력 요약 수가 없음")
+    require(
+        int(summary_match.group(1)) == item_count,
+        "history.html: 요약 수와 대표 이력 수가 다름",
+    )
+    require(
+        f"대표 배포 확인 이력 {item_count}개" in history,
+        "history.html: 타임라인 설명의 대표 이력 수가 다름",
+    )
+    require(updated_match is not None, "history.html: 마지막 문서 갱신일이 없음")
+    require(
+        updated_match.group(1) == dates[0],
+        "history.html: 마지막 문서 갱신일과 최신 이력 날짜가 다름",
+    )
+    return item_count
+
+
 def main() -> int:
     require(Path.cwd().resolve() == ROOT, "저장소 루트에서 실행해야 합니다")
     parsers = {path: parse_html(path) for path in HTML_FILES}
@@ -272,12 +309,15 @@ def main() -> int:
     index = (ROOT / "index.html").read_text(encoding="utf-8")
     validate_index_contract(index, parsers[ROOT / "index.html"])
     program_folders, program_files = validate_program_folders(parsers[ROOT / "index.html"])
+    history = (ROOT / "history.html").read_text(encoding="utf-8")
+    history_items = validate_history_contract(history)
 
     print("워크북 검증 통과")
     print(f"- HTML 2개와 로컬 링크 {html_links}개")
     print(f"- Markdown 상대 링크 {markdown_links}개")
     print(f"- 프로그램 폴더 {program_folders}개와 HTML에 전수 연결된 학습 파일 {program_files}개")
     print("- 학습 목차 6단계, 취업 로드맵 5단계, 취업 결과물 계약이 있는 챕터 40개, 세션 체크 5개")
+    print(f"- 실제 Git 커밋에 연결된 대표 변경 이력 {history_items}개")
     print("- JavaScript 구문·DOM ID 계약과 920px·680px 반응형 분기")
     return 0
 
