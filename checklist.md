@@ -144,3 +144,15 @@
 - [x] README와 `history.html` 갱신
 - [x] 정적 검증과 40개 순차 탐색 브라우저 검증
 - [x] 전체 diff 검토 후 `e70947d feat: 연속 챕터 학습 탐색 추가` 커밋 생성
+
+## 2026-07-24 임시 작업 감사·루트 가드·원격 반영
+
+- [x] 실제 저장소 루트·브랜치·원격·등록 worktree 확인
+- [x] 로컬 `main`이 `origin/main`보다 4커밋 앞서고 뒤처짐 0개 확인
+- [x] `/tmp`, `/private/tmp`, `$TMPDIR`, `~/.codex/worktrees` 관련 경로 전수 검색
+- [x] 관련 임시 clone·worktree·파일과 미회수 작업 0개 확인
+- [x] 실행 가능한 저장소 루트·임시 경로 차단 가드 추가
+- [x] `AGENTS.md`에 모든 상태 변경 전 가드 실행 규칙 연결
+- [x] 루트 가드·셸 구문·워크북 검증·Git diff 검사
+- [ ] 의미 단위 커밋 후 강제 옵션 없이 `git push origin main`
+- [ ] 로컬 `HEAD`와 `origin/main` 일치 및 작업 트리 정리 확인

@@ -649,3 +649,36 @@
 - `history.html`의 대표 이력을 17개로 늘리고 최신 항목을 실제 기능 커밋 `e70947d151f4b827446e6274eb10aa7797b56196`에 연결했다.
 - 최신 이력에는 파일 77개의 내부 계약, 번호별 폴더 대응, 정방향·역방향 브라우저 전수 탐색과 반응형 검증 결과를 기록했다.
 - 모바일 브라우저에서 최신 제목·커밋·대표 이력 17개 설명을 확인했고 문서 너비와 스크롤 너비가 375px로 같으며 화면 밖 카드가 0개였다.
+
+## 2026-07-24 임시 작업 감사·루트 가드·원격 반영
+
+### 시작 상태
+
+- 실제 저장소 루트와 물리 `pwd`는 모두 `/Users/seungik.yang/Documents/company-work-system`이다.
+- 등록된 Git worktree는 이 실제 루트 하나뿐이다.
+- 로컬 `main`은 `origin/main`보다 4커밋 앞서 있고 뒤처진 커밋은 0개다.
+- 작업 시작 시 추적·미추적 변경이 없는 깨끗한 작업 트리였다.
+
+### 임시 경로 감사 결과
+
+- `/tmp`, `/private/tmp`, 현재 `$TMPDIR`, `~/.codex/worktrees`에서 관련 저장소 이름, `.git` 메타데이터와 `company-work-system` 원격 문자열을 검색했다.
+- `~/.codex/worktrees` 디렉터리는 현재 존재하지 않는다.
+- 이전에 확인했던 `/private/tmp/company-work-system-publish.n8Xyk1`도 현재 존재하지 않는다.
+- 이 저장소와 관련된 임시 clone·worktree·일반 파일은 0개다.
+- 따라서 루트로 회수할 커밋·미커밋·미추적 작업과 삭제할 관련 임시 경로도 0개다.
+
+### 루트 강제 보강 결정
+
+- 기존 `AGENTS.md`의 실제 루트 확인과 임시 작업 금지 규칙은 유지한다.
+- 사람과 에이전트가 같은 검사를 재사용하도록 `scripts/assert_repo_root.sh`를 추가한다.
+- 가드는 현재 물리 경로가 Git 최상위와 같은지 확인하고 `/tmp`, `/private/tmp`, `$TMPDIR`, `~/.codex/worktrees` 아래의 실행을 거부한다.
+- 모든 파일 수정·테스트·빌드·커밋·푸시 전에 루트에서 가드를 실행하도록 `AGENTS.md`의 시작 게이트를 강화한다.
+
+### 루트 가드와 삭제 결과
+
+- `scripts/assert_repo_root.sh`를 실행 가능 파일로 추가했다.
+- 실제 루트에서 가드를 실행해 `/Users/seungik.yang/Documents/company-work-system` 확인 메시지와 종료 코드 0을 확인했다.
+- `sh -n scripts/assert_repo_root.sh`가 통과했다.
+- `python3 scripts/verify_workbook.py`와 `git diff --check`가 통과했다.
+- 관련 임시 clone·worktree·파일은 감사 시점에 0개였으므로 삭제할 대상도 0개였다.
+- 무관한 임시 파일이나 다른 저장소는 삭제하지 않았다.
