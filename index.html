@@ -2280,41 +2280,74 @@
       };
 
       let state = loadState();
-      const storageStatus = document.querySelector("#storage-status");
+      const byId = (id) => document.getElementById(id);
+      const profileFields = {
+        targetRole: byId("target-role"),
+        targetDeadline: byId("target-deadline"),
+        dailyMinutes: byId("daily-minutes")
+      };
+      const todayFields = {
+        frId: byId("today-fr-id"),
+        chapter: byId("today-chapter"),
+        goal: byId("today-goal"),
+        testCommand: byId("today-test-command"),
+        testResult: byId("today-test-result")
+      };
+      const storageStatus = byId("storage-status");
       const stageCards = [...document.querySelectorAll("[data-stage]")];
+      const stageChecks = [...document.querySelectorAll("[data-stage-check]")];
+      const sessionChecks = [...document.querySelectorAll("[data-session-check]")];
       const chapterRows = [...document.querySelectorAll("[data-chapter]")];
-      const todayChapter = document.querySelector("#today-chapter");
-      const selectedChapterTitle = document.querySelector("#selected-chapter-title");
-      const selectedChapterCopy = document.querySelector("#selected-chapter-copy");
-      const selectedCareerContract = document.querySelector("#selected-career-contract");
-      const selectedCareerOutput = document.querySelector("#selected-career-output");
-      const selectedCareerCheck = document.querySelector("#selected-career-check");
-      const selectedChapterLoop = document.querySelector("#selected-chapter-loop");
-      const selectedHardLink = document.querySelector("#selected-hard-link");
-      const selectedStarterLink = document.querySelector("#selected-starter-link");
-      const chapterWorkbook = document.querySelector("#chapter-workbook");
-      const chapterQuestionTitle = document.querySelector("#chapter-question-title");
-      const chapterQuestion = document.querySelector("#chapter-question");
-      const chapterAnswer = document.querySelector("#chapter-answer");
-      const chapterWorkbookStatus = document.querySelector("#chapter-workbook-status");
-      const toggleChapterHint = document.querySelector("#toggle-chapter-hint");
-      const toggleChapterAnswer = document.querySelector("#toggle-chapter-answer");
-      const chapterHint = document.querySelector("#chapter-hint");
-      const chapterHintCopy = document.querySelector("#chapter-hint-copy");
-      const chapterAnswerGuide = document.querySelector("#chapter-answer-guide");
-      const chapterAnswerResponsibility = document.querySelector("#chapter-answer-responsibility");
-      const chapterAnswerOutput = document.querySelector("#chapter-answer-output");
-      const chapterAnswerVerification = document.querySelector("#chapter-answer-verification");
-      const chapterReviewed = document.querySelector("#chapter-reviewed");
-      const chapterSequence = document.querySelector("#chapter-sequence");
-      const chapterPosition = document.querySelector("#chapter-position");
-      const previousChapterButton = document.querySelector("#previous-chapter");
-      const nextChapterButton = document.querySelector("#next-chapter");
-      const showSelectedChapter = document.querySelector("#show-selected-chapter");
-      const verificationStatus = document.querySelector("#verification-status");
-      const verificationStatusTitle = document.querySelector("#verification-status-title");
-      const verificationStatusCopy = document.querySelector("#verification-status-copy");
-      const resetTodaySessionButton = document.querySelector("#reset-today-session");
+      const courses = [...document.querySelectorAll(".course")];
+      const todayChapter = todayFields.chapter;
+      const selectedChapterTitle = byId("selected-chapter-title");
+      const selectedChapterCopy = byId("selected-chapter-copy");
+      const selectedCareerContract = byId("selected-career-contract");
+      const selectedCareerOutput = byId("selected-career-output");
+      const selectedCareerCheck = byId("selected-career-check");
+      const selectedChapterLoop = byId("selected-chapter-loop");
+      const selectedHardLink = byId("selected-hard-link");
+      const selectedStarterLink = byId("selected-starter-link");
+      const chapterWorkbook = byId("chapter-workbook");
+      const chapterQuestionTitle = byId("chapter-question-title");
+      const chapterQuestion = byId("chapter-question");
+      const chapterAnswer = byId("chapter-answer");
+      const chapterWorkbookStatus = byId("chapter-workbook-status");
+      const toggleChapterHint = byId("toggle-chapter-hint");
+      const toggleChapterAnswer = byId("toggle-chapter-answer");
+      const chapterHint = byId("chapter-hint");
+      const chapterHintCopy = byId("chapter-hint-copy");
+      const chapterAnswerGuide = byId("chapter-answer-guide");
+      const chapterAnswerResponsibility = byId("chapter-answer-responsibility");
+      const chapterAnswerOutput = byId("chapter-answer-output");
+      const chapterAnswerVerification = byId("chapter-answer-verification");
+      const chapterReviewed = byId("chapter-reviewed");
+      const chapterSequence = byId("chapter-sequence");
+      const chapterPosition = byId("chapter-position");
+      const previousChapterButton = byId("previous-chapter");
+      const nextChapterButton = byId("next-chapter");
+      const showSelectedChapter = byId("show-selected-chapter");
+      const verificationStatus = byId("verification-status");
+      const verificationStatusTitle = byId("verification-status-title");
+      const verificationStatusCopy = byId("verification-status-copy");
+      const resetTodaySessionButton = byId("reset-today-session");
+      const dashboard = {
+        progress: byId("overall-progress"),
+        track: document.querySelector(".progress-track"),
+        bar: byId("overall-progress-bar"),
+        stageCount: byId("stage-count"),
+        chapterCount: byId("chapter-count"),
+        workbookCount: byId("workbook-count"),
+        deadlineCount: byId("deadline-count")
+      };
+      const nextAction = {
+        title: byId("next-action-title"),
+        copy: byId("next-action-copy"),
+        link: byId("next-action-link")
+      };
+      const profileForm = byId("profile-form");
+      const expandAllButton = byId("expand-all");
+      const collapseAllButton = byId("collapse-all");
 
       const saveState = () => {
         if (!storageEnabled) return;
@@ -2327,11 +2360,15 @@
         }
       };
 
-      const toggleListValue = (listName, value, checked) => {
-        const values = new Set(state[listName]);
+      const updateListValue = (items, value, checked) => {
+        const values = new Set(items);
         if (checked) values.add(value);
         else values.delete(value);
-        state[listName] = [...values];
+        return [...values];
+      };
+
+      const toggleListValue = (listName, value, checked) => {
+        state[listName] = updateListValue(state[listName], value, checked);
       };
 
       const deadlineLabel = (value) => {
@@ -2344,55 +2381,63 @@
         return `D+${Math.abs(days)}`;
       };
 
+      const setNextAction = (title, copy, href, label) => {
+        nextAction.title.textContent = title;
+        nextAction.copy.textContent = copy;
+        nextAction.link.href = href;
+        nextAction.link.textContent = label;
+      };
+
       const updateDashboard = () => {
         const stageDone = state.stages.length;
         const chapterDone = state.chapters.length;
         const percent = Math.round(((stageDone + chapterDone) / 45) * 100);
-        const progress = document.querySelector("#overall-progress");
-        const progressTrack = document.querySelector(".progress-track");
-        const progressBar = document.querySelector("#overall-progress-bar");
 
-        progress.textContent = `${percent}%`;
-        progressTrack.setAttribute("aria-valuenow", String(percent));
-        progressBar.style.width = `${percent}%`;
-        document.querySelector("#stage-count").textContent = `${stageDone} / 5`;
-        document.querySelector("#chapter-count").textContent = `${chapterDone} / 40`;
-        document.querySelector("#workbook-count").textContent = `${state.workbook.reviewed.length} / 40`;
-        document.querySelector("#deadline-count").textContent = deadlineLabel(state.profile.targetDeadline);
-
-        const nextTitle = document.querySelector("#next-action-title");
-        const nextCopy = document.querySelector("#next-action-copy");
-        const nextLink = document.querySelector("#next-action-link");
+        dashboard.progress.textContent = `${percent}%`;
+        dashboard.track.setAttribute("aria-valuenow", String(percent));
+        dashboard.bar.style.width = `${percent}%`;
+        dashboard.stageCount.textContent = `${stageDone} / 5`;
+        dashboard.chapterCount.textContent = `${chapterDone} / 40`;
+        dashboard.workbookCount.textContent = `${state.workbook.reviewed.length} / 40`;
+        dashboard.deadlineCount.textContent = deadlineLabel(state.profile.targetDeadline);
 
         if (!state.profile.targetRole.trim()) {
-          nextTitle.textContent = "먼저 목표 직무를 적으세요.";
-          nextCopy.textContent = "시작 설정은 3분이면 충분합니다. 완벽한 계획보다 지원할 방향 하나를 먼저 정하는 것이 중요합니다.";
-          nextLink.href = "#setup";
-          nextLink.textContent = "지금 작성하기";
+          setNextAction(
+            "먼저 목표 직무를 적으세요.",
+            "시작 설정은 3분이면 충분합니다. 완벽한 계획보다 지원할 방향 하나를 먼저 정하는 것이 중요합니다.",
+            "#setup",
+            "지금 작성하기"
+          );
           return;
         }
 
         const nextStage = stageCards.find((card) => !state.stages.includes(card.dataset.stage));
         if (nextStage) {
-          nextTitle.textContent = nextStage.dataset.actionTitle;
-          nextCopy.textContent = nextStage.dataset.actionCopy;
-          nextLink.href = nextStage.dataset.actionHref;
-          nextLink.textContent = "다음 행동 시작하기";
+          setNextAction(
+            nextStage.dataset.actionTitle,
+            nextStage.dataset.actionCopy,
+            nextStage.dataset.actionHref,
+            "다음 행동 시작하기"
+          );
           return;
         }
 
         if (chapterDone < 40) {
-          nextTitle.textContent = "다음 챕터를 골라 직접 풀어보세요.";
-          nextCopy.textContent = "완료한 챕터의 다음 번호를 고르고, 실행 코드와 테스트 증거를 남깁니다.";
-          nextLink.href = "#curriculum";
-          nextLink.textContent = "전체 교재 보기";
+          setNextAction(
+            "다음 챕터를 골라 직접 풀어보세요.",
+            "완료한 챕터의 다음 번호를 고르고, 실행 코드와 테스트 증거를 남깁니다.",
+            "#curriculum",
+            "전체 교재 보기"
+          );
           return;
         }
 
-        nextTitle.textContent = "지원할 준비가 되었습니다.";
-        nextCopy.textContent = "마지막으로 공개 링크와 면접 설명을 확인하고 목표 공고에 실제로 지원하세요.";
-        nextLink.href = "./practice/job-preparation-workbook.md";
-        nextLink.textContent = "지원 점검표 열기";
+        setNextAction(
+          "지원할 준비가 되었습니다.",
+          "마지막으로 공개 링크와 면접 설명을 확인하고 목표 공고에 실제로 지원하세요.",
+          "./practice/job-preparation-workbook.md",
+          "지원 점검표 열기"
+        );
       };
 
       const resetWorkbookReveals = () => {
@@ -2513,23 +2558,33 @@
         verificationStatusCopy.textContent = "실패하면 실제 오류를 기록하고 최소 수정 후 같은 명령을 다시 실행합니다.";
       };
 
-      const renderState = () => {
-        document.querySelector("#target-role").value = state.profile.targetRole;
-        document.querySelector("#target-deadline").value = state.profile.targetDeadline;
-        document.querySelector("#daily-minutes").value = state.profile.dailyMinutes;
-        document.querySelector("#today-fr-id").value = state.today.frId;
-        document.querySelector("#today-chapter").value = state.today.chapter;
-        document.querySelector("#today-goal").value = state.today.goal;
-        document.querySelector("#today-test-command").value = state.today.testCommand;
-        document.querySelector("#today-test-result").value = state.today.testResult;
+      const syncFieldValues = (fields, values) => {
+        Object.entries(fields).forEach(([key, field]) => {
+          field.value = values[key];
+        });
+      };
 
-        document.querySelectorAll("[data-stage-check]").forEach((checkbox) => {
+      const bindStateFields = (fields, stateKey, afterInput) => {
+        Object.entries(fields).forEach(([key, field]) => {
+          field.addEventListener("input", (event) => {
+            state[stateKey][key] = event.target.value;
+            saveState();
+            afterInput(key);
+          });
+        });
+      };
+
+      const renderState = () => {
+        syncFieldValues(profileFields, state.profile);
+        syncFieldValues(todayFields, state.today);
+
+        stageChecks.forEach((checkbox) => {
           const checked = state.stages.includes(checkbox.dataset.stageCheck);
           checkbox.checked = checked;
           checkbox.closest(".stage-step").classList.toggle("is-complete", checked);
         });
 
-        document.querySelectorAll("[data-session-check]").forEach((checkbox) => {
+        sessionChecks.forEach((checkbox) => {
           checkbox.checked = state.session.includes(checkbox.dataset.sessionCheck);
         });
 
@@ -2567,38 +2622,20 @@
         row.prepend(button);
       });
 
-      document.querySelector("#profile-form").addEventListener("submit", (event) => {
+      profileForm.addEventListener("submit", (event) => {
         event.preventDefault();
       });
 
-      [
-        ["#target-role", "targetRole"],
-        ["#target-deadline", "targetDeadline"],
-        ["#daily-minutes", "dailyMinutes"]
-      ].forEach(([selector, key]) => {
-        document.querySelector(selector).addEventListener("input", (event) => {
-          state.profile[key] = event.target.value;
-          saveState();
-          updateDashboard();
-        });
+      bindStateFields(profileFields, "profile", () => {
+        updateDashboard();
       });
 
-      [
-        ["#today-fr-id", "frId"],
-        ["#today-chapter", "chapter"],
-        ["#today-goal", "goal"],
-        ["#today-test-command", "testCommand"],
-        ["#today-test-result", "testResult"]
-      ].forEach(([selector, key]) => {
-        document.querySelector(selector).addEventListener("input", (event) => {
-          state.today[key] = event.target.value;
-          saveState();
-          if (key === "chapter") renderSelectedChapter();
-          if (key === "testCommand" || key === "testResult") renderVerificationStatus();
-        });
+      bindStateFields(todayFields, "today", (key) => {
+        if (key === "chapter") renderSelectedChapter();
+        if (key === "testCommand" || key === "testResult") renderVerificationStatus();
       });
 
-      document.querySelectorAll("[data-stage-check]").forEach((checkbox) => {
+      stageChecks.forEach((checkbox) => {
         checkbox.addEventListener("change", (event) => {
           toggleListValue("stages", event.target.dataset.stageCheck, event.target.checked);
           saveState();
@@ -2606,7 +2643,7 @@
         });
       });
 
-      document.querySelectorAll("[data-session-check]").forEach((checkbox) => {
+      sessionChecks.forEach((checkbox) => {
         checkbox.addEventListener("change", (event) => {
           toggleListValue("session", event.target.dataset.sessionCheck, event.target.checked);
           saveState();
@@ -2631,10 +2668,11 @@
       chapterReviewed.addEventListener("change", (event) => {
         const number = state.today.chapter;
         if (!number || !state.workbook.answers[number]?.trim()) return;
-        const reviewed = new Set(state.workbook.reviewed);
-        if (event.target.checked) reviewed.add(number);
-        else reviewed.delete(number);
-        state.workbook.reviewed = [...reviewed];
+        state.workbook.reviewed = updateListValue(
+          state.workbook.reviewed,
+          number,
+          event.target.checked
+        );
         saveState();
         renderChapterWorkbookStatus();
         updateDashboard();
@@ -2655,17 +2693,14 @@
         toggleWorkbookReveal(toggleChapterAnswer, chapterAnswerGuide, "정답 기준 보기", "정답 기준 닫기");
       });
 
-      document.querySelector("#expand-all").addEventListener("click", () => {
-        document.querySelectorAll(".course").forEach((course) => {
-          course.open = true;
+      const setCoursesOpen = (open) => {
+        courses.forEach((course) => {
+          course.open = open;
         });
-      });
+      };
 
-      document.querySelector("#collapse-all").addEventListener("click", () => {
-        document.querySelectorAll(".course").forEach((course) => {
-          course.open = false;
-        });
-      });
+      expandAllButton.addEventListener("click", () => setCoursesOpen(true));
+      collapseAllButton.addEventListener("click", () => setCoursesOpen(false));
 
       showSelectedChapter.addEventListener("click", () => {
         const row = chapterRows.find((item) => item.dataset.chapter === state.today.chapter);
@@ -2699,7 +2734,7 @@
         saveState();
         renderState();
         storageStatus.textContent = "오늘 학습 기록만 비웠습니다. 목표, 전체 진척도와 챕터별 문제집 답안은 유지됩니다.";
-        document.querySelector("#today-fr-id").focus();
+        todayFields.frId.focus();
       };
 
       resetTodaySessionButton.addEventListener("click", resetTodaySession);

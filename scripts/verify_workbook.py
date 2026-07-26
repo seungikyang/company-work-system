@@ -235,6 +235,11 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
     require("selectChapterAt" in index, "연속 챕터 탐색 함수가 없음")
     require("renderChapterWorkbookStatus" in index, "문제집 상태 렌더링 함수가 없음")
     require("toggleWorkbookReveal" in index, "힌트·정답 토글 함수가 없음")
+    require("syncFieldValues" in index, "상태 필드 값 동기화 함수가 없음")
+    require("bindStateFields" in index, "상태 필드 이벤트 연결 함수가 없음")
+    require("setNextAction" in index, "다음 행동 공통 갱신 함수가 없음")
+    require("setCoursesOpen" in index, "전체 코스 펼치기·접기 공통 함수가 없음")
+    require("updateListValue" in index, "체크 목록 공통 갱신 함수가 없음")
     require('workbook: { answers: {}, reviewed: [] }' in index, "챕터별 문제집 기본 상태가 없음")
     require("state.workbook.answers[number]" in index, "챕터별 답안 저장 계약이 없음")
     require("state.workbook.reviewed" in index, "정답 비교 완료 저장 계약이 없음")
@@ -286,7 +291,17 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
 
     script = extract_single(index, "script")
     selected_ids = set(re.findall(r'querySelector(?:All)?\("#([A-Za-z0-9_-]+)"\)', script))
+    selected_ids.update(re.findall(r'byId\("([A-Za-z0-9_-]+)"\)', script))
     require(selected_ids <= index_parser.ids, f"JavaScript 대상 ID 누락 {sorted(selected_ids - index_parser.ids)}")
+    require(
+        not re.findall(r'document\.querySelector\("#[A-Za-z0-9_-]+"\)', script),
+        "알려진 ID 요소를 querySelector로 중복 조회함",
+    )
+    for selector in ("[data-stage-check]", "[data-session-check]", ".course"):
+        require(
+            script.count(f'document.querySelectorAll("{selector}")') == 1,
+            f"{selector} 요소 목록을 한 번만 조회해야 함",
+        )
 
     result = subprocess.run(
         ["node", "--check", "-"],
