@@ -326,7 +326,7 @@
 
     .metric-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
     }
 
@@ -757,6 +757,146 @@
       color: rgba(255, 255, 255, 0.88);
       font-size: 0.84rem;
       font-weight: 650;
+    }
+
+    .chapter-workbook {
+      margin-top: 18px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
+      background: rgba(8, 43, 34, 0.34);
+    }
+
+    .chapter-workbook[hidden],
+    .workbook-reveal[hidden] {
+      display: none;
+    }
+
+    .chapter-workbook-heading {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .chapter-workbook-heading h4 {
+      margin: 0;
+      font-size: 1.08rem;
+    }
+
+    .chapter-workbook-status {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.10);
+      color: #ffca9e;
+      font-size: 0.74rem;
+      font-weight: 850;
+    }
+
+    .chapter-question {
+      margin-bottom: 14px;
+      color: rgba(255, 255, 255, 0.92);
+      font-weight: 760;
+    }
+
+    .chapter-answer-field {
+      display: grid;
+      gap: 7px;
+      color: rgba(255, 255, 255, 0.80);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .chapter-answer-field textarea {
+      min-height: 132px;
+      border-color: rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.10);
+      color: white;
+    }
+
+    .chapter-answer-field small {
+      color: rgba(255, 255, 255, 0.58);
+      font-weight: 600;
+    }
+
+    .workbook-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .workbook-tools button,
+    .workbook-tools a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 850;
+      text-decoration: none;
+    }
+
+    .workbook-tools button:hover,
+    .workbook-tools button:focus-visible,
+    .workbook-tools a:hover,
+    .workbook-tools a:focus-visible {
+      border-color: #ffca9e;
+    }
+
+    .workbook-reveal {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-left: 4px solid #ffca9e;
+      border-radius: 0 12px 12px 0;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .workbook-reveal strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #ffca9e;
+      font-size: 0.78rem;
+    }
+
+    .workbook-reveal p,
+    .workbook-reveal ul {
+      margin-bottom: 0;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.82rem;
+    }
+
+    .workbook-reveal ul {
+      padding-left: 19px;
+    }
+
+    .workbook-review {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin-top: 14px;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 0.82rem;
+      font-weight: 760;
+    }
+
+    .workbook-review input {
+      width: 20px;
+      min-height: 20px;
+      margin: 0;
+      accent-color: var(--orange);
+    }
+
+    .workbook-review input:disabled + span {
+      color: rgba(255, 255, 255, 0.42);
     }
 
     .verification-feedback {
@@ -1345,6 +1485,10 @@
             <span>완료 챕터</span>
           </div>
           <div class="metric">
+            <strong id="workbook-count">0 / 40</strong>
+            <span>문제 비교 완료</span>
+          </div>
+          <div class="metric">
             <strong id="deadline-count">미설정</strong>
             <span>지원 마감</span>
           </div>
@@ -1665,6 +1809,47 @@
             <a href="./practice/job-preparation-workbook.md">증거 기록하기</a>
           </li>
         </ol>
+        <section id="chapter-workbook" class="chapter-workbook" aria-labelledby="chapter-question-title" hidden>
+          <div class="chapter-workbook-heading">
+            <h4 id="chapter-question-title">선택 챕터 취업형 문제</h4>
+            <span id="chapter-workbook-status" class="chapter-workbook-status" role="status">답안 미작성</span>
+          </div>
+          <p id="chapter-question" class="chapter-question"></p>
+          <label class="chapter-answer-field" for="chapter-answer">
+            내 답안
+            <textarea
+              id="chapter-answer"
+              placeholder="핵심 책임, 실패 조건, 검증 방법, 설계 이유를 본인 말로 적으세요."
+            ></textarea>
+            <small>챕터를 이동하거나 새로고침해도 이 브라우저에 챕터별로 저장됩니다.</small>
+          </label>
+          <div class="workbook-tools" aria-label="힌트와 정답 확인">
+            <button id="toggle-chapter-hint" type="button" aria-expanded="false" aria-controls="chapter-hint">
+              1단계 힌트 보기
+            </button>
+            <button id="toggle-chapter-answer" type="button" aria-expanded="false" aria-controls="chapter-answer-guide">
+              정답 기준 보기
+            </button>
+            <a href="./practice/answers.md">전체 기술 해설 열기</a>
+          </div>
+          <div id="chapter-hint" class="workbook-reveal" hidden>
+            <strong>힌트</strong>
+            <p id="chapter-hint-copy"></p>
+          </div>
+          <div id="chapter-answer-guide" class="workbook-reveal" hidden>
+            <strong>정답 비교 기준</strong>
+            <ul>
+              <li id="chapter-answer-responsibility"></li>
+              <li id="chapter-answer-output"></li>
+              <li id="chapter-answer-verification"></li>
+              <li>면접 답변에는 이 설계를 선택한 이유와 다른 선택지의 차이를 한 문장으로 덧붙입니다.</li>
+            </ul>
+          </div>
+          <label class="workbook-review">
+            <input id="chapter-reviewed" type="checkbox" disabled>
+            <span>내 답과 정답 기준을 비교했고, 빠진 내용을 보완했습니다.</span>
+          </label>
+        </section>
         <div id="verification-status" class="verification-feedback" data-status="idle" role="status">
           <strong id="verification-status-title">검증 명령을 먼저 적으세요.</strong>
           <p id="verification-status-copy">본인 프로젝트에서 반복 실행할 테스트나 빌드 명령 하나를 정합니다.</p>
@@ -2064,7 +2249,8 @@
         today: { frId: "", chapter: "", goal: "", testCommand: "", testResult: "" },
         stages: [],
         chapters: [],
-        session: []
+        session: [],
+        workbook: { answers: {}, reviewed: [] }
       };
       let storageEnabled = true;
 
@@ -2079,7 +2265,13 @@
             today: { ...emptyState.today, ...(saved.today || {}) },
             stages: Array.isArray(saved.stages) ? saved.stages : [],
             chapters: Array.isArray(saved.chapters) ? saved.chapters : [],
-            session: Array.isArray(saved.session) ? saved.session : []
+            session: Array.isArray(saved.session) ? saved.session : [],
+            workbook: {
+              answers: saved.workbook?.answers && typeof saved.workbook.answers === "object"
+                ? saved.workbook.answers
+                : {},
+              reviewed: Array.isArray(saved.workbook?.reviewed) ? saved.workbook.reviewed : []
+            }
           };
         } catch (error) {
           storageEnabled = false;
@@ -2100,6 +2292,20 @@
       const selectedChapterLoop = document.querySelector("#selected-chapter-loop");
       const selectedHardLink = document.querySelector("#selected-hard-link");
       const selectedStarterLink = document.querySelector("#selected-starter-link");
+      const chapterWorkbook = document.querySelector("#chapter-workbook");
+      const chapterQuestionTitle = document.querySelector("#chapter-question-title");
+      const chapterQuestion = document.querySelector("#chapter-question");
+      const chapterAnswer = document.querySelector("#chapter-answer");
+      const chapterWorkbookStatus = document.querySelector("#chapter-workbook-status");
+      const toggleChapterHint = document.querySelector("#toggle-chapter-hint");
+      const toggleChapterAnswer = document.querySelector("#toggle-chapter-answer");
+      const chapterHint = document.querySelector("#chapter-hint");
+      const chapterHintCopy = document.querySelector("#chapter-hint-copy");
+      const chapterAnswerGuide = document.querySelector("#chapter-answer-guide");
+      const chapterAnswerResponsibility = document.querySelector("#chapter-answer-responsibility");
+      const chapterAnswerOutput = document.querySelector("#chapter-answer-output");
+      const chapterAnswerVerification = document.querySelector("#chapter-answer-verification");
+      const chapterReviewed = document.querySelector("#chapter-reviewed");
       const chapterSequence = document.querySelector("#chapter-sequence");
       const chapterPosition = document.querySelector("#chapter-position");
       const previousChapterButton = document.querySelector("#previous-chapter");
@@ -2151,6 +2357,7 @@
         progressBar.style.width = `${percent}%`;
         document.querySelector("#stage-count").textContent = `${stageDone} / 5`;
         document.querySelector("#chapter-count").textContent = `${chapterDone} / 40`;
+        document.querySelector("#workbook-count").textContent = `${state.workbook.reviewed.length} / 40`;
         document.querySelector("#deadline-count").textContent = deadlineLabel(state.profile.targetDeadline);
 
         const nextTitle = document.querySelector("#next-action-title");
@@ -2188,6 +2395,29 @@
         nextLink.textContent = "지원 점검표 열기";
       };
 
+      const resetWorkbookReveals = () => {
+        chapterHint.hidden = true;
+        chapterAnswerGuide.hidden = true;
+        toggleChapterHint.setAttribute("aria-expanded", "false");
+        toggleChapterAnswer.setAttribute("aria-expanded", "false");
+        toggleChapterHint.textContent = "1단계 힌트 보기";
+        toggleChapterAnswer.textContent = "정답 기준 보기";
+      };
+
+      const renderChapterWorkbookStatus = () => {
+        const number = state.today.chapter;
+        const answer = (state.workbook.answers[number] || "").trim();
+        const reviewed = state.workbook.reviewed.includes(number);
+
+        chapterReviewed.disabled = !answer;
+        chapterReviewed.checked = reviewed;
+        if (reviewed) {
+          chapterWorkbookStatus.textContent = "정답 비교 완료";
+          return;
+        }
+        chapterWorkbookStatus.textContent = answer ? "답안 작성 중" : "답안 미작성";
+      };
+
       const renderSelectedChapter = () => {
         chapterRows.forEach((row) => {
           row.classList.toggle("is-selected", row.dataset.chapter === state.today.chapter);
@@ -2199,8 +2429,10 @@
           selectedChapterCopy.textContent = "선택하면 해당 챕터의 실제 학습 파일과 구현·검증 순서가 바로 연결됩니다.";
           selectedCareerContract.hidden = true;
           selectedChapterLoop.hidden = true;
+          chapterWorkbook.hidden = true;
           chapterSequence.hidden = true;
           showSelectedChapter.hidden = true;
+          resetWorkbookReveals();
           return;
         }
 
@@ -2221,6 +2453,17 @@
         selectedCareerCheck.textContent = row.dataset.careerCheck;
         selectedCareerContract.hidden = false;
         selectedChapterLoop.hidden = false;
+        chapterWorkbook.hidden = false;
+        chapterQuestionTitle.textContent = `${number}. ${title} 취업형 문제`;
+        chapterQuestion.textContent = `${title}의 핵심 책임을 설명하고, 실패 조건 하나와 이를 증명할 테스트를 본인 말로 작성하세요.`;
+        chapterAnswer.value = state.workbook.answers[number] || "";
+        chapterAnswer.setAttribute("aria-label", `${number}. ${title} 내 답안`);
+        chapterHintCopy.textContent = `${copy} 취업 결과물은 “${row.dataset.careerOutput}”입니다. 이를 만들기 위해 어느 계층에 어떤 규칙이 있어야 하는지 나눠보세요.`;
+        chapterAnswerResponsibility.textContent = `핵심 책임: ${copy}`;
+        chapterAnswerOutput.textContent = `구현 결과물: ${row.dataset.careerOutput}`;
+        chapterAnswerVerification.textContent = `검증 근거: ${row.dataset.careerCheck}`;
+        resetWorkbookReveals();
+        renderChapterWorkbookStatus();
         chapterSequence.hidden = false;
         chapterPosition.textContent = `${index + 1} / ${chapterRows.length}`;
         previousChapterButton.disabled = !previousRow;
@@ -2370,6 +2613,48 @@
         });
       });
 
+      chapterAnswer.addEventListener("input", (event) => {
+        const number = state.today.chapter;
+        if (!number) return;
+        const answer = event.target.value;
+        if (answer.trim()) {
+          state.workbook.answers[number] = answer;
+        } else {
+          delete state.workbook.answers[number];
+          state.workbook.reviewed = state.workbook.reviewed.filter((item) => item !== number);
+        }
+        saveState();
+        renderChapterWorkbookStatus();
+        updateDashboard();
+      });
+
+      chapterReviewed.addEventListener("change", (event) => {
+        const number = state.today.chapter;
+        if (!number || !state.workbook.answers[number]?.trim()) return;
+        const reviewed = new Set(state.workbook.reviewed);
+        if (event.target.checked) reviewed.add(number);
+        else reviewed.delete(number);
+        state.workbook.reviewed = [...reviewed];
+        saveState();
+        renderChapterWorkbookStatus();
+        updateDashboard();
+      });
+
+      const toggleWorkbookReveal = (button, panel, openLabel, closeLabel) => {
+        const willOpen = panel.hidden;
+        panel.hidden = !willOpen;
+        button.setAttribute("aria-expanded", String(willOpen));
+        button.textContent = willOpen ? closeLabel : openLabel;
+      };
+
+      toggleChapterHint.addEventListener("click", () => {
+        toggleWorkbookReveal(toggleChapterHint, chapterHint, "1단계 힌트 보기", "힌트 닫기");
+      });
+
+      toggleChapterAnswer.addEventListener("click", () => {
+        toggleWorkbookReveal(toggleChapterAnswer, chapterAnswerGuide, "정답 기준 보기", "정답 기준 닫기");
+      });
+
       document.querySelector("#expand-all").addEventListener("click", () => {
         document.querySelectorAll(".course").forEach((course) => {
           course.open = true;
@@ -2413,7 +2698,7 @@
         state.session = [];
         saveState();
         renderState();
-        storageStatus.textContent = "오늘 학습 기록만 비웠습니다. 목표와 전체 진척도는 유지됩니다.";
+        storageStatus.textContent = "오늘 학습 기록만 비웠습니다. 목표, 전체 진척도와 챕터별 문제집 답안은 유지됩니다.";
         document.querySelector("#today-fr-id").focus();
       };
 

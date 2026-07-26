@@ -233,6 +233,11 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
     require("renderVerificationStatus" in index, "검증 결과 렌더링 함수가 없음")
     require("resetTodaySession" in index, "오늘 학습 초기화 함수가 없음")
     require("selectChapterAt" in index, "연속 챕터 탐색 함수가 없음")
+    require("renderChapterWorkbookStatus" in index, "문제집 상태 렌더링 함수가 없음")
+    require("toggleWorkbookReveal" in index, "힌트·정답 토글 함수가 없음")
+    require('workbook: { answers: {}, reviewed: [] }' in index, "챕터별 문제집 기본 상태가 없음")
+    require("state.workbook.answers[number]" in index, "챕터별 답안 저장 계약이 없음")
+    require("state.workbook.reviewed" in index, "정답 비교 완료 저장 계약이 없음")
 
     required_ids = {
         "learning-map",
@@ -252,6 +257,21 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
         "selected-chapter-loop",
         "selected-hard-link",
         "selected-starter-link",
+        "workbook-count",
+        "chapter-workbook",
+        "chapter-question-title",
+        "chapter-question",
+        "chapter-answer",
+        "chapter-workbook-status",
+        "toggle-chapter-hint",
+        "toggle-chapter-answer",
+        "chapter-hint",
+        "chapter-hint-copy",
+        "chapter-answer-guide",
+        "chapter-answer-responsibility",
+        "chapter-answer-output",
+        "chapter-answer-verification",
+        "chapter-reviewed",
         "chapter-sequence",
         "chapter-position",
         "previous-chapter",
@@ -282,6 +302,8 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
     require("@media (max-width: 920px)" in style, "태블릿 반응형 분기가 없음")
     require("@media (max-width: 680px)" in style, "모바일 반응형 분기가 없음")
     require(".career-contract" in style, "취업 결과물 계약 반응형 스타일이 없음")
+    require(".chapter-workbook" in style, "챕터 문제집 스타일이 없음")
+    require(".workbook-reveal[hidden]" in style, "힌트·정답 숨김 스타일이 없음")
 
 
 def validate_history_contract(history: str) -> int:
@@ -337,6 +359,7 @@ def main() -> int:
     print(f"- Markdown 상대 링크 {markdown_links}개")
     print(f"- 내부 목표·계약과 HTML 연결이 있는 프로그램 폴더 {program_folders}개·학습 파일 {program_files}개")
     print("- 학습 목차 6단계, 취업 로드맵 5단계, 취업 결과물 계약이 있는 챕터 40개, 세션 체크 5개")
+    print("- 선택 챕터별 답안 저장, 힌트·정답 기준 토글과 40개 문제 비교 완료 기록")
     print("- 00~39 이전·다음 연속 탐색과 챕터 번호별 프로그램 폴더 대응")
     print(f"- 실제 Git 커밋에 연결된 대표 변경 이력 {history_items}개")
     print("- JavaScript 구문·DOM ID 계약과 920px·680px 반응형 분기")
