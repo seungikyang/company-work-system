@@ -509,8 +509,8 @@
   <main class="page">
     <section class="summary-grid" aria-label="히스토리 요약">
       <article class="summary-card">
-        <strong>19</strong>
-        <span>최초 생성부터 워크북 코드 정리까지 연결된 Git 단계</span>
+        <strong>20</strong>
+        <span>최초 생성부터 Orca 고정 URI 실행까지 연결된 Git 단계</span>
       </article>
       <article class="summary-card">
         <strong>40</strong>
@@ -565,13 +565,39 @@
         <h2 id="timeline-title">변경 타임라인</h2>
         <p>
           커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
-          워크북 사용 흐름의 변화와 대표 배포 확인 이력 19개를 기록하며,
+          워크북 사용 흐름의 변화와 대표 배포 확인 이력 20개를 기록하며,
           이 페이지의 단순 이력 동기화 같은 관리 커밋은 생략할 수 있습니다.
         </p>
       </div>
 
       <ol class="timeline">
         <li class="history-item latest">
+          <time class="history-date" datetime="2026-07-27">2026.07.27</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">Orca 고정 URI</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/670c2575e07decdfc97bb6607249c357631e62de"
+              >670c257</a>
+            </div>
+            <h3>폴더 이름 고정 URI로 여는 Orca 취업 문제집</h3>
+            <p>
+              저장소 루트의 한 명령으로 전용 로컬 서버를 시작하거나 재사용하고,
+              폴더 이름이 포함된 같은 주소를 Orca 브라우저에서 반복해서 열 수
+              있도록 실행 흐름을 고정했습니다.
+            </p>
+            <ul>
+              <li><code>http://127.0.0.1:4174/company-work-system/</code> 고정</li>
+              <li>Orca 공식 CLI의 관리 터미널과 <code>tab create --url</code> 사용</li>
+              <li>재실행 시 서버 중복 생성 없이 동일 URI 탭 열기</li>
+              <li>워크북·학습 파일만 공개하고 Git·스크립트·목록 접근 차단</li>
+              <li>HTTP 200·308·404 계약과 실제 Orca URL·제목·오류 없음 확인</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
           <time class="history-date" datetime="2026-07-26">2026.07.26</time>
           <article class="history-card">
             <div class="history-meta">
@@ -1088,7 +1114,7 @@
 
   <footer class="page">
     <p>Java 백엔드 취업 포트폴리오 워크북</p>
-    <p>마지막 문서 갱신일 <time datetime="2026-07-26">2026년 7월 26일</time></p>
+    <p>마지막 문서 갱신일 <time datetime="2026-07-27">2026년 7월 27일</time></p>
   </footer>
 </body>
 </html>

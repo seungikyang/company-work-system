@@ -851,3 +851,9 @@
 - 최종 Orca 탭의 제목은 `Company Work System 취업 워크북`, `active`는 `true`, `loadError`와 `certificateFailure`는 `null`이었다.
 - 반복 검증 중 만든 이전 브라우저 탭은 닫고 최종 고정 URI 탭 하나를 활성 상태로 남겼다.
 - `sh -n scripts/open_workbook_in_orca.sh`, `python3 scripts/verify_workbook.py`와 `git diff --check`가 통과했다.
+
+### 기능 커밋과 이력 연결
+
+- 루트에서 `670c257 feat: Orca 고정 URI 워크북 실행 추가` 커밋을 생성했다.
+- `history.html`의 대표 이력을 20개로 늘리고 최신 항목을 실제 기능 커밋 `670c2575e07decdfc97bb6607249c357631e62de`에 연결했다.
+- 최신 이력에 고정 URI, 서버 재사용, 공개 범위 제한과 HTTP·Orca 실제 검증 결과를 기록했다.

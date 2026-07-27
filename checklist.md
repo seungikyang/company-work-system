@@ -198,5 +198,5 @@
 - [x] 검증 스크립트에 고정 URI 계약 추가
 - [x] README에 실행 명령과 고정 URI 문서화
 - [x] 셸·Python·HTTP·Orca 실제 탭 반복 검증
-- [ ] 기능 커밋과 `history.html` 실제 해시 연결
+- [x] 기능 커밋과 `history.html` 실제 해시 연결
 - [ ] 의미 단위 커밋과 루트 푸시 후 원격 일치 확인
