@@ -807,3 +807,47 @@
 - `git fetch origin main` 뒤 로컬이 2커밋 앞서고 뒤처짐 0개임을 확인했다.
 - 강제 옵션 없이 `git push origin main`을 실행해 `3f57506..c3d9eca` 범위를 원격에 반영했다.
 - 다시 원격을 가져와 로컬 `HEAD`와 `origin/main`이 모두 `c3d9ecac71bf1294b9a28a14aee33b3692809057`로 일치함을 확인했다.
+
+## 2026-07-27 Orca 고정 URI 실행
+
+### 시작 상태와 요구 해석
+
+- 실제 저장소 루트와 물리 `pwd`는 `/Users/seungik.yang/Documents/company-work-system`으로 일치하고 루트 가드가 통과했다.
+- 작업 시작 시 로컬 `main`, `origin/main`, `HEAD`는 `9e51eb9`로 일치하고 작업 트리는 깨끗했다.
+- 등록 worktree는 실제 저장소 루트 하나뿐이고 `4173` 포트에는 수신 중인 프로세스가 없었다.
+- 사용자가 말한 폴더 이름 URI는 폴더명 경로와 고정 포트를 함께 유지하는 주소로 해석한다.
+- 고정 URI는 포트와 경로가 매번 같다는 의미로 적용하며, 컴퓨터 재시작 뒤에는 저장소의 실행 명령을 다시 실행해 같은 주소를 복원한다.
+
+### 설계 결정
+
+- 상위 `Documents` 디렉터리를 그대로 정적 제공하면 다른 폴더가 노출되므로 사용하지 않는다.
+- 저장소 루트만 파일 원본으로 삼고 `/company-work-system/` 접두사만 허용하는 Python 표준 라이브러리 서버를 둔다.
+- 실행 스크립트는 고정 URI가 이미 정상 응답하면 서버를 재사용하고, 포트가 다른 프로세스에 점유됐으면 종료하지 않고 명확히 실패한다.
+- Orca는 `/Applications/Orca.app/Contents/Resources/bin/orca`의 공식 `tab create --url` 명령을 사용한다.
+
+### 포트 충돌과 최종 주소
+
+- 최초 감사 시점에는 `4173` 수신 프로세스가 없었지만 서버 동적 검증 직전에 `Address already in use` 오류가 발생했다.
+- 실제 `lsof`, `ps`와 작업 디렉터리를 확인해 PID `38440`이 다른 저장소 `/Users/seungik.yang/Documents/accountProgram`에서 `python3 -m http.server 4173`을 실행 중임을 확인했다.
+- 범위 밖 프로세스는 중단하지 않고 사용 가능한 `4174`를 이 저장소의 고정 포트로 확정했다.
+- 최종 고정 URI는 `http://127.0.0.1:4174/company-work-system/`이다.
+- 실제 `index.html`의 제목은 `Company Work System 취업 워크북`이므로 서버 준비와 Orca 로드 검사는 이 제목을 기준으로 한다.
+
+### 구현 결과
+
+- `scripts/serve_workbook.py`에 `127.0.0.1:4174` 전용 서버를 추가하고 저장소 폴더 이름을 URI 접두사로 사용했다.
+- `/company-work-system`은 trailing slash가 있는 고정 주소로 308 이동하고 `/company-work-system/`은 `index.html`을 반환한다.
+- 공개 범위를 루트의 워크북 문서와 `practice/` 파일로 제한하고 `.git`, `scripts`, 다른 루트 파일과 디렉터리 목록은 404로 차단했다.
+- `scripts/open_workbook_in_orca.sh`는 Orca 공식 CLI를 열고 고정 URI 응답을 확인한 뒤 서버가 없을 때만 Orca 관리 터미널에서 시작한다.
+- 같은 스크립트를 다시 실행하면 기존 서버를 재사용하고 동일 URI의 새 Orca 탭을 연다.
+- 검증 스크립트에 서버 Python 구문, 고정 호스트·포트·폴더 접두사·공개 범위와 Orca 실행 셸 구문·명령 계약을 추가했다.
+
+### HTTP와 Orca 반복 검증
+
+- 전용 서버에서 `/company-work-system/`은 200, trailing slash 없는 주소는 고정 URI로 308 이동했다.
+- `/`, `/accountProgram/`, `.git/config`, `scripts/serve_workbook.py`, `practice/` 디렉터리 목록은 모두 404를 반환했다.
+- 공개 학습 문서 `practice/answers.md`는 200을 반환했다.
+- `./scripts/open_workbook_in_orca.sh`를 두 번 연속 실행해 두 실행 모두 `http://127.0.0.1:4174/company-work-system/`을 열고 `4174` 수신 프로세스는 하나만 유지됨을 확인했다.
+- 최종 Orca 탭의 제목은 `Company Work System 취업 워크북`, `active`는 `true`, `loadError`와 `certificateFailure`는 `null`이었다.
+- 반복 검증 중 만든 이전 브라우저 탭은 닫고 최종 고정 URI 탭 하나를 활성 상태로 남겼다.
+- `sh -n scripts/open_workbook_in_orca.sh`, `python3 scripts/verify_workbook.py`와 `git diff --check`가 통과했다.

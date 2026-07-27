@@ -13,6 +13,8 @@ ROOT = Path(__file__).resolve().parent.parent
 HTML_FILES = (ROOT / "index.html", ROOT / "history.html")
 STARTER_ROOT = ROOT / "practice" / "starter"
 HARD_ROOT = ROOT / "practice" / "hard"
+SERVER_SCRIPT = ROOT / "scripts" / "serve_workbook.py"
+OPEN_ORCA_SCRIPT = ROOT / "scripts" / "open_workbook_in_orca.sh"
 CODE_CHAPTERS = tuple([*range(20), 21, *range(23, 35)])
 VOID_TAGS = {
     "area",
@@ -358,6 +360,53 @@ def validate_history_contract(history: str) -> int:
     return item_count
 
 
+def validate_orca_launch_contract() -> None:
+    require(SERVER_SCRIPT.exists(), "폴더 이름 URI 서버 스크립트가 없음")
+    require(OPEN_ORCA_SCRIPT.exists(), "Orca 워크북 실행 스크립트가 없음")
+    require(OPEN_ORCA_SCRIPT.stat().st_mode & 0o111 != 0, "Orca 워크북 실행 스크립트가 실행 가능하지 않음")
+
+    server = SERVER_SCRIPT.read_text(encoding="utf-8")
+    launcher = OPEN_ORCA_SCRIPT.read_text(encoding="utf-8")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    compile(server, str(SERVER_SCRIPT), "exec")
+
+    for contract in (
+        'HOST = "127.0.0.1"',
+        "PORT = 4174",
+        'URI_PREFIX = f"/{REPO_ROOT.name}"',
+        'PUBLIC_DIRECTORIES = {"practice"}',
+        "if not parsed.path.startswith(allowed_prefix)",
+        'part.startswith(".")',
+        "HTTPStatus.NOT_FOUND",
+        "def list_directory",
+    ):
+        require(contract in server, f"폴더 이름 URI 서버 계약 누락: {contract}")
+
+    for contract in (
+        'workbook_url="http://127.0.0.1:4174/$repo_name/"',
+        "/Applications/Orca.app/Contents/Resources/bin/orca",
+        "python3 scripts/serve_workbook.py",
+        "terminal create",
+        "tab create",
+        '--worktree "path:$repo_root"',
+        "<title>Company Work System 취업 워크북</title>",
+    ):
+        require(contract in launcher, f"Orca 실행 계약 누락: {contract}")
+
+    result = subprocess.run(
+        ["sh", "-n", str(OPEN_ORCA_SCRIPT)],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    require(result.returncode == 0, f"Orca 실행 스크립트 구문 오류\n{result.stderr.strip()}")
+    for contract in (
+        "./scripts/open_workbook_in_orca.sh",
+        "http://127.0.0.1:4174/company-work-system/",
+    ):
+        require(contract in readme, f"README Orca 실행 안내 누락: {contract}")
+
+
 def main() -> int:
     require(Path.cwd().resolve() == ROOT, "저장소 루트에서 실행해야 합니다")
     parsers = {path: parse_html(path) for path in HTML_FILES}
@@ -368,6 +417,7 @@ def main() -> int:
     program_folders, program_files = validate_program_folders(parsers[ROOT / "index.html"])
     history = (ROOT / "history.html").read_text(encoding="utf-8")
     history_items = validate_history_contract(history)
+    validate_orca_launch_contract()
 
     print("워크북 검증 통과")
     print(f"- HTML 2개와 로컬 링크 {html_links}개")
@@ -378,6 +428,7 @@ def main() -> int:
     print("- 00~39 이전·다음 연속 탐색과 챕터 번호별 프로그램 폴더 대응")
     print(f"- 실제 Git 커밋에 연결된 대표 변경 이력 {history_items}개")
     print("- JavaScript 구문·DOM ID 계약과 920px·680px 반응형 분기")
+    print("- 127.0.0.1:4174 폴더 이름 URI 서버와 Orca 실행 계약")
     return 0
 
 
