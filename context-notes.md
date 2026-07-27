@@ -857,3 +857,10 @@
 - 루트에서 `670c257 feat: Orca 고정 URI 워크북 실행 추가` 커밋을 생성했다.
 - `history.html`의 대표 이력을 20개로 늘리고 최신 항목을 실제 기능 커밋 `670c2575e07decdfc97bb6607249c357631e62de`에 연결했다.
 - 최신 이력에 고정 URI, 서버 재사용, 공개 범위 제한과 HTTP·Orca 실제 검증 결과를 기록했다.
+
+### 원격 반영 결과
+
+- 루트에서 `b11b4ef docs: Orca 고정 URI 이력 기록` 커밋을 생성했다.
+- `git fetch origin main` 뒤 로컬이 2커밋 앞서고 뒤처짐 0개임을 확인했다.
+- 강제 옵션 없이 `git push origin main`을 실행해 `9e51eb9..b11b4ef` 범위를 원격에 반영했다.
+- 다시 원격을 가져와 로컬 `HEAD`와 `origin/main`이 모두 `b11b4ef2309b4bac6ba4602c0ac28f33356a6d61`로 일치함을 확인했다.
