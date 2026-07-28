@@ -456,6 +456,7 @@ def validate_orca_launch_contract() -> None:
         "tab current",
         "tab create",
         '"$orca_cli" goto',
+        '"$orca_cli" reload',
         'worktree_selector="path:$repo_root"',
         "<title>Company Work System 취업 워크북</title>",
     ):

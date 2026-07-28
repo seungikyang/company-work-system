@@ -52,6 +52,9 @@ if "$orca_cli" tab current --worktree "$worktree_selector" --json >/dev/null 2>&
     --url "$workbook_url" \
     --worktree "$worktree_selector" \
     --json >/dev/null
+  "$orca_cli" reload \
+    --worktree "$worktree_selector" \
+    --json >/dev/null
 else
   "$orca_cli" tab create \
     --url "$workbook_url" \
