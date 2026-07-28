@@ -440,6 +440,7 @@ def validate_orca_launch_contract() -> None:
         'TEXT_VIEWER_SUFFIXES = {".java", ".md"}',
         "def redirect_document_to_viewer",
         'parse_qs(parsed.query).get("raw") == ["1"]',
+        'self.send_header("Cache-Control", "no-cache")',
         "if not parsed.path.startswith(allowed_prefix)",
         'part.startswith(".")',
         "HTTPStatus.NOT_FOUND",
@@ -452,8 +453,10 @@ def validate_orca_launch_contract() -> None:
         "/Applications/Orca.app/Contents/Resources/bin/orca",
         "python3 scripts/serve_workbook.py",
         "terminal create",
+        "tab current",
         "tab create",
-        '--worktree "path:$repo_root"',
+        '"$orca_cli" goto',
+        'worktree_selector="path:$repo_root"',
         "<title>Company Work System 취업 워크북</title>",
     ):
         require(contract in launcher, f"Orca 실행 계약 누락: {contract}")

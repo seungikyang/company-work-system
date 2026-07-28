@@ -33,6 +33,10 @@ class WorkbookRequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args: object, **kwargs: object) -> None:
         super().__init__(*args, directory=str(REPO_ROOT), **kwargs)
 
+    def end_headers(self) -> None:
+        self.send_header("Cache-Control", "no-cache")
+        super().end_headers()
+
     def prepare_workbook_path(self) -> bool:
         parsed = urlsplit(self.path)
         if parsed.path == URI_PREFIX:

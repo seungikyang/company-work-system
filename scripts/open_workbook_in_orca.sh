@@ -7,6 +7,7 @@ repo_root=$(git -C "$script_dir/.." rev-parse --show-toplevel)
 repo_name=$(basename "$repo_root")
 workbook_url="http://127.0.0.1:4174/$repo_name/"
 orca_cli="/Applications/Orca.app/Contents/Resources/bin/orca"
+worktree_selector="path:$repo_root"
 
 cd "$repo_root"
 ./scripts/assert_repo_root.sh >/dev/null
@@ -30,7 +31,7 @@ if ! workbook_is_ready 2>/dev/null; then
   fi
 
   "$orca_cli" terminal create \
-    --worktree "path:$repo_root" \
+    --worktree "$worktree_selector" \
     --title "취업 워크북 서버 · 4174" \
     --command "python3 scripts/serve_workbook.py" \
     --json >/dev/null
@@ -46,8 +47,16 @@ if ! workbook_is_ready 2>/dev/null; then
   done
 fi
 
-"$orca_cli" tab create \
-  --url "$workbook_url" \
-  --worktree "path:$repo_root"
+if "$orca_cli" tab current --worktree "$worktree_selector" --json >/dev/null 2>&1; then
+  "$orca_cli" goto \
+    --url "$workbook_url" \
+    --worktree "$worktree_selector" \
+    --json >/dev/null
+else
+  "$orca_cli" tab create \
+    --url "$workbook_url" \
+    --worktree "$worktree_selector" \
+    --json >/dev/null
+fi
 
 printf 'Orca에서 취업 워크북을 열었습니다: %s\n' "$workbook_url"
