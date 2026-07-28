@@ -12,6 +12,7 @@ import sys
 ROOT = Path(__file__).resolve().parent.parent
 HTML_FILES = (
     ROOT / "index.html",
+    ROOT / "problems.html",
     ROOT / "history.html",
     ROOT / "workbook-viewer.html",
 )
@@ -107,6 +108,9 @@ def validate_viewer_contract(viewer: str) -> None:
         "fetch(sourceUrl)",
         "document.createElement",
         "textContent",
+        "(?:fragment|java|md)",
+        'sourceFile === "practice/problems.md"',
+        'window.location.replace("./problems.html")',
     ):
         require(contract in viewer, f"문서 읽기 화면 계약 누락: {contract}")
 
@@ -127,6 +131,66 @@ def validate_viewer_contract(viewer: str) -> None:
         "@media (prefers-reduced-motion: reduce)" in style,
         "문서 읽기 화면 모션 축소 반응형 분기가 없음",
     )
+
+
+def validate_problem_page_contract(problem_page: str, index: str) -> None:
+    for contract in (
+        'id="problem-list"',
+        'id="problem-outline"',
+        'id="load-status"',
+        'id="toggle-all-answers"',
+        "const EXPECTED_CHAPTERS = 40",
+        'fetchText("./practice/problems.md", true)',
+        'fetchText("./practice/answers.md", true)',
+        'fetchText("./index.html")',
+        "parseWorkbookSections",
+        "parseCurriculum",
+        "makeProblemCard",
+        'hint.className = "hint-box"',
+        'answerPanel.className = "answer-panel"',
+        'codeBox.className = "code-box"',
+        'sourceFile === "practice/problems.md"',
+        "(?:fragment|java|md)",
+    ):
+        require(contract in problem_page, f"통합 문제 페이지 계약 누락: {contract}")
+
+    problem_numbers = re.findall(
+        r"^##\s+(\d+)\.",
+        (ROOT / "practice" / "problems.md").read_text(encoding="utf-8"),
+        flags=re.MULTILINE,
+    )
+    answer_numbers = re.findall(
+        r"^##\s+(\d+)\.",
+        (ROOT / "practice" / "answers.md").read_text(encoding="utf-8"),
+        flags=re.MULTILINE,
+    )
+    expected_numbers = [str(number) for number in range(40)]
+    require(problem_numbers == expected_numbers, "통합 문제 페이지 원본 문제 번호가 0~39 순서가 아님")
+    require(answer_numbers == expected_numbers, "통합 문제 페이지 원본 정답 번호가 0~39 순서가 아님")
+    require(index.count('href="./problems.html"') >= 2, "메인 화면의 전체 문제 링크가 전용 페이지로 통일되지 않음")
+    require(
+        'if (sourceFile === "practice/problems.md") return "./problems.html";' in index,
+        "기존 문제 Markdown 주소의 전용 페이지 변환이 없음",
+    )
+
+    script = extract_single(problem_page, "script")
+    result = subprocess.run(
+        ["node", "--check", "-"],
+        input=script,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    require(result.returncode == 0, f"통합 문제 페이지 JavaScript 구문 오류\n{result.stderr.strip()}")
+
+    style = extract_single(problem_page, "style")
+    require(style.count("{") == style.count("}"), "통합 문제 페이지 CSS 중괄호 수가 맞지 않음")
+    require("@media (max-width: 760px)" in style, "통합 문제 페이지 모바일 반응형 분기가 없음")
+    require(
+        "@media (prefers-reduced-motion: reduce)" in style,
+        "통합 문제 페이지 모션 축소 반응형 분기가 없음",
+    )
+    require("summary:focus-visible" in style, "통합 문제 페이지 정답 토글 키보드 포커스가 없음")
 
 
 def is_external(raw: str) -> bool:
@@ -434,11 +498,14 @@ def validate_orca_launch_contract() -> None:
         "PORT = 4174",
         'URI_PREFIX = f"/{REPO_ROOT.name}"',
         'PUBLIC_DIRECTORIES = {"practice"}',
+        '".fragment": "text/plain; charset=utf-8"',
         '".md": "text/plain; charset=utf-8"',
         '".java": "text/plain; charset=utf-8"',
         '"workbook-viewer.html"',
-        'TEXT_VIEWER_SUFFIXES = {".java", ".md"}',
+        '"problems.html"',
+        'TEXT_VIEWER_SUFFIXES = {".fragment", ".java", ".md"}',
         "def redirect_document_to_viewer",
+        'source_file == "practice/problems.md"',
         'parse_qs(parsed.query).get("raw") == ["1"]',
         'self.send_header("Cache-Control", "no-cache")',
         "if not parsed.path.startswith(allowed_prefix)",
@@ -482,9 +549,11 @@ def main() -> int:
     validate_document_icons()
     html_links = validate_html_links(parsers)
     markdown_links = validate_markdown_links()
+    problem_page = (ROOT / "problems.html").read_text(encoding="utf-8")
     viewer = (ROOT / "workbook-viewer.html").read_text(encoding="utf-8")
     validate_viewer_contract(viewer)
     index = (ROOT / "index.html").read_text(encoding="utf-8")
+    validate_problem_page_contract(problem_page, index)
     validate_index_contract(index, parsers[ROOT / "index.html"])
     program_folders, program_files = validate_program_folders(parsers[ROOT / "index.html"])
     history = (ROOT / "history.html").read_text(encoding="utf-8")
@@ -497,6 +566,7 @@ def main() -> int:
     print(f"- 내부 목표·계약과 HTML 연결이 있는 프로그램 폴더 {program_folders}개·학습 파일 {program_files}개")
     print("- 학습 목차 6단계, 취업 로드맵 5단계, 취업 결과물 계약이 있는 챕터 40개, 세션 체크 5개")
     print("- 선택 챕터별 답안 저장, 힌트·정답 기준 토글과 40개 문제 비교 완료 기록")
+    print("- 통합 문제 페이지의 40개 문제·힌트·정답과 실제 Starter·Hard·워크시트 연결")
     print("- 00~39 이전·다음 연속 탐색과 챕터 번호별 프로그램 폴더 대응")
     print(f"- 실제 Git 커밋에 연결된 대표 변경 이력 {history_items}개")
     print("- JavaScript 구문·DOM ID 계약과 920px·680px 반응형 분기")

@@ -15,17 +15,19 @@ WORKBOOK_URL = f"http://{HOST}:{PORT}{URI_PREFIX}/"
 PUBLIC_ROOT_FILES = {
     "index.html",
     "history.html",
+    "problems.html",
     "README.md",
     "company_work_system_PRD_TRD.md",
     "workbook-viewer.html",
 }
 PUBLIC_DIRECTORIES = {"practice"}
-TEXT_VIEWER_SUFFIXES = {".java", ".md"}
+TEXT_VIEWER_SUFFIXES = {".fragment", ".java", ".md"}
 
 
 class WorkbookRequestHandler(SimpleHTTPRequestHandler):
     extensions_map = {
         **SimpleHTTPRequestHandler.extensions_map,
+        ".fragment": "text/plain; charset=utf-8",
         ".java": "text/plain; charset=utf-8",
         ".md": "text/plain; charset=utf-8",
     }
@@ -76,10 +78,13 @@ class WorkbookRequestHandler(SimpleHTTPRequestHandler):
             return False
 
         source_file = parsed.path.lstrip("/")
-        viewer_url = (
-            f"{URI_PREFIX}/workbook-viewer.html"
-            f"?file={quote(source_file, safe='/')}"
-        )
+        if source_file == "practice/problems.md":
+            viewer_url = f"{URI_PREFIX}/problems.html"
+        else:
+            viewer_url = (
+                f"{URI_PREFIX}/workbook-viewer.html"
+                f"?file={quote(source_file, safe='/')}"
+            )
         self.send_response(HTTPStatus.FOUND)
         self.send_header("Location", viewer_url)
         self.end_headers()

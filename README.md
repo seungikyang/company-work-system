@@ -91,6 +91,8 @@ macOS의 Orca 앱에서 아래 명령을 저장소 루트에서 실행합니다.
 
 직접 학습 파일 주소로 접근해도 로컬 서버가 공통 읽기 화면으로 연결합니다. 읽기 화면은 서버가 공개한 파일만 UTF-8 원문으로 불러오며 다른 경로나 상위 폴더는 요청할 수 없습니다.
 
+`전체 문제`는 [코드 연결 문제집](./problems.html)으로 열립니다. 00~39 문제마다 문제 본문, 취업 결과물 기반 힌트, 같은 번호의 정답과 해설, 실제 Starter·Hard·워크시트 링크를 한 카드에 모았습니다. 00장의 Gradle·YAML 설정 조각도 다른 코드와 같은 읽기 화면에서 확인할 수 있습니다.
+
 ## 워크북 화면 검증
 
 HTML 목차나 학습 링크를 바꾼 뒤에는 저장소 루트에서 아래 명령을 실행합니다.
@@ -99,7 +101,7 @@ HTML 목차나 학습 링크를 바꾼 뒤에는 저장소 루트에서 아래 �
 python3 scripts/verify_workbook.py
 ```
 
-이 검사는 `index.html`, `history.html`, `workbook-viewer.html`의 태그·중복 ID·로컬 링크, Markdown 상대 링크, JavaScript 구문과 DOM 연결, 6단계 목차·5단계 로드맵·40개 챕터·이전·다음 탐색·반응형 분기를 한 번에 확인합니다. 또한 Starter 40개와 Hard 33개 프로그램 폴더의 번호·대응 관계, 학습 파일 77개의 빈 파일·내부 목표 또는 챕터 계약·HTML 전수 연결, 챕터별 취업 결과물·완료 검증과 답안·힌트·정답 기준 저장 계약, 공통 문서 읽기 화면, Orca 고정 URI 서버와 실행 명령도 검사합니다. Python 3와 Node.js가 필요하며, 실패 메시지의 파일·링크·계약을 수정한 뒤 같은 명령이 통과할 때까지 다시 실행합니다.
+이 검사는 `index.html`, `problems.html`, `history.html`, `workbook-viewer.html`의 태그·중복 ID·로컬 링크, Markdown 상대 링크, JavaScript 구문과 DOM 연결, 6단계 목차·5단계 로드맵·40개 챕터·이전·다음 탐색·반응형 분기를 한 번에 확인합니다. 또한 Starter 40개와 Hard 33개 프로그램 폴더의 번호·대응 관계, 학습 파일 77개의 빈 파일·내부 목표 또는 챕터 계약·HTML 전수 연결, 문제 페이지의 40개 문제·힌트·정답·실제 파일 연결, 챕터별 답안 저장 계약, 공통 문서 읽기 화면, Orca 고정 URI 서버와 실행 명령도 검사합니다. Python 3와 Node.js가 필요하며, 실패 메시지의 파일·링크·계약을 수정한 뒤 같은 명령이 통과할 때까지 다시 실행합니다.
 
 ## 취업 결과물로 연결되는 학습 흐름
 
@@ -148,7 +150,7 @@ python3 scripts/verify_workbook.py
 | [PRD/TRD](./company_work_system_PRD_TRD.md) | 제품 요구사항과 기술 설계 기준 |
 | [학습 워크북 안내](./practice/README.md) | 40개 챕터의 순서와 난이도 선택 |
 | [기능 구현 워크북](./practice/feature-implementation-workbook.md) | FR ID를 구현 계층과 테스트로 분해 |
-| [문제 목록](./practice/problems.md) | 챕터별 학습 문제 |
+| [코드 연결 문제집](./problems.html) | 40개 문제·힌트·정답과 실제 Starter·Hard·워크시트를 한 화면에서 학습 |
 | [정답과 해설](./practice/answers.md) | 정답의 이유, 트레이드오프, 면접 연결 |
 | [변경 히스토리](./history.html) | 워크북 프로그램의 실제 Git 기반 발전 과정 |
 

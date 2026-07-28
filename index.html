@@ -1876,7 +1876,7 @@
             <span>01 · 이해</span>
             <strong>문제 읽기</strong>
             <small>요구사항과 모르는 용어를 먼저 표시합니다.</small>
-            <a href="./practice/problems.md">전체 문제 열기</a>
+            <a href="./problems.html">전체 문제 열기</a>
           </li>
           <li>
             <span>02 · 시도</span>
@@ -1970,7 +1970,7 @@
       </div>
 
       <div class="link-row" aria-label="공통 학습 문서">
-        <a class="text-link" href="./practice/problems.md">전체 문제</a>
+        <a class="text-link" href="./problems.html">전체 문제</a>
         <a class="text-link" href="./practice/hard/README.md">Hard 사용법</a>
         <a class="text-link" href="./practice/answers.md">정답과 해설</a>
         <a class="text-link" href="./practice/README.md">상세 학습 안내</a>
@@ -2382,7 +2382,8 @@
         if (sourceUrl.origin !== window.location.origin) return rawHref;
         if (!sourceUrl.pathname.startsWith(workbookBasePath)) return rawHref;
         const sourceFile = sourceUrl.pathname.slice(workbookBasePath.length);
-        if (!/\.(?:java|md)$/i.test(sourceFile)) return rawHref;
+        if (sourceFile === "practice/problems.md") return "./problems.html";
+        if (!/\.(?:fragment|java|md)$/i.test(sourceFile)) return rawHref;
         return `./workbook-viewer.html?file=${encodeURIComponent(sourceFile)}`;
       };
       const routeDocumentLinks = () => {

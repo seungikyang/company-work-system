@@ -1,0 +1,842 @@
+<!-- 40개 문제를 실제 코드·힌트·정답과 연결하는 통합 문제집 화면 -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta
+    name="description"
+    content="Company Work System의 40개 취업 문제와 실제 Starter·Hard 코드, 힌트, 정답을 한 화면에서 학습하는 문제집"
+  >
+  <title>코드 연결 문제집 · Company Work System</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23185c45'/%3E%3Cpath d='M18 17h20c5 0 8 3 8 8v24H26c-5 0-8-3-8-8V17z' fill='%23fffdf7'/%3E%3Cpath d='M26 17v32' stroke='%23d4682d' stroke-width='4'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #18211b;
+      --muted: #5d6961;
+      --paper: #f5f2e9;
+      --surface: #fffdf7;
+      --line: #d7d4c9;
+      --green: #185c45;
+      --green-dark: #103d2f;
+      --green-soft: #dfece3;
+      --orange: #d4682d;
+      --orange-soft: #fff0e5;
+      --answer-soft: #f2f5ee;
+      --shadow: 0 18px 45px rgba(34, 45, 38, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(212, 104, 45, 0.11), transparent 28rem),
+        var(--paper);
+      font-family:
+        Pretendard, "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--green);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid var(--orange);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 30;
+      padding: 0.65rem 0.9rem;
+      border-radius: 0.5rem;
+      color: white;
+      background: var(--green-dark);
+      transform: translateY(-180%);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(215, 212, 201, 0.9);
+      background: rgba(245, 242, 233, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar-inner {
+      width: min(1220px, calc(100% - 2rem));
+      min-height: 64px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      color: var(--green-dark);
+      font-size: 0.95rem;
+      font-weight: 850;
+      text-decoration: none;
+    }
+
+    .actions,
+    .code-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .button,
+    .code-link {
+      display: inline-flex;
+      min-height: 40px;
+      padding: 0.55rem 0.85rem;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--green-dark);
+      background: var(--surface);
+      font: inherit;
+      font-size: 0.85rem;
+      font-weight: 780;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button.primary,
+    .code-link.hard {
+      border-color: var(--green);
+      color: white;
+      background: var(--green);
+    }
+
+    .page {
+      width: min(1220px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: clamp(2.25rem, 6vw, 5rem) 0 1.5rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.55rem;
+      color: var(--orange);
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      max-width: 850px;
+      margin: 0;
+      color: var(--green-dark);
+      font-size: clamp(2rem, 6vw, 4.2rem);
+      line-height: 1.08;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-copy {
+      max-width: 760px;
+      margin: 1rem 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.12rem);
+    }
+
+    .summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin: 1.25rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .summary li {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 253, 247, 0.7);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(210px, 270px) minmax(0, 1fr);
+      gap: 1.25rem;
+      padding: 0 0 5rem;
+      align-items: start;
+    }
+
+    .outline-card {
+      position: sticky;
+      top: 5.5rem;
+      max-height: calc(100vh - 7rem);
+      padding: 1rem;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .outline-card h2 {
+      margin: 0 0 0.75rem;
+      color: var(--green-dark);
+      font-size: 0.95rem;
+    }
+
+    .outline-list {
+      display: grid;
+      gap: 0.2rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .outline-list a {
+      display: grid;
+      grid-template-columns: 2.2rem minmax(0, 1fr);
+      gap: 0.35rem;
+      padding: 0.42rem 0.5rem;
+      border-radius: 0.45rem;
+      color: var(--muted);
+      font-size: 0.79rem;
+      line-height: 1.35;
+      text-decoration: none;
+    }
+
+    .outline-list a:hover {
+      color: var(--green-dark);
+      background: var(--green-soft);
+    }
+
+    .outline-number {
+      color: var(--orange);
+      font-weight: 850;
+    }
+
+    .content {
+      min-width: 0;
+    }
+
+    .loading-status,
+    .error-status {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 0.8rem;
+      color: var(--muted);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .error-status {
+      border-color: #c95a46;
+      color: #7c2d20;
+      background: #fff2ee;
+    }
+
+    .problem-card {
+      scroll-margin-top: 5.5rem;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .problem-card + .problem-card {
+      margin-top: 1.25rem;
+    }
+
+    .problem-heading {
+      display: grid;
+      grid-template-columns: 3.25rem minmax(0, 1fr);
+      gap: 0.9rem;
+      padding: clamp(1rem, 3vw, 1.5rem);
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(223, 236, 227, 0.92), rgba(255, 253, 247, 0.9));
+    }
+
+    .problem-number {
+      display: grid;
+      width: 3.25rem;
+      height: 3.25rem;
+      place-items: center;
+      border-radius: 0.85rem;
+      color: white;
+      background: var(--green);
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+
+    .problem-area {
+      display: block;
+      margin-bottom: 0.2rem;
+      color: var(--orange);
+      font-size: 0.72rem;
+      font-weight: 850;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .problem-heading h2 {
+      margin: 0;
+      color: var(--green-dark);
+      font-size: clamp(1.2rem, 3vw, 1.55rem);
+      line-height: 1.3;
+      letter-spacing: -0.025em;
+    }
+
+    .problem-body {
+      display: grid;
+      gap: 1rem;
+      padding: clamp(1rem, 3vw, 1.5rem);
+    }
+
+    .problem-section h3,
+    .hint-box h3,
+    .code-box h3 {
+      margin: 0 0 0.65rem;
+      color: var(--green-dark);
+      font-size: 0.95rem;
+    }
+
+    .markdown > :first-child {
+      margin-top: 0;
+    }
+
+    .markdown > :last-child {
+      margin-bottom: 0;
+    }
+
+    .markdown p,
+    .markdown ul,
+    .markdown ol {
+      margin: 0.55rem 0;
+    }
+
+    .markdown ul,
+    .markdown ol {
+      padding-left: 1.35rem;
+    }
+
+    .markdown li + li {
+      margin-top: 0.35rem;
+    }
+
+    code {
+      padding: 0.12rem 0.32rem;
+      border-radius: 0.3rem;
+      color: #26332b;
+      background: #ece9df;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+      overflow-wrap: anywhere;
+    }
+
+    .hint-box,
+    .code-box {
+      padding: 1rem;
+      border-radius: 0.8rem;
+    }
+
+    .hint-box {
+      border: 1px solid #efc3a8;
+      background: var(--orange-soft);
+    }
+
+    .hint-box ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+
+    .hint-box li + li {
+      margin-top: 0.35rem;
+    }
+
+    .code-box {
+      border: 1px solid #bdd3c3;
+      background: var(--green-soft);
+    }
+
+    .code-box p {
+      margin: -0.2rem 0 0.75rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .code-link {
+      min-height: 38px;
+      background: white;
+    }
+
+    .answer-panel {
+      border: 1px solid var(--line);
+      border-radius: 0.8rem;
+      background: var(--answer-soft);
+    }
+
+    .answer-panel summary {
+      padding: 0.9rem 1rem;
+      color: var(--green-dark);
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .answer-panel[open] summary {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .answer-content {
+      padding: 1rem;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner {
+        min-height: 58px;
+      }
+
+      .brand {
+        max-width: none;
+        font-size: 0;
+        line-height: 1;
+      }
+
+      .brand::after {
+        content: "문제집";
+        font-size: 0.82rem;
+      }
+
+      .actions {
+        flex-wrap: nowrap;
+        gap: 0.35rem;
+      }
+
+      .button {
+        min-height: 38px;
+        padding-inline: 0.55rem;
+        font-size: 0.76rem;
+        white-space: nowrap;
+      }
+
+      .hero {
+        padding-top: 1.8rem;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .outline-card {
+        position: static;
+        max-height: 14rem;
+      }
+
+      .problem-heading {
+        grid-template-columns: 2.75rem minmax(0, 1fr);
+      }
+
+      .problem-number {
+        width: 2.75rem;
+        height: 2.75rem;
+      }
+
+      .code-link {
+        flex: 1 1 10rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    @media print {
+      .topbar,
+      .outline-card,
+      #toggle-all-answers {
+        display: none;
+      }
+
+      .layout {
+        display: block;
+      }
+
+      .problem-card {
+        break-inside: avoid;
+        box-shadow: none;
+      }
+
+      .answer-panel {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#problems-content">문제 본문으로 건너뛰기</a>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./index.html">Company Work System</a>
+      <div class="actions">
+        <a class="button primary" href="./index.html">메인 워크북</a>
+        <button id="toggle-all-answers" class="button" type="button" disabled>정답 모두 펼치기</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">Practice · Code · Review</p>
+      <h1 id="page-title">실제 코드와 바로 연결되는 40개 문제집</h1>
+      <p class="hero-copy">
+        문제를 읽고 힌트로 방향을 잡은 뒤 해당 Starter·Hard·워크시트를 바로 여세요.
+        정답과 해설은 각 문제 카드 안에서 확인할 수 있습니다.
+      </p>
+      <ul class="summary" aria-label="문제집 구성">
+        <li>문제 40개</li>
+        <li>챕터별 힌트 40개</li>
+        <li>같은 화면의 정답 40개</li>
+        <li>실제 학습 파일 직접 연결</li>
+      </ul>
+    </section>
+
+    <div class="layout">
+      <aside class="outline-card" aria-labelledby="outline-title">
+        <h2 id="outline-title">00~39 문제 목차</h2>
+        <nav id="problem-outline" aria-label="문제 바로 가기">
+          <p>목차를 불러오는 중입니다.</p>
+        </nav>
+      </aside>
+
+      <section id="problems-content" class="content" tabindex="-1" aria-labelledby="page-title">
+        <p id="load-status" class="loading-status" role="status">문제·정답·코드 링크를 결합하고 있습니다.</p>
+        <div id="problem-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const EXPECTED_CHAPTERS = 40;
+    const problemList = document.getElementById("problem-list");
+    const problemOutline = document.getElementById("problem-outline");
+    const loadStatus = document.getElementById("load-status");
+    const toggleAllAnswers = document.getElementById("toggle-all-answers");
+    const workbookBasePath = new URL("./", window.location.href).pathname;
+
+    function toLearningPageHref(rawHref) {
+      const sourceUrl = new URL(rawHref, window.location.href);
+      if (sourceUrl.origin !== window.location.origin) return rawHref;
+      if (!sourceUrl.pathname.startsWith(workbookBasePath)) return rawHref;
+      const sourceFile = sourceUrl.pathname.slice(workbookBasePath.length);
+      if (sourceFile === "practice/problems.md") return "./problems.html";
+      if (!/\.(?:fragment|java|md)$/i.test(sourceFile)) return rawHref;
+      return `./workbook-viewer.html?file=${encodeURIComponent(sourceFile)}`;
+    }
+
+    async function fetchText(path, raw = false) {
+      const url = new URL(path, window.location.href);
+      if (raw) url.searchParams.set("raw", "1");
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`${path}을 불러오지 못했습니다. HTTP ${response.status}`);
+      }
+      return response.text();
+    }
+
+    function parseWorkbookSections(source) {
+      const normalized = source.replace(/\r\n?/g, "\n");
+      const headingPattern = /^##\s+(\d+)\.\s+(.+?)\s*$/gm;
+      const matches = [...normalized.matchAll(headingPattern)];
+      return matches.map((match, index) => {
+        const contentStart = match.index + match[0].length;
+        const contentEnd = matches[index + 1]?.index ?? normalized.length;
+        return {
+          number: match[1].padStart(2, "0"),
+          title: match[2],
+          content: normalized.slice(contentStart, contentEnd).replace(/\n---\s*$/m, "").trim(),
+        };
+      });
+    }
+
+    function parseCurriculum(source) {
+      const documentSource = new DOMParser().parseFromString(source, "text/html");
+      return [...documentSource.querySelectorAll("[data-chapter]")].map((row) => ({
+        number: row.dataset.chapter,
+        area: row.querySelector(".area")?.textContent.trim() || "Practice",
+        title: row.querySelector("h3")?.textContent.trim() || "학습 챕터",
+        description: row.querySelector(":scope > div + p")?.textContent.trim()
+          || row.querySelector("p")?.textContent.trim()
+          || "",
+        output: row.dataset.careerOutput || "",
+        verification: row.dataset.careerCheck || "",
+        links: [...row.querySelectorAll(".chapter-links a")].map((link) => ({
+          label: link.textContent.trim(),
+          href: link.getAttribute("href"),
+        })),
+      }));
+    }
+
+    function appendInline(container, text) {
+      const tokenPattern = /(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
+      let cursor = 0;
+      for (const match of text.matchAll(tokenPattern)) {
+        if (match.index > cursor) {
+          container.append(document.createTextNode(text.slice(cursor, match.index)));
+        }
+        const token = match[0];
+        if (token.startsWith("**")) {
+          const strong = document.createElement("strong");
+          strong.textContent = token.slice(2, -2);
+          container.append(strong);
+        } else if (token.startsWith("`")) {
+          const code = document.createElement("code");
+          code.textContent = token.slice(1, -1);
+          container.append(code);
+        } else {
+          const linkMatch = token.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+          const link = document.createElement("a");
+          link.textContent = linkMatch[1];
+          link.href = toLearningPageHref(linkMatch[2]);
+          container.append(link);
+        }
+        cursor = match.index + token.length;
+      }
+      if (cursor < text.length) {
+        container.append(document.createTextNode(text.slice(cursor)));
+      }
+    }
+
+    function renderMarkdown(container, source) {
+      let activeList = null;
+      let activeListType = "";
+
+      source.split("\n").forEach((rawLine) => {
+        const line = rawLine.trim();
+        if (!line || line === "---") {
+          activeList = null;
+          activeListType = "";
+          return;
+        }
+
+        const unordered = line.match(/^-\s+(.+)$/);
+        const ordered = line.match(/^\d+\.\s+(.+)$/);
+        const listType = unordered ? "ul" : ordered ? "ol" : "";
+        if (listType) {
+          if (!activeList || activeListType !== listType) {
+            activeList = document.createElement(listType);
+            activeListType = listType;
+            container.append(activeList);
+          }
+          const item = document.createElement("li");
+          appendInline(item, (unordered || ordered)[1]);
+          activeList.append(item);
+          return;
+        }
+
+        activeList = null;
+        activeListType = "";
+        const paragraph = document.createElement("p");
+        appendInline(paragraph, line);
+        container.append(paragraph);
+      });
+    }
+
+    function makeOutlineItem(chapter) {
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      const number = document.createElement("span");
+      const title = document.createElement("span");
+      link.href = `#problem-${chapter.number}`;
+      number.className = "outline-number";
+      number.textContent = chapter.number;
+      title.textContent = chapter.title;
+      link.append(number, title);
+      item.append(link);
+      return item;
+    }
+
+    function makeProblemCard(problem, answer, chapter) {
+      const card = document.createElement("article");
+      card.className = "problem-card";
+      card.id = `problem-${chapter.number}`;
+      card.dataset.chapter = chapter.number;
+
+      const heading = document.createElement("header");
+      heading.className = "problem-heading";
+      const number = document.createElement("span");
+      number.className = "problem-number";
+      number.textContent = chapter.number;
+      const headingCopy = document.createElement("div");
+      const area = document.createElement("span");
+      area.className = "problem-area";
+      area.textContent = chapter.area;
+      const title = document.createElement("h2");
+      title.textContent = problem.title;
+      headingCopy.append(area, title);
+      heading.append(number, headingCopy);
+
+      const body = document.createElement("div");
+      body.className = "problem-body";
+
+      const problemSection = document.createElement("section");
+      problemSection.className = "problem-section";
+      const problemTitle = document.createElement("h3");
+      problemTitle.textContent = "문제";
+      const problemContent = document.createElement("div");
+      problemContent.className = "markdown";
+      renderMarkdown(problemContent, problem.content);
+      problemSection.append(problemTitle, problemContent);
+
+      const hint = document.createElement("aside");
+      hint.className = "hint-box";
+      const hintTitle = document.createElement("h3");
+      hintTitle.textContent = "힌트";
+      const hintList = document.createElement("ul");
+      [chapter.description, `취업 결과물 · ${chapter.output}`, `완료 검증 · ${chapter.verification}`]
+        .filter(Boolean)
+        .forEach((copy) => {
+          const item = document.createElement("li");
+          item.textContent = copy;
+          hintList.append(item);
+        });
+      hint.append(hintTitle, hintList);
+
+      const codeBox = document.createElement("section");
+      codeBox.className = "code-box";
+      const codeTitle = document.createElement("h3");
+      codeTitle.textContent = "실제 코드에 바로 연결";
+      const codeHelp = document.createElement("p");
+      codeHelp.textContent = "Hard에서 먼저 작성하고 막힐 때 Starter 구조를 비교하세요.";
+      const codeLinks = document.createElement("div");
+      codeLinks.className = "code-links";
+      [...chapter.links]
+        .sort((left, right) => Number(right.label.includes("Hard")) - Number(left.label.includes("Hard")))
+        .forEach(({ label, href }) => {
+          const link = document.createElement("a");
+          link.className = `code-link${label.includes("Hard") ? " hard" : ""}`;
+          link.href = toLearningPageHref(href);
+          link.textContent = `${label} 열기`;
+          codeLinks.append(link);
+        });
+      codeBox.append(codeTitle, codeHelp, codeLinks);
+
+      const answerPanel = document.createElement("details");
+      answerPanel.className = "answer-panel";
+      answerPanel.dataset.answer = chapter.number;
+      const answerSummary = document.createElement("summary");
+      answerSummary.textContent = "정답과 해설 확인";
+      const answerContent = document.createElement("div");
+      answerContent.className = "answer-content markdown";
+      renderMarkdown(answerContent, answer.content);
+      answerPanel.append(answerSummary, answerContent);
+
+      body.append(problemSection, hint, codeBox, answerPanel);
+      card.append(heading, body);
+      return card;
+    }
+
+    function updateToggleAllLabel() {
+      const answers = [...document.querySelectorAll(".answer-panel")];
+      const everyAnswerOpen = answers.length > 0 && answers.every((answer) => answer.open);
+      toggleAllAnswers.textContent = everyAnswerOpen ? "정답 모두 접기" : "정답 모두 펼치기";
+    }
+
+    function renderProblems(problems, answers, curriculum) {
+      if (
+        problems.length !== EXPECTED_CHAPTERS
+        || answers.length !== EXPECTED_CHAPTERS
+        || curriculum.length !== EXPECTED_CHAPTERS
+      ) {
+        throw new Error("문제·정답·목차가 각각 40개인지 확인하세요.");
+      }
+
+      const answerMap = new Map(answers.map((answer) => [answer.number, answer]));
+      const curriculumMap = new Map(curriculum.map((chapter) => [chapter.number, chapter]));
+      const outline = document.createElement("ol");
+      outline.className = "outline-list";
+      const cards = document.createDocumentFragment();
+
+      problems.forEach((problem, index) => {
+        const expectedNumber = String(index).padStart(2, "0");
+        const answer = answerMap.get(problem.number);
+        const chapter = curriculumMap.get(problem.number);
+        if (problem.number !== expectedNumber || !answer || !chapter || !chapter.links.length) {
+          throw new Error(`${expectedNumber}장 문제·정답·실제 파일 연결이 일치하지 않습니다.`);
+        }
+        outline.append(makeOutlineItem(chapter));
+        cards.append(makeProblemCard(problem, answer, chapter));
+      });
+
+      problemOutline.replaceChildren(outline);
+      problemList.replaceChildren(cards);
+      loadStatus.hidden = true;
+      toggleAllAnswers.disabled = false;
+      updateToggleAllLabel();
+    }
+
+    async function loadProblems() {
+      const [problemSource, answerSource, indexSource] = await Promise.all([
+        fetchText("./practice/problems.md", true),
+        fetchText("./practice/answers.md", true),
+        fetchText("./index.html"),
+      ]);
+      renderProblems(
+        parseWorkbookSections(problemSource),
+        parseWorkbookSections(answerSource),
+        parseCurriculum(indexSource),
+      );
+    }
+
+    toggleAllAnswers.addEventListener("click", () => {
+      const answers = [...document.querySelectorAll(".answer-panel")];
+      const shouldOpen = !answers.every((answer) => answer.open);
+      answers.forEach((answer) => {
+        answer.open = shouldOpen;
+      });
+      updateToggleAllLabel();
+    });
+
+    problemList.addEventListener("toggle", updateToggleAllLabel, true);
+
+    loadProblems().catch((error) => {
+      loadStatus.className = "error-status";
+      loadStatus.textContent = `문제집을 열 수 없습니다. ${error.message}`;
+      problemOutline.textContent = "메인 워크북으로 돌아가 다시 시도하세요.";
+    });
+  </script>
+</body>
+</html>

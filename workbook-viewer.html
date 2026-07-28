@@ -1,4 +1,4 @@
-<!-- Markdown과 Java 학습 자료를 브라우저에서 읽을 수 있게 보여주는 공통 문서 화면 -->
+<!-- Markdown과 Java·설정 조각 학습 자료를 브라우저에서 읽을 수 있게 보여주는 공통 문서 화면 -->
 <!doctype html>
 <html lang="ko">
 <head>
@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta
     name="description"
-    content="Company Work System의 기능 워크북과 실습 코드를 읽는 화면"
+    content="Company Work System의 기능 워크북과 Java·설정 조각 실습 코드를 읽는 화면"
   >
   <title>워크북 읽기 · Company Work System</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23185c45'/%3E%3Cpath d='M18 17h20c5 0 8 3 8 8v24H26c-5 0-8-3-8-8V17z' fill='%23fffdf7'/%3E%3Cpath d='M26 17v32' stroke='%23d4682d' stroke-width='4'/%3E%3C/svg%3E">
@@ -377,7 +377,7 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const sourceFile = params.get("file") || "";
-    const allowedSource = /^(?:practice\/[A-Za-z0-9._/-]+\.(?:java|md)|(?:README|company_work_system_PRD_TRD)\.md)$/;
+    const allowedSource = /^(?:practice\/[A-Za-z0-9._/-]+\.(?:fragment|java|md)|(?:README|company_work_system_PRD_TRD)\.md)$/;
     const documentTitle = document.getElementById("document-title");
     const sourceLabel = document.getElementById("source-label");
     const loadStatus = document.getElementById("load-status");
@@ -479,6 +479,10 @@
     }
 
     async function loadDocument() {
+      if (sourceFile === "practice/problems.md") {
+        window.location.replace("./problems.html");
+        return;
+      }
       if (!allowedSource.test(sourceFile) || sourceFile.includes("..")) {
         throw new Error("허용되지 않은 학습 자료 경로입니다.");
       }
