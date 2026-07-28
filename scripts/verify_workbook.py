@@ -15,6 +15,7 @@ STARTER_ROOT = ROOT / "practice" / "starter"
 HARD_ROOT = ROOT / "practice" / "hard"
 SERVER_SCRIPT = ROOT / "scripts" / "serve_workbook.py"
 OPEN_ORCA_SCRIPT = ROOT / "scripts" / "open_workbook_in_orca.sh"
+FAVICON_PREFIX = '<link rel="icon" href="data:image/svg+xml,'
 CODE_CHAPTERS = tuple([*range(20), 21, *range(23, 35)])
 VOID_TAGS = {
     "area",
@@ -81,6 +82,15 @@ def parse_html(path: Path) -> HtmlContractParser:
     parser.close()
     require(not parser.stack, f"{path.name}: 닫히지 않은 태그 {parser.stack}")
     return parser
+
+
+def validate_document_icons() -> None:
+    for path in HTML_FILES:
+        document = path.read_text(encoding="utf-8")
+        require(
+            document.count(FAVICON_PREFIX) == 1,
+            f"{path.name}: SVG 데이터 URI 파비콘 계약 누락",
+        )
 
 
 def is_external(raw: str) -> bool:
@@ -421,6 +431,7 @@ def validate_orca_launch_contract() -> None:
 def main() -> int:
     require(Path.cwd().resolve() == ROOT, "저장소 루트에서 실행해야 합니다")
     parsers = {path: parse_html(path) for path in HTML_FILES}
+    validate_document_icons()
     html_links = validate_html_links(parsers)
     markdown_links = validate_markdown_links()
     index = (ROOT / "index.html").read_text(encoding="utf-8")
