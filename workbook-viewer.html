@@ -1,0 +1,508 @@
+<!-- Markdown과 Java 학습 자료를 브라우저에서 읽을 수 있게 보여주는 공통 문서 화면 -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta
+    name="description"
+    content="Company Work System의 기능 워크북과 실습 코드를 읽는 화면"
+  >
+  <title>워크북 읽기 · Company Work System</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23185c45'/%3E%3Cpath d='M18 17h20c5 0 8 3 8 8v24H26c-5 0-8-3-8-8V17z' fill='%23fffdf7'/%3E%3Cpath d='M26 17v32' stroke='%23d4682d' stroke-width='4'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #18211b;
+      --muted: #5d6961;
+      --paper: #f5f2e9;
+      --surface: #fffdf7;
+      --line: #d7d4c9;
+      --green: #185c45;
+      --green-dark: #103d2f;
+      --green-soft: #dfece3;
+      --orange: #d4682d;
+      --shadow: 0 18px 45px rgba(34, 45, 38, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(212, 104, 45, 0.10), transparent 28rem),
+        var(--paper);
+      font-family:
+        Pretendard, "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--green);
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--orange);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 20;
+      padding: 0.65rem 0.9rem;
+      color: white;
+      background: var(--green-dark);
+      border-radius: 0.5rem;
+      transform: translateY(-180%);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(215, 212, 201, 0.9);
+      background: rgba(245, 242, 233, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar-inner {
+      width: min(1180px, calc(100% - 2rem));
+      min-height: 64px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      color: var(--green-dark);
+      font-size: 0.95rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 40px;
+      padding: 0.55rem 0.85rem;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--green-dark);
+      background: var(--surface);
+      font: inherit;
+      font-size: 0.86rem;
+      font-weight: 750;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button.primary {
+      border-color: var(--green);
+      color: white;
+      background: var(--green);
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(210px, 270px) minmax(0, 1fr);
+      gap: 1.25rem;
+      padding: 1.5rem 0 4rem;
+      align-items: start;
+    }
+
+    .outline-card,
+    .reader {
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .outline-card {
+      position: sticky;
+      top: 5.5rem;
+      max-height: calc(100vh - 7rem);
+      padding: 1rem;
+      overflow: auto;
+    }
+
+    .outline-card h2 {
+      margin: 0 0 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .outline-list {
+      display: grid;
+      gap: 0.25rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .outline-list a {
+      display: block;
+      padding: 0.45rem 0.55rem;
+      border-radius: 0.45rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+      text-decoration: none;
+    }
+
+    .outline-list a:hover {
+      color: var(--green-dark);
+      background: var(--green-soft);
+    }
+
+    .outline-list .depth-3 {
+      padding-left: 1.1rem;
+      font-size: 0.78rem;
+    }
+
+    .reader {
+      min-width: 0;
+      padding: clamp(1.25rem, 4vw, 3rem);
+    }
+
+    .eyebrow {
+      margin: 0 0 0.5rem;
+      color: var(--orange);
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .reader h1 {
+      margin: 0;
+      color: var(--green-dark);
+      font-size: clamp(1.7rem, 4vw, 2.65rem);
+      line-height: 1.2;
+      letter-spacing: -0.035em;
+    }
+
+    .source-label {
+      margin: 0.75rem 0 2rem;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+      overflow-wrap: anywhere;
+    }
+
+    .status {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 0.7rem;
+      color: var(--muted);
+      background: #fff;
+    }
+
+    .status.error {
+      border-color: #c95a46;
+      color: #7c2d20;
+      background: #fff2ee;
+    }
+
+    .document-section {
+      scroll-margin-top: 5.5rem;
+    }
+
+    .document-section + .document-section {
+      margin-top: 2.4rem;
+      padding-top: 0.25rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .document-section h2,
+    .document-section h3,
+    .document-section h4 {
+      color: var(--green-dark);
+      line-height: 1.35;
+      letter-spacing: -0.02em;
+    }
+
+    .document-section h2 {
+      margin: 0.5rem 0 1rem;
+      font-size: 1.5rem;
+    }
+
+    .document-section h3 {
+      margin: 0.4rem 0 0.85rem;
+      font-size: 1.18rem;
+    }
+
+    .document-section h4 {
+      margin: 0.3rem 0 0.75rem;
+      font-size: 1rem;
+    }
+
+    .document-source {
+      margin: 0;
+      padding: 1rem;
+      overflow-x: auto;
+      border: 1px solid #e3dfd3;
+      border-radius: 0.7rem;
+      color: #26332b;
+      background: #fbfaf5;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.86rem;
+      line-height: 1.7;
+      tab-size: 2;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner {
+        min-height: 58px;
+      }
+
+      .brand {
+        max-width: 9rem;
+        line-height: 1.2;
+      }
+
+      .button {
+        min-height: 38px;
+        padding-inline: 0.7rem;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        padding-top: 1rem;
+      }
+
+      .outline-card {
+        position: static;
+        max-height: 15rem;
+        order: 2;
+      }
+
+      .reader {
+        order: 1;
+        border-radius: 0.8rem;
+      }
+
+      .document-source {
+        padding: 0.8rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    @media print {
+      .topbar,
+      .outline-card {
+        display: none;
+      }
+
+      .layout {
+        display: block;
+      }
+
+      .reader {
+        border: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#document-content">본문으로 건너뛰기</a>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./index.html">Company Work System</a>
+      <div class="actions">
+        <a class="button primary" href="./index.html">메인 워크북</a>
+        <button id="print-document" class="button" type="button">인쇄</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page layout">
+    <aside class="outline-card" aria-labelledby="outline-title">
+      <h2 id="outline-title">문서 목차</h2>
+      <nav id="document-outline" aria-label="현재 문서 목차">
+        <p>문서를 불러오는 중입니다.</p>
+      </nav>
+    </aside>
+
+    <article id="document-content" class="reader" tabindex="-1">
+      <p class="eyebrow">취업 결과물 워크북</p>
+      <h1 id="document-title">워크북을 불러오는 중입니다.</h1>
+      <p id="source-label" class="source-label"></p>
+      <p id="load-status" class="status" role="status">학습 자료를 준비하고 있습니다.</p>
+      <div id="document-body"></div>
+    </article>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const sourceFile = params.get("file") || "";
+    const allowedSource = /^(?:practice\/[A-Za-z0-9._/-]+\.(?:java|md)|(?:README|company_work_system_PRD_TRD)\.md)$/;
+    const documentTitle = document.getElementById("document-title");
+    const sourceLabel = document.getElementById("source-label");
+    const loadStatus = document.getElementById("load-status");
+    const documentBody = document.getElementById("document-body");
+    const documentOutline = document.getElementById("document-outline");
+    const printDocument = document.getElementById("print-document");
+
+    function makeHeadingId(title, index) {
+      const slug = title
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu, "-")
+        .replace(/^-|-$/g, "")
+        .slice(0, 48);
+      return `section-${index}-${slug || "item"}`;
+    }
+
+    function splitDocument(source) {
+      const chunks = [];
+      let current = { level: 1, title: "", lines: [] };
+
+      source.replace(/\r\n?/g, "\n").split("\n").forEach((line) => {
+        const heading = line.match(/^(#{1,6})\s+(.+?)\s*$/);
+        if (!heading) {
+          current.lines.push(line);
+          return;
+        }
+        if (current.title || current.lines.some((item) => item.trim())) {
+          chunks.push(current);
+        }
+        current = {
+          level: heading[1].length,
+          title: heading[2],
+          lines: [],
+        };
+      });
+
+      if (current.title || current.lines.some((item) => item.trim())) {
+        chunks.push(current);
+      }
+      return chunks;
+    }
+
+    function renderDocument(source) {
+      const chunks = splitDocument(source);
+      const firstTitle = chunks.find((chunk) => chunk.level === 1 && chunk.title);
+      const displayTitle = firstTitle?.title || sourceFile.split("/").pop() || "학습 자료";
+      const outlineList = document.createElement("ol");
+      outlineList.className = "outline-list";
+
+      documentTitle.textContent = displayTitle;
+      document.title = `${displayTitle} · Company Work System`;
+      documentBody.replaceChildren();
+
+      chunks.forEach((chunk, index) => {
+        const section = document.createElement("section");
+        section.className = "document-section";
+        const isPageTitle = chunk === firstTitle;
+
+        if (chunk.title && !isPageTitle) {
+          const headingLevel = Math.min(Math.max(chunk.level, 2), 4);
+          const heading = document.createElement(`h${headingLevel}`);
+          const headingId = makeHeadingId(chunk.title, index);
+          heading.id = headingId;
+          heading.textContent = chunk.title;
+          section.id = headingId;
+          section.append(heading);
+
+          if (chunk.level <= 3) {
+            const item = document.createElement("li");
+            const link = document.createElement("a");
+            link.href = `#${headingId}`;
+            link.textContent = chunk.title;
+            if (chunk.level === 3) {
+              link.className = "depth-3";
+            }
+            item.append(link);
+            outlineList.append(item);
+          }
+        }
+
+        const content = chunk.lines.join("\n").trim();
+        if (content) {
+          const sourceBlock = document.createElement("pre");
+          sourceBlock.className = "document-source";
+          sourceBlock.textContent = content;
+          section.append(sourceBlock);
+        }
+        documentBody.append(section);
+      });
+
+      if (outlineList.childElementCount) {
+        documentOutline.replaceChildren(outlineList);
+      } else {
+        const emptyOutline = document.createElement("p");
+        emptyOutline.textContent = "이 문서에는 별도 목차가 없습니다.";
+        documentOutline.replaceChildren(emptyOutline);
+      }
+      loadStatus.hidden = true;
+    }
+
+    async function loadDocument() {
+      if (!allowedSource.test(sourceFile) || sourceFile.includes("..")) {
+        throw new Error("허용되지 않은 학습 자료 경로입니다.");
+      }
+
+      sourceLabel.textContent = sourceFile;
+      const sourceUrl = new URL(`./${sourceFile}`, window.location.href);
+      sourceUrl.searchParams.set("raw", "1");
+      const response = await fetch(sourceUrl);
+      if (!response.ok) {
+        throw new Error(`학습 자료를 불러오지 못했습니다. HTTP ${response.status}`);
+      }
+      renderDocument(await response.text());
+    }
+
+    printDocument.addEventListener("click", () => window.print());
+    loadDocument().catch((error) => {
+      documentTitle.textContent = "워크북을 열 수 없습니다.";
+      sourceLabel.textContent = sourceFile || "파일 경로 없음";
+      loadStatus.textContent = error.message;
+      loadStatus.classList.add("error");
+      const retryHelp = document.createElement("p");
+      retryHelp.textContent = "메인 워크북으로 돌아가 다시 시도하세요.";
+      documentOutline.replaceChildren(retryHelp);
+    });
+  </script>
+</body>
+</html>

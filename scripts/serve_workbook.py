@@ -4,7 +4,7 @@ from __future__ import annotations
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path, PurePosixPath
-from urllib.parse import unquote, urlsplit, urlunsplit
+from urllib.parse import parse_qs, quote, unquote, urlsplit, urlunsplit
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -17,11 +17,19 @@ PUBLIC_ROOT_FILES = {
     "history.html",
     "README.md",
     "company_work_system_PRD_TRD.md",
+    "workbook-viewer.html",
 }
 PUBLIC_DIRECTORIES = {"practice"}
+TEXT_VIEWER_SUFFIXES = {".java", ".md"}
 
 
 class WorkbookRequestHandler(SimpleHTTPRequestHandler):
+    extensions_map = {
+        **SimpleHTTPRequestHandler.extensions_map,
+        ".java": "text/plain; charset=utf-8",
+        ".md": "text/plain; charset=utf-8",
+    }
+
     def __init__(self, *args: object, **kwargs: object) -> None:
         super().__init__(*args, directory=str(REPO_ROOT), **kwargs)
 
@@ -56,13 +64,36 @@ class WorkbookRequestHandler(SimpleHTTPRequestHandler):
         self.path = urlunsplit(("", "", relative_path, parsed.query, ""))
         return True
 
+    def redirect_document_to_viewer(self) -> bool:
+        parsed = urlsplit(self.path)
+        if Path(parsed.path).suffix.lower() not in TEXT_VIEWER_SUFFIXES:
+            return False
+        if parse_qs(parsed.query).get("raw") == ["1"]:
+            return False
+
+        source_file = parsed.path.lstrip("/")
+        viewer_url = (
+            f"{URI_PREFIX}/workbook-viewer.html"
+            f"?file={quote(source_file, safe='/')}"
+        )
+        self.send_response(HTTPStatus.FOUND)
+        self.send_header("Location", viewer_url)
+        self.end_headers()
+        return True
+
     def do_GET(self) -> None:
-        if self.prepare_workbook_path():
-            super().do_GET()
+        if not self.prepare_workbook_path():
+            return
+        if self.redirect_document_to_viewer():
+            return
+        super().do_GET()
 
     def do_HEAD(self) -> None:
-        if self.prepare_workbook_path():
-            super().do_HEAD()
+        if not self.prepare_workbook_path():
+            return
+        if self.redirect_document_to_viewer():
+            return
+        super().do_HEAD()
 
     def list_directory(self, path: str) -> None:
         self.send_error(HTTPStatus.NOT_FOUND)

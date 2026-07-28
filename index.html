@@ -2375,6 +2375,28 @@
 
       let state = loadState();
       const byId = (id) => document.getElementById(id);
+      const workbookBasePath = new URL("./", window.location.href).pathname;
+      const toWorkbookViewerHref = (rawHref) => {
+        if (!rawHref) return rawHref;
+        const sourceUrl = new URL(rawHref, window.location.href);
+        if (sourceUrl.origin !== window.location.origin) return rawHref;
+        if (!sourceUrl.pathname.startsWith(workbookBasePath)) return rawHref;
+        const sourceFile = sourceUrl.pathname.slice(workbookBasePath.length);
+        if (!/\.(?:java|md)$/i.test(sourceFile)) return rawHref;
+        return `./workbook-viewer.html?file=${encodeURIComponent(sourceFile)}`;
+      };
+      const routeDocumentLinks = () => {
+        document.querySelectorAll("a[href]").forEach((link) => {
+          const sourceHref = link.getAttribute("href");
+          const viewerHref = toWorkbookViewerHref(sourceHref);
+          if (viewerHref === sourceHref) return;
+          link.dataset.sourceHref = sourceHref;
+          link.setAttribute("href", viewerHref);
+        });
+        document.querySelectorAll("[data-action-href]").forEach((card) => {
+          card.dataset.actionHref = toWorkbookViewerHref(card.dataset.actionHref);
+        });
+      };
       const profileFields = {
         targetRole: byId("target-role"),
         targetDeadline: byId("target-deadline"),
@@ -2389,6 +2411,7 @@
       };
       const storageStatus = byId("storage-status");
       const stageCards = [...document.querySelectorAll("[data-stage]")];
+      routeDocumentLinks();
       const stageChecks = [...document.querySelectorAll("[data-stage-check]")];
       const sessionChecks = [...document.querySelectorAll("[data-session-check]")];
       const chapterRows = [...document.querySelectorAll("[data-chapter]")];
@@ -2483,7 +2506,7 @@
       const setNextAction = (title, copy, href, label) => {
         nextAction.title.textContent = title;
         nextAction.copy.textContent = copy;
-        nextAction.link.href = href;
+        nextAction.link.href = toWorkbookViewerHref(href);
         nextAction.link.textContent = label;
       };
 
@@ -2608,8 +2631,9 @@
         const title = row.querySelector("h3").textContent;
         const copy = row.querySelector("p").textContent;
         const links = [...row.querySelectorAll(".chapter-links a")];
-        const hardLink = links.find((link) => link.getAttribute("href").includes("/hard/"));
-        const starterLink = links.find((link) => link.getAttribute("href").includes("/starter/"));
+        const sourceHref = (link) => link.dataset.sourceHref || link.getAttribute("href");
+        const hardLink = links.find((link) => sourceHref(link).includes("/hard/"));
+        const starterLink = links.find((link) => sourceHref(link).includes("/starter/"));
         const worksheetLink = links[0];
 
         selectedChapterTitle.textContent = `${number}. ${title} 학습 루프`;
@@ -2642,11 +2666,11 @@
         showSelectedChapter.hidden = false;
         openSelectedGuide.disabled = false;
         openSelectedGuide.textContent = `${number}. ${title} 문제로 이동`;
-        selectedHardLink.href = (hardLink || worksheetLink).getAttribute("href");
+        selectedHardLink.href = toWorkbookViewerHref(sourceHref(hardLink || worksheetLink));
         selectedHardLink.textContent = hardLink ? "Hard 열기" : "워크시트 직접 작성";
         selectedStarterLink.href = hardLink && starterLink
-          ? starterLink.getAttribute("href")
-          : "./practice/answers.md";
+          ? toWorkbookViewerHref(sourceHref(starterLink))
+          : toWorkbookViewerHref("./practice/answers.md");
         selectedStarterLink.textContent = hardLink && starterLink ? "Starter 열기" : "정답과 해설 보기";
       };
 

@@ -10,7 +10,11 @@ import sys
 
 
 ROOT = Path(__file__).resolve().parent.parent
-HTML_FILES = (ROOT / "index.html", ROOT / "history.html")
+HTML_FILES = (
+    ROOT / "index.html",
+    ROOT / "history.html",
+    ROOT / "workbook-viewer.html",
+)
 STARTER_ROOT = ROOT / "practice" / "starter"
 HARD_ROOT = ROOT / "practice" / "hard"
 SERVER_SCRIPT = ROOT / "scripts" / "serve_workbook.py"
@@ -91,6 +95,38 @@ def validate_document_icons() -> None:
             document.count(FAVICON_PREFIX) == 1,
             f"{path.name}: SVG 데이터 URI 파비콘 계약 누락",
         )
+
+
+def validate_viewer_contract(viewer: str) -> None:
+    for contract in (
+        'id="document-title"',
+        'id="document-content"',
+        'id="document-outline"',
+        "new URLSearchParams",
+        'sourceUrl.searchParams.set("raw", "1")',
+        "fetch(sourceUrl)",
+        "document.createElement",
+        "textContent",
+    ):
+        require(contract in viewer, f"문서 읽기 화면 계약 누락: {contract}")
+
+    script = extract_single(viewer, "script")
+    result = subprocess.run(
+        ["node", "--check", "-"],
+        input=script,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    require(result.returncode == 0, f"문서 읽기 화면 JavaScript 구문 오류\n{result.stderr.strip()}")
+
+    style = extract_single(viewer, "style")
+    require(style.count("{") == style.count("}"), "문서 읽기 화면 CSS 중괄호 수가 맞지 않음")
+    require("@media (max-width: 760px)" in style, "문서 읽기 화면 모바일 반응형 분기가 없음")
+    require(
+        "@media (prefers-reduced-motion: reduce)" in style,
+        "문서 읽기 화면 모션 축소 반응형 분기가 없음",
+    )
 
 
 def is_external(raw: str) -> bool:
@@ -254,6 +290,8 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
     require("updateListValue" in index, "체크 목록 공통 갱신 함수가 없음")
     require("setActiveNavigation" in index, "현재 메뉴 표시 함수가 없음")
     require("focusSelectedChapter" in index, "선택 챕터 포커스 이동 함수가 없음")
+    require("toWorkbookViewerHref" in index, "학습 문서 읽기 화면 변환 함수가 없음")
+    require("routeDocumentLinks" in index, "학습 문서 링크 공통 변환 함수가 없음")
     require("prefersReducedMotion" in index, "모션 축소 감지 계약이 없음")
     require("window.history.replaceState" in index, "프로그램 화면 전환의 현재 메뉴 동기화가 없음")
     require(index.count('class="skip-link"') == 1, "본문 바로 가기 링크가 1개가 아님")
@@ -396,6 +434,12 @@ def validate_orca_launch_contract() -> None:
         "PORT = 4174",
         'URI_PREFIX = f"/{REPO_ROOT.name}"',
         'PUBLIC_DIRECTORIES = {"practice"}',
+        '".md": "text/plain; charset=utf-8"',
+        '".java": "text/plain; charset=utf-8"',
+        '"workbook-viewer.html"',
+        'TEXT_VIEWER_SUFFIXES = {".java", ".md"}',
+        "def redirect_document_to_viewer",
+        'parse_qs(parsed.query).get("raw") == ["1"]',
         "if not parsed.path.startswith(allowed_prefix)",
         'part.startswith(".")',
         "HTTPStatus.NOT_FOUND",
@@ -434,6 +478,8 @@ def main() -> int:
     validate_document_icons()
     html_links = validate_html_links(parsers)
     markdown_links = validate_markdown_links()
+    viewer = (ROOT / "workbook-viewer.html").read_text(encoding="utf-8")
+    validate_viewer_contract(viewer)
     index = (ROOT / "index.html").read_text(encoding="utf-8")
     validate_index_contract(index, parsers[ROOT / "index.html"])
     program_folders, program_files = validate_program_folders(parsers[ROOT / "index.html"])
@@ -442,7 +488,7 @@ def main() -> int:
     validate_orca_launch_contract()
 
     print("워크북 검증 통과")
-    print(f"- HTML 2개와 로컬 링크 {html_links}개")
+    print(f"- HTML {len(HTML_FILES)}개와 로컬 링크 {html_links}개")
     print(f"- Markdown 상대 링크 {markdown_links}개")
     print(f"- 내부 목표·계약과 HTML 연결이 있는 프로그램 폴더 {program_folders}개·학습 파일 {program_files}개")
     print("- 학습 목차 6단계, 취업 로드맵 5단계, 취업 결과물 계약이 있는 챕터 40개, 세션 체크 5개")
