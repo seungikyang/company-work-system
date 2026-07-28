@@ -509,8 +509,8 @@
   <main class="page">
     <section class="summary-grid" aria-label="히스토리 요약">
       <article class="summary-card">
-        <strong>20</strong>
-        <span>최초 생성부터 Orca 고정 URI 실행까지 연결된 Git 단계</span>
+        <strong>21</strong>
+        <span>최초 생성부터 화면 전환 UX 폐쇄 루프까지 연결된 Git 단계</span>
       </article>
       <article class="summary-card">
         <strong>40</strong>
@@ -565,13 +565,39 @@
         <h2 id="timeline-title">변경 타임라인</h2>
         <p>
           커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
-          워크북 사용 흐름의 변화와 대표 배포 확인 이력 20개를 기록하며,
+          워크북 사용 흐름의 변화와 대표 배포 확인 이력 21개를 기록하며,
           이 페이지의 단순 이력 동기화 같은 관리 커밋은 생략할 수 있습니다.
         </p>
       </div>
 
       <ol class="timeline">
         <li class="history-item latest">
+          <time class="history-date" datetime="2026-07-28">2026.07.28</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">UI·UX 폐쇄 루프</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/0491df45175349c4a4293966e3b294692e234e56"
+              >0491df4</a>
+            </div>
+            <h3>고정 헤더와 챕터 포커스를 연결한 화면 전환 UX</h3>
+            <p>
+              모바일 메뉴와 고정 헤더, 챕터 선택 뒤 문제 발견성, 키보드 포커스와
+              상태 복원 흐름을 실제 브라우저에서 반복해 재현하고 수정하여 긴
+              단일 페이지에서도 현재 위치와 다음 행동을 놓치지 않게 했습니다.
+            </p>
+            <ul>
+              <li>모바일 고정 헤더 116.5px에서 88.3px로 축소</li>
+              <li>모든 내부 앵커 제목을 고정 헤더 아래에 완전히 표시</li>
+              <li>선택 문제 이동과 이전·다음 챕터의 제목 포커스·현재 메뉴 동기화</li>
+              <li>공통 버튼 포커스 표시와 동작 줄이기 환경 대응</li>
+              <li>저장·힌트·정답·초기화·펼치기 회귀와 브라우저 오류 0개 확인</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
           <time class="history-date" datetime="2026-07-27">2026.07.27</time>
           <article class="history-card">
             <div class="history-meta">
@@ -1114,7 +1140,7 @@
 
   <footer class="page">
     <p>Java 백엔드 취업 포트폴리오 워크북</p>
-    <p>마지막 문서 갱신일 <time datetime="2026-07-27">2026년 7월 27일</time></p>
+    <p>마지막 문서 갱신일 <time datetime="2026-07-28">2026년 7월 28일</time></p>
   </footer>
 </body>
 </html>
