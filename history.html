@@ -510,8 +510,8 @@
   <main class="page">
     <section class="summary-grid" aria-label="히스토리 요약">
       <article class="summary-card">
-        <strong>21</strong>
-        <span>최초 생성부터 화면 전환 UX 폐쇄 루프까지 연결된 Git 단계</span>
+        <strong>22</strong>
+        <span>최초 생성부터 네트워크 오류 제거까지 연결된 Git 단계</span>
       </article>
       <article class="summary-card">
         <strong>40</strong>
@@ -566,13 +566,38 @@
         <h2 id="timeline-title">변경 타임라인</h2>
         <p>
           커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
-          워크북 사용 흐름의 변화와 대표 배포 확인 이력 21개를 기록하며,
+          워크북 사용 흐름의 변화와 대표 배포 확인 이력 22개를 기록하며,
           이 페이지의 단순 이력 동기화 같은 관리 커밋은 생략할 수 있습니다.
         </p>
       </div>
 
       <ol class="timeline">
         <li class="history-item latest">
+          <time class="history-date" datetime="2026-07-28">2026.07.28</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">네트워크 마감</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/61873ed49ba53e7d7c721571ac6cfd2237bf2272"
+              >61873ed</a>
+            </div>
+            <h3>문서 안에 포함한 아이콘으로 파비콘 404 제거</h3>
+            <p>
+              기능·콘솔 회귀가 끝난 뒤 서버 로그에 남은 파비콘 요청 404까지
+              추가 루프로 제거했습니다. 메인과 이력 화면이 별도 파일 요청 없이
+              같은 아이콘을 사용하도록 SVG 데이터 URI를 문서에 직접 포함했습니다.
+            </p>
+            <ul>
+              <li>메인·이력 화면의 자체 포함 SVG 파비콘 계약 추가</li>
+              <li>추가 정적 파일과 서버 예외 처리 없이 요청 실패 제거</li>
+              <li>새 브라우저 로드에서 각 문서 요청 HTTP 200만 기록</li>
+              <li>두 화면의 경고·오류 로그와 가로 넘침 0개 재확인</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
           <time class="history-date" datetime="2026-07-28">2026.07.28</time>
           <article class="history-card">
             <div class="history-meta">
