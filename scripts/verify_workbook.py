@@ -242,6 +242,11 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
     require("setNextAction" in index, "다음 행동 공통 갱신 함수가 없음")
     require("setCoursesOpen" in index, "전체 코스 펼치기·접기 공통 함수가 없음")
     require("updateListValue" in index, "체크 목록 공통 갱신 함수가 없음")
+    require("setActiveNavigation" in index, "현재 메뉴 표시 함수가 없음")
+    require("focusSelectedChapter" in index, "선택 챕터 포커스 이동 함수가 없음")
+    require("prefersReducedMotion" in index, "모션 축소 감지 계약이 없음")
+    require("window.history.replaceState" in index, "프로그램 화면 전환의 현재 메뉴 동기화가 없음")
+    require(index.count('class="skip-link"') == 1, "본문 바로 가기 링크가 1개가 아님")
     require('workbook: { answers: {}, reviewed: [] }' in index, "챕터별 문제집 기본 상태가 없음")
     require("state.workbook.answers[number]" in index, "챕터별 답안 저장 계약이 없음")
     require("state.workbook.reviewed" in index, "정답 비교 완료 저장 계약이 없음")
@@ -283,6 +288,7 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
         "chapter-position",
         "previous-chapter",
         "next-chapter",
+        "open-selected-guide",
         "show-selected-chapter",
         "verification-status",
         "verification-status-title",
@@ -318,6 +324,11 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
     require(style.count("{") == style.count("}"), "CSS 중괄호 수가 맞지 않음")
     require("@media (max-width: 920px)" in style, "태블릿 반응형 분기가 없음")
     require("@media (max-width: 680px)" in style, "모바일 반응형 분기가 없음")
+    require("@media (prefers-reduced-motion: reduce)" in style, "모션 축소 반응형 분기가 없음")
+    require("scroll-margin-top" in style, "고정 헤더를 고려한 앵커 여백이 없음")
+    require('a[aria-current="location"]' in style, "현재 메뉴 표시 스타일이 없음")
+    require("button:focus-visible" in style, "버튼 키보드 포커스 스타일이 없음")
+    require(".session-jump" in style, "선택 챕터 문제 이동 버튼 스타일이 없음")
     require(".career-contract" in style, "취업 결과물 계약 반응형 스타일이 없음")
     require(".chapter-workbook" in style, "챕터 문제집 스타일이 없음")
     require(".workbook-reveal[hidden]" in style, "힌트·정답 숨김 스타일이 없음")

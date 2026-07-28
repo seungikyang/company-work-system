@@ -55,9 +55,16 @@
     }
 
     a:focus-visible,
+    button:focus-visible,
     summary:focus-visible {
       outline: 3px solid rgba(212, 104, 45, 0.55);
       outline-offset: 4px;
+    }
+
+    [tabindex="-1"]:focus-visible {
+      border-radius: 6px;
+      outline: 3px solid rgba(255, 202, 158, 0.78);
+      outline-offset: 5px;
     }
 
     .skip-link {
@@ -116,11 +123,23 @@
     }
 
     .topnav a {
+      border-radius: 4px;
       text-decoration: none;
     }
 
-    .topnav a:hover {
+    .topnav a:hover,
+    .topnav a[aria-current="location"] {
       color: var(--green);
+    }
+
+    .topnav a[aria-current="location"] {
+      box-shadow: inset 0 -2px var(--orange);
+    }
+
+    section[id],
+    #top,
+    #selected-chapter-guide {
+      scroll-margin-top: 88px;
     }
 
     .hero {
@@ -645,6 +664,29 @@
     .session-fields {
       display: grid;
       gap: 12px;
+    }
+
+    .session-jump {
+      justify-self: start;
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.10);
+      color: white;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 850;
+    }
+
+    .session-jump:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .session-jump:disabled {
+      color: rgba(255, 255, 255, 0.46);
+      cursor: not-allowed;
     }
 
     .session-field {
@@ -1298,12 +1340,46 @@
       .topbar-inner {
         align-items: flex-start;
         flex-direction: column;
-        gap: 8px;
-        padding: 12px 0;
+        gap: 5px;
+        padding: 8px 0 6px;
       }
 
       .topnav {
-        gap: 12px;
+        display: flex;
+        width: 100%;
+        gap: 5px;
+        overflow-x: auto;
+        padding: 2px 0 6px;
+        overscroll-behavior-inline: contain;
+        scroll-snap-type: inline proximity;
+        scrollbar-width: none;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .topnav::-webkit-scrollbar {
+        display: none;
+      }
+
+      .topnav a {
+        flex: 0 0 auto;
+        padding: 5px 8px;
+        border: 1px solid rgba(215, 212, 201, 0.88);
+        border-radius: 999px;
+        background: rgba(255, 253, 247, 0.72);
+        scroll-snap-align: start;
+      }
+
+      .topnav a[aria-current="location"] {
+        border-color: rgba(24, 92, 69, 0.34);
+        background: var(--green-soft);
+        box-shadow: none;
+      }
+
+      section[id],
+      #top,
+      #selected-chapter-guide {
+        scroll-margin-top: 100px;
       }
 
       .hero {
@@ -1390,6 +1466,20 @@
       footer {
         flex-direction: column;
         gap: 8px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
     }
 
@@ -1733,6 +1823,9 @@
               <option value="">챕터 선택하기</option>
             </select>
           </label>
+          <button id="open-selected-guide" class="session-jump" type="button" disabled>
+            챕터를 선택하면 문제로 이동할 수 있습니다
+          </button>
           <label class="session-field">
             오늘의 완료 조건
             <textarea id="today-goal" placeholder="예: 휴가 신청 성공·중복 실패 테스트를 통과한다."></textarea>
@@ -1763,7 +1856,7 @@
       </div>
       <article id="selected-chapter-guide" class="selected-chapter-guide" aria-live="polite">
         <p class="card-label">Selected Chapter Loop</p>
-        <h3 id="selected-chapter-title">오늘 볼 챕터를 선택하세요.</h3>
+        <h3 id="selected-chapter-title" tabindex="-1">오늘 볼 챕터를 선택하세요.</h3>
         <p id="selected-chapter-copy">
           선택하면 해당 챕터의 실제 학습 파일과 구현·검증 순서가 바로 연결됩니다.
         </p>
@@ -2299,7 +2392,11 @@
       const sessionChecks = [...document.querySelectorAll("[data-session-check]")];
       const chapterRows = [...document.querySelectorAll("[data-chapter]")];
       const courses = [...document.querySelectorAll(".course")];
+      const navigationLinks = [...document.querySelectorAll('.topnav a[href^="#"]')];
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const scrollBehavior = prefersReducedMotion ? "auto" : "smooth";
       const todayChapter = todayFields.chapter;
+      const selectedChapterGuide = byId("selected-chapter-guide");
       const selectedChapterTitle = byId("selected-chapter-title");
       const selectedChapterCopy = byId("selected-chapter-copy");
       const selectedCareerContract = byId("selected-career-contract");
@@ -2327,6 +2424,7 @@
       const previousChapterButton = byId("previous-chapter");
       const nextChapterButton = byId("next-chapter");
       const showSelectedChapter = byId("show-selected-chapter");
+      const openSelectedGuide = byId("open-selected-guide");
       const verificationStatus = byId("verification-status");
       const verificationStatusTitle = byId("verification-status-title");
       const verificationStatusCopy = byId("verification-status-copy");
@@ -2386,6 +2484,25 @@
         nextAction.copy.textContent = copy;
         nextAction.link.href = href;
         nextAction.link.textContent = label;
+      };
+
+      const setActiveNavigation = () => {
+        const currentHash = window.location.hash;
+        let activeLink = null;
+        navigationLinks.forEach((link) => {
+          const active = Boolean(currentHash) && link.getAttribute("href") === currentHash;
+          if (active) {
+            link.setAttribute("aria-current", "location");
+            activeLink = link;
+          } else {
+            link.removeAttribute("aria-current");
+          }
+        });
+        activeLink?.scrollIntoView({
+          behavior: scrollBehavior,
+          block: "nearest",
+          inline: "center"
+        });
       };
 
       const updateDashboard = () => {
@@ -2477,6 +2594,8 @@
           chapterWorkbook.hidden = true;
           chapterSequence.hidden = true;
           showSelectedChapter.hidden = true;
+          openSelectedGuide.disabled = true;
+          openSelectedGuide.textContent = "챕터를 선택하면 문제로 이동할 수 있습니다";
           resetWorkbookReveals();
           return;
         }
@@ -2520,6 +2639,8 @@
           ? `${nextRow.dataset.chapter}. ${nextRow.querySelector("h3").textContent} →`
           : "다음 챕터 없음 →";
         showSelectedChapter.hidden = false;
+        openSelectedGuide.disabled = false;
+        openSelectedGuide.textContent = `${number}. ${title} 문제로 이동`;
         selectedHardLink.href = (hardLink || worksheetLink).getAttribute("href");
         selectedHardLink.textContent = hardLink ? "Hard 열기" : "워크시트 직접 작성";
         selectedStarterLink.href = hardLink && starterLink
@@ -2702,30 +2823,46 @@
       expandAllButton.addEventListener("click", () => setCoursesOpen(true));
       collapseAllButton.addEventListener("click", () => setCoursesOpen(false));
 
+      const focusSelectedChapter = () => {
+        if (!state.today.chapter) return;
+        window.history.replaceState(null, "", "#session");
+        setActiveNavigation();
+        selectedChapterGuide.scrollIntoView({
+          behavior: scrollBehavior,
+          block: "start"
+        });
+        selectedChapterTitle.focus({ preventScroll: true });
+      };
+
+      openSelectedGuide.addEventListener("click", focusSelectedChapter);
+
       showSelectedChapter.addEventListener("click", () => {
         const row = chapterRows.find((item) => item.dataset.chapter === state.today.chapter);
         if (!row) return;
         row.closest(".course").open = true;
-        row.scrollIntoView({ behavior: "smooth", block: "center" });
+        window.history.replaceState(null, "", "#curriculum");
+        setActiveNavigation();
+        row.scrollIntoView({ behavior: scrollBehavior, block: "center" });
       });
 
-      const selectChapterAt = (index) => {
+      const selectChapterAt = (index, moveFocus = false) => {
         const row = chapterRows[index];
         if (!row) return;
         state.today.chapter = row.dataset.chapter;
         todayChapter.value = state.today.chapter;
         saveState();
         renderSelectedChapter();
+        if (moveFocus) focusSelectedChapter();
       };
 
       previousChapterButton.addEventListener("click", () => {
         const index = chapterRows.findIndex((row) => row.dataset.chapter === state.today.chapter);
-        selectChapterAt(index - 1);
+        selectChapterAt(index - 1, true);
       });
 
       nextChapterButton.addEventListener("click", () => {
         const index = chapterRows.findIndex((row) => row.dataset.chapter === state.today.chapter);
-        selectChapterAt(index + 1);
+        selectChapterAt(index + 1, true);
       });
 
       const resetTodaySession = () => {
@@ -2738,11 +2875,13 @@
       };
 
       resetTodaySessionButton.addEventListener("click", resetTodaySession);
+      window.addEventListener("hashchange", setActiveNavigation);
 
       if (!storageEnabled) {
         storageStatus.textContent = "브라우저 저장을 사용할 수 없어 이번 화면에서만 기록이 유지됩니다.";
       }
       renderState();
+      setActiveNavigation();
     })();
   </script>
 </body>
