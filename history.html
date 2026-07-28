@@ -510,8 +510,8 @@
   <main class="page">
     <section class="summary-grid" aria-label="히스토리 요약">
       <article class="summary-card">
-        <strong>22</strong>
-        <span>최초 생성부터 네트워크 오류 제거까지 연결된 Git 단계</span>
+        <strong>23</strong>
+        <span>최초 생성부터 학습 문서 화면 전환 복구까지 연결된 Git 단계</span>
       </article>
       <article class="summary-card">
         <strong>40</strong>
@@ -566,13 +566,39 @@
         <h2 id="timeline-title">변경 타임라인</h2>
         <p>
           커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
-          워크북 사용 흐름의 변화와 대표 배포 확인 이력 22개를 기록하며,
+          워크북 사용 흐름의 변화와 대표 배포 확인 이력 23개를 기록하며,
           이 페이지의 단순 이력 동기화 같은 관리 커밋은 생략할 수 있습니다.
         </p>
       </div>
 
       <ol class="timeline">
         <li class="history-item latest">
+          <time class="history-date" datetime="2026-07-29">2026.07.29</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">문서 화면 전환</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/39d02e682d9d1994970d998c77a957254d7783f1"
+              >39d02e6</a>
+            </div>
+            <h3>기능 워크북과 학습 코드를 여는 공통 읽기 화면</h3>
+            <p>
+              링크와 서버 응답은 정상이지만 브라우저가 Markdown 이동을 차단하던
+              문제를 실제 클릭으로 재현했습니다. 모든 Markdown·Java 학습 링크를
+              제목·목차·본문이 있는 공통 읽기 화면으로 연결해 화면 전환을 복구했습니다.
+            </p>
+            <ul>
+              <li><code>ERR_BLOCKED_BY_CLIENT</code> 최종 화면 재현과 원인 확인</li>
+              <li>기능 워크북 51개 구획과 자동 목차 50개 표시</li>
+              <li>Starter·Hard·목표·테스트·면접 문서 링크 공통 연결</li>
+              <li>모바일 390×844 가로 넘침 없이 읽기·복귀·재진입 확인</li>
+              <li>HTTP 302·200 계약과 브라우저 경고·오류 0개 확인</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
           <time class="history-date" datetime="2026-07-28">2026.07.28</time>
           <article class="history-card">
             <div class="history-meta">
@@ -1166,7 +1192,7 @@
 
   <footer class="page">
     <p>Java 백엔드 취업 포트폴리오 워크북</p>
-    <p>마지막 문서 갱신일 <time datetime="2026-07-28">2026년 7월 28일</time></p>
+    <p>마지막 문서 갱신일 <time datetime="2026-07-29">2026년 7월 29일</time></p>
   </footer>
 </body>
 </html>
