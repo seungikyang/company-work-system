@@ -255,4 +255,4 @@
 - [x] README와 `history.html` 갱신
 - [x] 정적·HTTP·Orca 데스크톱·모바일·키보드 반복 검증
 - [x] 기능·문서 의미 단위 커밋 생성
-- [ ] 루트 푸시와 `HEAD`·`origin/main` 일치 확인
+- [x] 루트 푸시와 `HEAD`·`origin/main` 일치 확인
