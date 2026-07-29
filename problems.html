@@ -394,8 +394,31 @@
     }
 
     .code-link {
+      display: grid;
+      min-width: min(100%, 15rem);
       min-height: 38px;
+      gap: 0.08rem;
+      justify-items: start;
+      border-radius: 0.75rem;
       background: white;
+      text-align: left;
+    }
+
+    .code-link strong {
+      line-height: 1.35;
+    }
+
+    .code-path {
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .code-link.hard .code-path {
+      color: rgba(255, 255, 255, 0.82);
     }
 
     .answer-panel {
@@ -513,7 +536,7 @@
       <a class="brand" href="./index.html">Company Work System</a>
       <div class="actions">
         <a class="button primary" href="./index.html">메인 워크북</a>
-        <button id="toggle-all-answers" class="button" type="button" disabled>정답 모두 펼치기</button>
+        <button id="toggle-all-answers" class="button" type="button" disabled>정답 모두 접기</button>
       </div>
     </div>
   </header>
@@ -523,8 +546,8 @@
       <p class="eyebrow">Practice · Code · Review</p>
       <h1 id="page-title">실제 코드와 바로 연결되는 40개 문제집</h1>
       <p class="hero-copy">
-        문제를 읽고 힌트로 방향을 잡은 뒤 해당 Starter·Hard·워크시트를 바로 여세요.
-        정답과 해설은 각 문제 카드 안에서 확인할 수 있습니다.
+        문제·힌트·정답을 한 카드에서 함께 읽고, 표시된 파일 경로로
+        Starter·Hard·워크시트를 바로 여세요.
       </p>
       <ul class="summary" aria-label="문제집 구성">
         <li>문제 40개</li>
@@ -565,6 +588,13 @@
       if (sourceFile === "practice/problems.md") return "./problems.html";
       if (!/\.(?:fragment|java|md)$/i.test(sourceFile)) return rawHref;
       return `./workbook-viewer.html?file=${encodeURIComponent(sourceFile)}`;
+    }
+
+    function toSourceFilePath(rawHref) {
+      const sourceUrl = new URL(rawHref, window.location.href);
+      if (sourceUrl.origin !== window.location.origin) return rawHref;
+      if (!sourceUrl.pathname.startsWith(workbookBasePath)) return rawHref;
+      return decodeURIComponent(sourceUrl.pathname.slice(workbookBasePath.length));
     }
 
     async function fetchText(path, raw = false) {
@@ -715,7 +745,7 @@
       const problemSection = document.createElement("section");
       problemSection.className = "problem-section";
       const problemTitle = document.createElement("h3");
-      problemTitle.textContent = "문제";
+      problemTitle.textContent = "1. 문제";
       const problemContent = document.createElement("div");
       problemContent.className = "markdown";
       renderMarkdown(problemContent, problem.content);
@@ -724,7 +754,7 @@
       const hint = document.createElement("aside");
       hint.className = "hint-box";
       const hintTitle = document.createElement("h3");
-      hintTitle.textContent = "힌트";
+      hintTitle.textContent = "2. 힌트";
       const hintList = document.createElement("ul");
       [chapter.description, `취업 결과물 · ${chapter.output}`, `완료 검증 · ${chapter.verification}`]
         .filter(Boolean)
@@ -738,18 +768,26 @@
       const codeBox = document.createElement("section");
       codeBox.className = "code-box";
       const codeTitle = document.createElement("h3");
-      codeTitle.textContent = "실제 코드에 바로 연결";
+      codeTitle.textContent = "3. 실제 코드에 바로 연결";
       const codeHelp = document.createElement("p");
-      codeHelp.textContent = "Hard에서 먼저 작성하고 막힐 때 Starter 구조를 비교하세요.";
+      codeHelp.textContent = "파일 경로를 확인하고 Hard에서 먼저 작성한 뒤 Starter 구조를 비교하세요.";
       const codeLinks = document.createElement("div");
       codeLinks.className = "code-links";
       [...chapter.links]
         .sort((left, right) => Number(right.label.includes("Hard")) - Number(left.label.includes("Hard")))
         .forEach(({ label, href }) => {
           const link = document.createElement("a");
+          const action = document.createElement("strong");
+          const path = document.createElement("span");
+          const sourceFile = toSourceFilePath(href);
           link.className = `code-link${label.includes("Hard") ? " hard" : ""}`;
           link.href = toLearningPageHref(href);
-          link.textContent = `${label} 열기`;
+          link.dataset.sourceFile = sourceFile;
+          link.setAttribute("aria-label", `${label} 열기, ${sourceFile}`);
+          action.textContent = `${label} 열기`;
+          path.className = "code-path";
+          path.textContent = sourceFile;
+          link.append(action, path);
           codeLinks.append(link);
         });
       codeBox.append(codeTitle, codeHelp, codeLinks);
@@ -757,8 +795,9 @@
       const answerPanel = document.createElement("details");
       answerPanel.className = "answer-panel";
       answerPanel.dataset.answer = chapter.number;
+      answerPanel.open = true;
       const answerSummary = document.createElement("summary");
-      answerSummary.textContent = "정답과 해설 확인";
+      answerSummary.textContent = "4. 정답과 해설";
       const answerContent = document.createElement("div");
       answerContent.className = "answer-content markdown";
       renderMarkdown(answerContent, answer.content);

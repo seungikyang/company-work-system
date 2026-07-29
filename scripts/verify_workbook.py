@@ -146,9 +146,17 @@ def validate_problem_page_contract(problem_page: str, index: str) -> None:
         "parseWorkbookSections",
         "parseCurriculum",
         "makeProblemCard",
+        'problemTitle.textContent = "1. 문제"',
+        'hintTitle.textContent = "2. 힌트"',
+        'codeTitle.textContent = "3. 실제 코드에 바로 연결"',
         'hint.className = "hint-box"',
         'answerPanel.className = "answer-panel"',
+        "answerPanel.open = true",
+        'answerSummary.textContent = "4. 정답과 해설"',
         'codeBox.className = "code-box"',
+        'path.className = "code-path"',
+        "link.dataset.sourceFile = sourceFile",
+        "toSourceFilePath",
         'sourceFile === "practice/problems.md"',
         "(?:fragment|java|md)",
     ):
@@ -566,7 +574,7 @@ def main() -> int:
     print(f"- 내부 목표·계약과 HTML 연결이 있는 프로그램 폴더 {program_folders}개·학습 파일 {program_files}개")
     print("- 학습 목차 6단계, 취업 로드맵 5단계, 취업 결과물 계약이 있는 챕터 40개, 세션 체크 5개")
     print("- 선택 챕터별 답안 저장, 힌트·정답 기준 토글과 40개 문제 비교 완료 기록")
-    print("- 통합 문제 페이지의 40개 문제·힌트·정답과 실제 Starter·Hard·워크시트 연결")
+    print("- 통합 문제 페이지의 기본 펼침 정답 40개와 경로가 표시된 실제 Starter·Hard·워크시트 연결")
     print("- 00~39 이전·다음 연속 탐색과 챕터 번호별 프로그램 폴더 대응")
     print(f"- 실제 Git 커밋에 연결된 대표 변경 이력 {history_items}개")
     print("- JavaScript 구문·DOM ID 계약과 920px·680px 반응형 분기")
