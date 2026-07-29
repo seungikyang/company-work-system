@@ -510,8 +510,8 @@
   <main class="page">
     <section class="summary-grid" aria-label="히스토리 요약">
       <article class="summary-card">
-        <strong>24</strong>
-        <span>최초 생성부터 Orca 탭 재사용 안정화까지 연결된 Git 단계</span>
+        <strong>25</strong>
+        <span>최초 생성부터 코드 연결 통합 문제집까지 이어진 Git 단계</span>
       </article>
       <article class="summary-card">
         <strong>40</strong>
@@ -566,13 +566,40 @@
         <h2 id="timeline-title">변경 타임라인</h2>
         <p>
           커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
-          워크북 사용 흐름의 변화와 대표 배포 확인 이력 24개를 기록하며,
+          워크북 사용 흐름의 변화와 대표 배포 확인 이력 25개를 기록하며,
           이 페이지의 단순 이력 동기화 같은 관리 커밋은 생략할 수 있습니다.
         </p>
       </div>
 
       <ol class="timeline">
         <li class="history-item latest">
+          <time class="history-date" datetime="2026-07-29">2026.07.29</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">코드 연결 통합 문제집</span>
+              <a
+                class="commit"
+                href="https://github.com/seungikyang/company-work-system/commit/6d07a3b26c67e19ad9f1a4efdc458227ec8d194d"
+              >6d07a3b</a>
+            </div>
+            <h3>문제·힌트·정답과 실제 학습 파일을 한 화면에 연결</h3>
+            <p>
+              분리되어 있던 40개 문제와 해설을 챕터별 카드로 결합하고,
+              메인 목차의 Starter·Hard·워크시트 링크를 각 문제에 직접 연결했습니다.
+              문제를 읽고 힌트를 확인한 뒤 코드를 열고 같은 카드에서 정답을 비교할 수 있습니다.
+            </p>
+            <ul>
+              <li>00~39 문제·힌트·정답 카드 각 40개 자동 대응</li>
+              <li>실제 Java·Markdown·Gradle·YAML 학습 파일 링크 77개 연결</li>
+              <li>개별 정답과 전체 40개 정답 펼치기·접기 및 키보드 조작 지원</li>
+              <li>모바일 상단 바 59px와 가로 넘침 0 확인</li>
+              <li>메인·기존 문제 주소·직접 파일 주소의 화면 전환 통일</li>
+              <li>Orca 고정 URI에서 정답 40개와 Hard 설정 코드 전환 최종 확인</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="history-item">
           <time class="history-date" datetime="2026-07-29">2026.07.29</time>
           <article class="history-card">
             <div class="history-meta">
