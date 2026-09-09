@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/EmployeeService.java
 // 목표: 직원 목록을 검색 + 페이징으로 반환하세요. PRD 2.5.2 (FR-EMP-006/007) 참고.
 
+// 초보자 안내 (09장): Pageable과 Page
+// 개념: Pageable은 페이지 번호·크기·정렬 조건이고 Page는 조회 결과와 전체 건수 등의 페이지 정보입니다.
+// 사용 이유: 직원이 많아도 한 화면에서 필요한 분량만 조회합니다.
+// 동작 흐름: 검색 조건과 Pageable을 Repository에 전달하고 Page.map으로 각 Employee를 응답 DTO로 바꿉니다. 페이지 정보는 유지되며 전체 건수 계산에 추가 쿼리가 필요할 수 있습니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 // TODO 01: 읽기 전용 트랜잭션을 명시하면 성능과 의도를 동시에 챙길 수 있습니다.
 @Transactional(readOnly = ____)
 public Page<EmployeeResponse> search(String keyword, Long departmentId, Pageable pageable) {

@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/dto/*Response.java
 // 목표: Entity ↔ Response DTO 매핑 패턴을 채우세요. TRD 3.16.3 (Entity 직접 반환 문제) 참고.
 
+// 초보자 안내 (32장): 응답 DTO 매핑
+// 개념: 매핑은 Entity에서 외부에 공개할 필드만 골라 응답 객체로 옮기는 작업입니다.
+// 사용 이유: 비밀번호와 내부 관계를 숨기고 DB 구조 변경이 API에 바로 퍼지는 것을 줄입니다.
+// 동작 흐름: from 메서드가 Entity 값을 record의 필드로 옮기고 Page.map이 목록 항목마다 이를 적용합니다. 지연 로딩 관계를 읽는 시점과 쿼리 수도 함께 확인합니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 // 핵심 원칙:
 // - Entity 는 영속성/도메인 책임.
 // - Response DTO 는 API 응답 책임. (필드 선택, 직렬화, 버전 관리)

@@ -2,6 +2,13 @@
 // 목표: 직원 검색 / 페이징 / 부서별 조회를 위한 메서드 쿼리를 채우세요.
 //       PRD 2.5.2, TRD 3.7.2 참고.
 
+// 초보자 안내 (07장): Spring Data JPA Repository
+// 개념: Repository는 저장·조회 작업을 호출하는 창구입니다. Spring Data JPA는 인터페이스의 구현을 만들어 줍니다.
+// 사용 이유: 기본 CRUD와 단순 검색에 반복되는 DB 접근 코드를 줄입니다.
+// 동작 흐름: findByUser_Email의 User_Email은 Employee → User → email 속성 경로입니다. 메서드 이름에서 조건을 해석하고 실제 SQL 처리는 JPA 구현체가 맡습니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     // TODO 01: 이메일 중복 여부를 빠르게 확인하는 메서드 이름은?

@@ -1,6 +1,13 @@
 // 실제 위치 후보: build.gradle (Spring Boot 3.x / Gradle)
 // 목표: 사내 업무관리 시스템에 필요한 의존성 묶음을 채워보세요.
 
+// 초보자 안내 (00장): Java·Gradle·Spring Boot
+// 개념: Java는 업무 규칙을 작성하는 언어, Gradle은 필요한 라이브러리와 빌드 작업을 관리하는 도구, Spring Boot는 서버 설정을 돕는 틀입니다.
+// 사용 이유: 매번 웹 서버와 DB 연결 도구를 따로 조립하는 수고를 줄입니다.
+// 동작 흐름: Gradle이 의존성을 준비하고, 실행 시 Spring Boot가 application.yml의 설정을 읽습니다. H2는 연습 데이터를 담고 JPA는 객체와 DB를 연결합니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 plugins {
     id 'java'
     // TODO 01: Spring Boot 와 Dependency Management 플러그인을 적어보세요.

@@ -1091,3 +1091,90 @@
 
 - 루트에서 강제 옵션 없이 `git push origin main`을 실행해 `9ed8d24..b4d2105` 범위를 원격에 반영했다.
 - 원격을 다시 가져와 기능·이력 커밋 기준 로컬 `HEAD`와 `origin/main`이 `b4d2105d5e473be032d600e59c94e6f0eca73525`로 일치함을 확인했다.
+
+
+## 2026-09-10 초보자 기술 설명과 작업트리 활동 이관
+
+### 요청과 작업 위치
+
+- 사용자는 초보자가 기술의 뜻·사용 이유·동작을 이해하도록 프로그램과 코드의 설명을 보강하고, 이어서 작업트리의 모든 변경과 활동 내역을 원본으로 옮겨 푸시한 뒤 작업트리를 삭제하도록 요청했다.
+- 작업트리: `bream`, 브랜치: `seungikyang/add-beginner-tech-explanations`.
+- 기준 커밋: `b532de82a351ecb0ddd5d8115babd5299d78c7c9`. 원본 `main`과 작업트리 HEAD가 같고 별도의 작업트리 전용 커밋은 없었다.
+- 원본의 작업 디렉터리와 원격 `origin/main`이 깨끗하고 같은 기준 커밋임을 확인한 뒤 수정 43개·신규 1개 파일을 원본으로 옮겼다. 옮긴 44개 파일은 SHA-256으로 일치 여부를 검사했다.
+- 모든 명령은 해당 실제 저장소 루트에서 `scripts/assert_repo_root.sh`로 위치를 검사했으며 임시 clone이나 worktree는 사용하지 않았다.
+
+### 구현 내역과 설계 이유
+
+- `practice/beginner-guide.md`를 추가해 실제 워크북의 HTML·CSS·JavaScript·localStorage·Python 서버와 학습자가 구현할 Java·Spring Boot 시스템을 구분했다.
+- Java·Gradle·Spring Boot, Bean·의존성 주입, MVC·DTO·Validation, JPA·Hibernate·Repository·DB, 트랜잭션, BCrypt·세션·권한, Thymeleaf·JUnit·Git의 역할과 선택 이유를 설명했다.
+- 직원 등록 요청을 Controller → Service → Repository → DB → 응답 DTO 순서로 따라가며 성공·실패와 롤백을 확인하는 예시를 추가했다.
+- 40개 문제의 앞부분에 기술의 개념·사용 이유·동작 설명을 넣었다. 기존 문제 Markdown을 읽는 화면 구조를 유지해 별도의 문제 데이터 원본을 만들지 않았다.
+- Starter의 Java·설정 파일 35개에 같은 초보자 설명 주석과 코드 읽는 순서를 추가했다. TODO·빈칸과 기존 학습용 코드의 실행 로직은 보존했다.
+- 메인 화면, 문제집, 공통 문서 읽기 화면에 입문 안내 링크를 추가했다. Starter로 처음 배우고 Hard로 복습하도록 버튼 순서·설명과 README를 맞췄다.
+- `@CurrentEmployee` 선언만으로 직원 ID가 주입되지 않는 점, 계정 ID와 직원 ID의 차이, Lombok 설정·생성자 보완, 조각 코드의 메서드 인자 연결 등 실행 프로젝트로 옮길 때 필요한 작업을 명시했다.
+- 기술 동작은 저장소 코드와 Spring 공식 문서를 대조했으며 쿼리 메서드·트랜잭션·비밀번호 저장 근거를 입문 안내에 연결했다.
+
+### 작업트리에서 수행한 검증과 문제 해결
+
+- `python3 scripts/verify_workbook.py` 통과: HTML 4개, 로컬 링크 139개, Markdown 상대 링크 58개, 프로그램 폴더 73개·학습 파일 77개, 챕터 40개, 기존 Git 대표 이력 26개와 JavaScript·화면 연결 계약을 확인했다.
+- 연결형 브라우저는 사용할 수 없었고 사용 가능한 브라우저 목록도 비어 있어 Playwright의 독립 세션 `beginner-guide`로 전환했다.
+- Playwright 래퍼 파일의 직접 실행은 실행 권한 오류가 나서 파일 권한을 바꾸지 않고 `bash`로 실행했다.
+- 작업트리의 Python 서버를 시작해 실제 HTTP로 메인·문제집·문서·설정 조각을 읽었다. 화면에서 40개 문제 모두에 세 종류의 기술 설명이 있고 정답 40개가 기본 펼침인 것을 확인했다.
+- 390×844 모바일 화면에서 문제집·메인 화면의 가로 넘침이 없었다. 문제집 화면 캡처도 직접 확인했다.
+- 08장 선택 시 Starter → 해설 → Hard 순서와 실제 파일 경로를 확인했다. 20장처럼 Hard가 없는 챕터에서는 워크시트와 정답 안내로 연결되는 것을 확인했다.
+- 문제집의 첫 코드 링크가 Starter Gradle이며, 클릭하면 초보자 주석이 담긴 설정 원문이 보이고 코드 읽기 화면에서 입문 안내로 이동하는 것을 확인했다.
+- 확인한 브라우저 콘솔의 오류·경고는 0개였으며 `git diff --check`도 통과했다.
+- 검증용 브라우저를 닫고 Python 서버를 종료했다. 생성한 `.playwright-cli` 로그와 모바일 캡처는 확인 후 제거했으며 사용자 자료는 제거하지 않았다.
+
+### 원본 이관 파일
+
+- `README.md`
+- `history.html`
+- `index.html`
+- `practice/README.md`
+- `practice/beginner-guide.md`
+- `practice/hard/README.md`
+- `practice/problems.md`
+- `practice/starter/00-build-config/application.yml.fragment`
+- `practice/starter/00-build-config/build.gradle.fragment`
+- `practice/starter/01-user-entity/User.entity.java`
+- `practice/starter/02-department-entity/Department.entity.java`
+- `practice/starter/03-employee-entity/Employee.entity.java`
+- `practice/starter/04-leave-entity/LeaveRequest.entity.java`
+- `practice/starter/05-notice-entity/Notice.entity.java`
+- `practice/starter/06-approval-entity/ApprovalDocument.entity.java`
+- `practice/starter/07-repository/EmployeeRepository.java`
+- `practice/starter/08-employee-register/EmployeeService.register.java`
+- `practice/starter/09-employee-search/EmployeeService.search.java`
+- `practice/starter/10-leave-request/LeaveService.request.java`
+- `practice/starter/11-leave-approval/LeaveService.approval.java`
+- `practice/starter/12-notice-service/NoticeService.java`
+- `practice/starter/13-approval-document/ApprovalService.document.java`
+- `practice/starter/14-approval-decision/ApprovalService.decision.java`
+- `practice/starter/15-error-model/ErrorCodeAndResponse.java`
+- `practice/starter/16-global-handler/GlobalExceptionHandler.java`
+- `practice/starter/17-dto-validation/EmployeeCreateRequest.java`
+- `practice/starter/18-controller-employee/EmployeeController.java`
+- `practice/starter/19-controller-leave/LeaveController.java`
+- `practice/starter/21-test-flow/LeaveFlowTest.java`
+- `practice/starter/23-auth-login/AuthController.java`
+- `practice/starter/23-auth-login/AuthService.login.java`
+- `practice/starter/24-department-service/DepartmentService.java`
+- `practice/starter/25-department-controller/DepartmentController.java`
+- `practice/starter/26-notice-controller/NoticeController.java`
+- `practice/starter/27-approval-controller/ApprovalController.java`
+- `practice/starter/28-employee-detail-update/EmployeeService.detail.java`
+- `practice/starter/29-leave-my-cancel/LeaveService.my.java`
+- `practice/starter/30-approval-lists/ApprovalService.lists.java`
+- `practice/starter/31-repositories-all/AllRepositories.java`
+- `practice/starter/32-response-dto-mapping/ResponseDtoMapping.java`
+- `practice/starter/33-config-beans/ConfigBeans.java`
+- `practice/starter/34-current-user-interceptor/CurrentUserAndInterceptor.java`
+- `problems.html`
+- `workbook-viewer.html`
+
+### 원본에서 재검증한 결과
+
+- 실제 원본 루트에서 `python3 scripts/verify_workbook.py`를 다시 실행해 통과했다.
+- `git diff --check`가 통과했으며 복사한 44개 파일의 바이트 일치도 확인했다.
+- 코드·학습 문서 변경과 이 활동 기록을 원본 `main`에서 커밋하고, 실제 커밋을 `history.html`에 연결한 뒤 원격 반영을 확인한다. 작업트리는 원격 보존 확인 이후 제거한다.

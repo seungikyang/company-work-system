@@ -2,6 +2,13 @@
 // 목표: 로그인 계정용 User 엔티티와 UserRole enum 을 채우세요.
 //       TRD 3.3.1, 3.6.1 참고.
 
+// 초보자 안내 (01장): Entity와 enum
+// 개념: Entity는 DB에 저장할 대상을 표현하는 Java 객체이고, enum은 허용할 값을 이름으로 정한 타입입니다.
+// 사용 이유: 로그인 계정의 저장 구조와 USER·MANAGER·ADMIN 같은 역할을 일관되게 표현합니다.
+// 동작 흐름: User.create가 계정을 만들고 JPA 매핑이 users 테이블의 컬럼과 필드를 연결합니다. 비밀번호 필드에는 별도 인코더로 만든 해시를 전달합니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 // ===== UserRole enum =====
 public enum UserRole {
     // TODO 01: TRD 3.6.1 에서 정의한 세 가지 역할을 채우세요.

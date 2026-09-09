@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/controller/DepartmentController.java
 // 목표: 부서 REST API. TRD 3.7.3 참고.
 
+// 초보자 안내 (25장): 부서 API와 요청 DTO
+// 개념: 부서 Controller는 부서 관리 HTTP 요청을 Service 호출로 바꿉니다.
+// 사용 이유: 주소 처리·입력 형식 검사와 부서 중복·삭제 정책을 분리합니다.
+// 동작 흐름: 경로의 부서 ID와 검증한 요청 DTO를 받고 Service를 호출합니다. 조회는 결과를 보내고 삭제는 본문 없는 응답으로 완료를 알립니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @RestController
 @RequestMapping("/api/departments")
 @RequiredArgsConstructor

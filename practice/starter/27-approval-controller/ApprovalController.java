@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/controller/ApprovalController.java
 // 목표: 전자결재 REST API + DTO. TRD 3.7.6 참고.
 
+// 초보자 안내 (27장): 결재 API와 명시적 동작
+// 개념: 결재 API는 작성·제출·승인·반려를 각각 업무 동작으로 표현합니다.
+// 사용 이유: 클라이언트가 status 값을 임의로 지정해 검증을 건너뛰지 못하게 합니다.
+// 동작 흐름: Controller가 요청을 해당 Service 메서드로 전달하고 Service·Entity가 행위자와 상태 전이를 검사합니다. my와 pending 목록은 현재 직원 기준으로 조회합니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @RestController
 @RequestMapping("/api/approvals")
 @RequiredArgsConstructor

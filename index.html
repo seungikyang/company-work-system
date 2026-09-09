@@ -1544,6 +1544,7 @@
         <a class="button primary" href="#setup">1단계부터 시작하기</a>
         <a class="button" href="#session">오늘 학습 이어가기</a>
         <a class="button" href="#curriculum">전체 교재 보기</a>
+        <a class="button" href="./practice/beginner-guide.md">처음이라면 · 기술과 동작 이해하기</a>
       </div>
     </section>
 
@@ -1648,7 +1649,7 @@
           <a href="#curriculum">
             <span class="learning-map-number">04</span>
             <strong>문제부터 직접 풀기</strong>
-            <p>문제를 읽고 Hard를 시도한 뒤 Starter로 구조를 확인합니다.</p>
+            <p>기술 설명과 Starter를 읽고 직접 풉니다. 익숙해지면 Hard로 복습합니다.</p>
             <small>산출물 · 직접 작성한 풀이와 질문</small>
           </a>
         </li>
@@ -1849,7 +1850,7 @@
         <h3>다섯 칸을 순서대로 체크하세요.</h3>
         <ol>
           <li><label class="session-check"><input type="checkbox" data-session-check="choose"><time>0–05분</time><span>FR ID, 챕터와 완료 조건을 한 문장으로 정합니다.</span></label></li>
-          <li><label class="session-check"><input type="checkbox" data-session-check="solve"><time>5–20분</time><span>문제와 Hard 코드로 먼저 직접 풉니다.</span></label></li>
+          <li><label class="session-check"><input type="checkbox" data-session-check="solve"><time>5–20분</time><span>기술 설명을 읽고 Starter 빈칸을 직접 풉니다.</span></label></li>
           <li><label class="session-check"><input type="checkbox" data-session-check="learn"><time>20–40분</time><span>Starter와 해설로 빠진 개념을 확인합니다.</span></label></li>
           <li><label class="session-check"><input type="checkbox" data-session-check="test"><time>40–55분</time><span>본인 프로젝트에 구현하고 테스트를 실행합니다.</span></label></li>
           <li><label class="session-check"><input type="checkbox" data-session-check="record"><time>55–60분</time><span>검증 명령, 커밋과 배운 점을 증거 ID에 기록합니다.</span></label></li>
@@ -1881,14 +1882,15 @@
           <li>
             <span>02 · 시도</span>
             <strong>직접 풀기</strong>
-            <small>정답을 보기 전에 빈칸과 핵심 로직을 작성합니다.</small>
-            <a id="selected-hard-link" href="#curriculum">Hard 열기</a>
+            <small>Starter의 개념·사용 이유·동작을 읽고 빈칸을 채웁니다.</small>
+            <a id="selected-starter-link" href="#curriculum">Starter 열기</a>
           </li>
           <li>
             <span>03 · 확인</span>
-            <strong>구조 비교하기</strong>
-            <small>막힌 부분만 Starter와 해설로 확인합니다.</small>
-            <a id="selected-starter-link" href="#curriculum">Starter 열기</a>
+            <strong>비교하고 복습하기</strong>
+            <small>해설과 답을 비교하고 익숙해지면 Hard로 복습합니다.</small>
+            <a href="./practice/answers.md">정답과 해설 보기</a>
+            <a id="selected-hard-link" href="#curriculum">Hard로 복습</a>
           </li>
           <li>
             <span>04 · 구현</span>
@@ -1909,6 +1911,8 @@
             <span id="chapter-workbook-status" class="chapter-workbook-status" role="status">답안 미작성</span>
           </div>
           <p id="chapter-question" class="chapter-question"></p>
+          <p>용어가 낯설면 <a href="./practice/beginner-guide.md">기술과 코드 안내</a>를 읽고,
+            <a href="./problems.html">40개 문제의 개념·사용 이유·동작 설명</a>과 연결해 보세요.</p>
           <label class="chapter-answer-field" for="chapter-answer">
             내 답안
             <textarea
@@ -1964,8 +1968,8 @@
       <div class="section-heading">
         <h2 id="curriculum-title">4. 필요한 챕터를 골라 직접 풀기</h2>
         <p>
-          Starter는 구조 확인용이고 Hard는 직접 작성용입니다. 정답은 먼저
-          풀고 실제 오류를 기록한 뒤에 확인하세요.
+          처음에는 Starter의 설명과 골격을 읽고 직접 채웁니다. 익숙해지면 Hard로
+          복습합니다. 정답과 비교할 때는 기술을 쓰는 이유도 본인 말로 설명하세요.
         </p>
       </div>
 
@@ -2667,12 +2671,12 @@
         showSelectedChapter.hidden = false;
         openSelectedGuide.disabled = false;
         openSelectedGuide.textContent = `${number}. ${title} 문제로 이동`;
-        selectedHardLink.href = toWorkbookViewerHref(sourceHref(hardLink || worksheetLink));
-        selectedHardLink.textContent = hardLink ? "Hard 열기" : "워크시트 직접 작성";
-        selectedStarterLink.href = hardLink && starterLink
-          ? toWorkbookViewerHref(sourceHref(starterLink))
+        selectedStarterLink.href = toWorkbookViewerHref(sourceHref(starterLink || worksheetLink));
+        selectedStarterLink.textContent = hardLink ? "Starter 열기" : "워크시트 직접 작성";
+        selectedHardLink.href = hardLink
+          ? toWorkbookViewerHref(sourceHref(hardLink))
           : toWorkbookViewerHref("./practice/answers.md");
-        selectedStarterLink.textContent = hardLink && starterLink ? "Starter 열기" : "정답과 해설 보기";
+        selectedHardLink.textContent = hardLink ? "Hard로 복습" : "정답과 해설 보기";
       };
 
       const renderVerificationStatus = () => {

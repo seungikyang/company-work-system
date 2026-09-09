@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/ApprovalService.java
 // 목표: 결재 — 내 목록 / 승인 대기 목록 / 상세. PRD 2.5.6 (FR-APPROVAL-003/004), TRD 3.7.6 참고.
 
+// 초보자 안내 (30장): 조건별 결재 조회
+// 개념: 같은 결재 테이블도 작성자·결재자·상태에 따라 다른 목록이 됩니다.
+// 사용 이유: 내가 쓴 문서와 내가 처리할 문서를 구분하고 타인의 문서 노출을 막습니다.
+// 동작 흐름: my는 작성자 조건, pending은 결재자와 대기 상태 조건으로 조회합니다. 상세에서도 작성자·결재자·관리자 여부를 검사한 뒤 DTO로 변환합니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @Transactional(readOnly = true)
 public Page<ApprovalResponse> findMyDocuments(Long currentEmployeeId, ApprovalStatus status, Pageable pageable) {
 

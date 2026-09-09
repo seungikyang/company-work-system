@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/controller/NoticeController.java
 // 목표: 공지사항 REST API + DTO. TRD 3.7.5 참고.
 
+// 초보자 안내 (26장): 공지 API와 역할 검사
+// 개념: 공지 Controller는 목록·상세·관리 요청의 입구입니다.
+// 사용 이유: 조회 기능과 관리자 편집 기능에 다른 접근 기준을 적용합니다.
+// 동작 흐름: 경로·본문·현재 사용자 정보를 받아 공지 Service로 넘깁니다. 화면에서 편집 버튼을 숨겨도 직접 요청할 수 있으므로 서버에서 역할을 검사해야 합니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @RestController
 @RequestMapping("/api/notices")
 @RequiredArgsConstructor

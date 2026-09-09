@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/NoticeService.java
 // 목표: 공지사항 CRUD + 중요 공지 우선 정렬. TRD 3.7.5, 3.8.3 참고.
 
+// 초보자 안내 (12장): CRUD와 정렬
+// 개념: CRUD는 생성·조회·수정·삭제의 네 작업입니다.
+// 사용 이유: 공지 관리의 기본 작업을 모으고 수정 권한과 정렬 규칙을 일관되게 적용합니다.
+// 동작 흐름: 생성·수정·삭제는 역할을 검사하고 처리하며 목록에는 중요 공지 우선 정렬을 적용합니다. 상세 보기는 조회수를 바꾸므로 읽기만 하는 작업과 구분합니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @RequiredArgsConstructor
 @Service
 public class NoticeService {

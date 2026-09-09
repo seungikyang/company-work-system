@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/DepartmentService.java
 // 목표: 부서 CRUD 와 소속 직원 조회를 채우세요. PRD 2.5.3, TRD 3.7.3 참고.
 
+// 초보자 안내 (24장): 삭제 정책과 참조 관계
+// 개념: 참조 관계는 직원이 부서 ID를 가리키는 연결입니다.
+// 사용 이유: 직원이 속한 부서를 지워 소속 정보가 끊기는 일을 막습니다.
+// 동작 흐름: Service가 역할·부서명 중복을 확인해 생성·수정하고 삭제 전 소속 직원 존재 여부를 검사합니다. 동시 요청까지 고려한 최종 무결성은 DB 제약과 함께 다룹니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @Service
 @RequiredArgsConstructor
 public class DepartmentService {

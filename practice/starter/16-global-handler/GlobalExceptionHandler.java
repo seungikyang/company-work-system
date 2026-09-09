@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/exception/GlobalExceptionHandler.java
 // 목표: 모든 Controller 의 예외를 일관된 응답으로 변환하세요. TRD 3.9 참고.
 
+// 초보자 안내 (16장): 전역 예외 처리
+// 개념: 전역 예외 처리기는 여러 Controller에서 발생한 예외를 모아 응답으로 바꿉니다.
+// 사용 이유: Controller마다 같은 try/catch와 응답 생성 코드를 반복하지 않게 합니다.
+// 동작 흐름: @RestControllerAdvice 안의 @ExceptionHandler가 대응하는 예외를 받아 HTTP 상태와 ErrorResponse를 만듭니다. 입력 오류와 업무 예외의 처리 경로를 나누어 읽어 보세요.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 // TODO 01: 모든 @RestController 에 적용되는 전역 예외 핸들러임을 알리는 어노테이션.
 @____
 @Slf4j

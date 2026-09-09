@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/LeaveService.java
 // 목표: 휴가 — 내 목록 / 상세 / 취소 + 관리자 목록 흐름을 채우세요. PRD 2.5.4 (FR-LEAVE-002~004, FR-LEAVE-008), TRD 3.7.4 참고.
 
+// 초보자 안내 (29장): 소유자 검증
+// 개념: 소유자 검증은 요청한 자료가 현재 사용자에게 허용된 자료인지 확인하는 일입니다.
+// 사용 이유: 휴가 ID만 바꿔 다른 사람의 신청을 보거나 취소하는 일을 막습니다.
+// 동작 흐름: 내 목록 쿼리에는 현재 직원 ID를 넣고 상세·취소에서도 소유자 또는 허용 역할을 확인합니다. 취소는 소유권 검사 후 도메인 메서드로 상태 규칙을 적용합니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @Transactional(readOnly = true)
 public Page<LeaveResponse> findMyLeaves(Long currentEmployeeId, Pageable pageable) {
 

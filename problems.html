@@ -547,8 +547,9 @@
       <h1 id="page-title">실제 코드와 바로 연결되는 40개 문제집</h1>
       <p class="hero-copy">
         문제·힌트·정답을 한 카드에서 함께 읽고, 표시된 파일 경로로
-        Starter·Hard·워크시트를 바로 여세요.
+        Starter·Hard·워크시트를 바로 여세요. 각 문제의 기술 설명에서 개념·사용 이유·동작을 먼저 이해합니다.
       </p>
+      <p><a class="button" href="./workbook-viewer.html?file=practice/beginner-guide.md">처음이라면 · 기술과 동작 이해하기</a></p>
       <ul class="summary" aria-label="문제집 구성">
         <li>문제 40개</li>
         <li>챕터별 힌트 40개</li>
@@ -770,11 +771,11 @@
       const codeTitle = document.createElement("h3");
       codeTitle.textContent = "3. 실제 코드에 바로 연결";
       const codeHelp = document.createElement("p");
-      codeHelp.textContent = "파일 경로를 확인하고 Hard에서 먼저 작성한 뒤 Starter 구조를 비교하세요.";
+      codeHelp.textContent = "처음에는 Starter 상단 설명과 골격을 읽고 빈칸을 채우세요. 익숙해지면 Hard로 복습합니다.";
       const codeLinks = document.createElement("div");
       codeLinks.className = "code-links";
       [...chapter.links]
-        .sort((left, right) => Number(right.label.includes("Hard")) - Number(left.label.includes("Hard")))
+        .sort((left, right) => Number(left.label.includes("Hard")) - Number(right.label.includes("Hard")))
         .forEach(({ label, href }) => {
           const link = document.createElement("a");
           const action = document.createElement("strong");

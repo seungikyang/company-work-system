@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/ApprovalService.java
 // 목표: 결재 승인 / 반려 처리. TRD 3.8.4, 3.10.3 참고.
 
+// 초보자 안내 (14장): 행위자 검증과 상태 변경
+// 개념: 행위자는 지금 승인·반려를 요청한 사람입니다.
+// 사용 이유: 로그인만 한 사람이 다른 사람에게 지정된 결재를 처리하지 못하게 합니다.
+// 동작 흐름: 문서를 조회하고 도메인 메서드에서 지정 결재자와 현재 상태를 검사합니다. 반려는 사유도 확인하며, 성공하면 상태와 처리 정보를 함께 변경합니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @Transactional
 public ApprovalResponse approve(Long currentEmployeeId, Long approvalId) {
 

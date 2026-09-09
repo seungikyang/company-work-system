@@ -4,6 +4,13 @@
 //   - src/main/java/com/example/companywork/exception/ErrorResponse.java
 // 목표: 공통 에러 모델을 채우세요. TRD 3.9 참고.
 
+// 초보자 안내 (15장): 예외와 오류 응답 모델
+// 개념: 예외는 정상 처리를 계속할 수 없다는 신호이고 ErrorCode는 실패 이유의 공통 이름입니다.
+// 사용 이유: 각 기능이 서로 다른 형식의 오류를 보내면 화면과 테스트에서 처리하기 어렵습니다.
+// 동작 흐름: 업무 코드가 BusinessException에 오류 코드를 담아 던집니다. ErrorResponse는 클라이언트에 보낼 코드·메시지 등을 담으며 HTTP 응답 변환은 다음 장의 처리기가 맡습니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 // ===== ErrorCode =====
 public enum ErrorCode {
     // 공통

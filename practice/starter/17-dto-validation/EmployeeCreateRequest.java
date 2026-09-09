@@ -2,6 +2,13 @@
 // 목표: Bean Validation 어노테이션을 채우세요. TRD 3.7.2, PRD 2.6 비기능 요구사항 검증 참고.
 // 주의: Spring Boot 3.x 이므로 import 는 jakarta.validation.constraints.* 입니다.
 
+// 초보자 안내 (17장): DTO와 Bean Validation
+// 개념: DTO는 요청·응답 데이터를 운반하는 객체이며 Bean Validation은 필드 제약을 검사하는 체계입니다.
+// 사용 이유: 이메일 형식·필수값·길이 같은 입력 검사를 선언으로 모아 반복을 줄입니다.
+// 동작 흐름: 요청 본문이 DTO로 변환된 후 @Valid로 필드의 제약을 검사합니다. 부서가 실제 존재하는지 같은 DB 관련 업무 검증은 Service에서 이어집니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

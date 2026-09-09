@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/EmployeeService.java
 // 목표: 직원 상세 / 수정 / 비활성·삭제 흐름을 채우세요. PRD 2.5.2 (FR-EMP-003~005) 참고.
 
+// 초보자 안내 (28장): 수정과 퇴사 상태 처리
+// 개념: 상태로 퇴사를 표현하는 방식은 행을 삭제하는 물리 삭제와 다릅니다.
+// 사용 이유: 과거 휴가·결재에서 참조하는 직원 이력을 유지합니다.
+// 동작 흐름: 직원을 조회하고 변경할 부서 등을 확인한 뒤 도메인 메서드로 수정합니다. 삭제 예제의 hardDelete 분기와 퇴사 처리 분기를 비교하고 Controller 호출 인자를 실행 프로젝트에서 맞춥니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @Transactional(readOnly = true)
 public EmployeeResponse detail(Long employeeId) {
     Employee employee = employeeRepository.findById(employeeId)

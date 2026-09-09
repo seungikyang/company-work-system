@@ -1,6 +1,13 @@
 // 실제 구현 위치 예: src/main/java/com/example/companywork/controller/EmployeeController.java
 // 목표: 직원 관리 REST API 의 매핑을 채우세요. TRD 3.7.2 참고.
 
+// 초보자 안내 (18장): Spring MVC와 REST Controller
+// 개념: Controller는 HTTP 주소·메서드와 Java 메서드를 연결하는 입구입니다.
+// 사용 이유: 통신 처리와 직원 등록 같은 업무 규칙을 나누어 변경하기 쉽게 합니다.
+// 동작 흐름: 요청 본문 → 검증한 DTO → employeeService 호출 → 응답 DTO와 HTTP 상태 순서입니다. @PreAuthorize는 Spring Security와 메서드 보안을 활성화한 2차 단계에서 동작합니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 // TODO 01: REST 컨트롤러 + 공통 prefix.
 @____
 @RequestMapping("____")

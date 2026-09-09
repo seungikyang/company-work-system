@@ -2,6 +2,13 @@
 // 목표: 전자결재 문서의 작성(DRAFT) → 결재 요청(PENDING) 흐름을 채우세요.
 //       PRD 2.4.3, 2.5.6, TRD 3.8.4 참고.
 
+// 초보자 안내 (13장): 작성과 제출 분리
+// 개념: 임시 저장과 제출은 다른 업무 동작이며 서로 다른 상태를 만듭니다.
+// 사용 이유: 작성 중인 문서가 결재자의 처리 목록에 바로 섞이지 않게 합니다.
+// 동작 흐름: createDraft는 작성자·결재자 조건을 확인하고 DRAFT로 저장합니다. submit은 문서를 조회하고 작성자를 확인한 뒤 도메인 메서드로 제출 상태로 바꿉니다.
+// 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @Transactional
 public ApprovalResponse createDraft(Long currentEmployeeId, ApprovalCreateRequest request) {
 
