@@ -510,8 +510,8 @@
   <main class="page">
     <section class="summary-grid" aria-label="히스토리 요약">
       <article class="summary-card">
-        <strong>26</strong>
-        <span>최초 생성부터 문제·힌트·코드·정답 동시 표시까지 이어진 Git 단계</span>
+        <strong>27</strong>
+        <span>최초 생성부터 초보자 기술 설명과 원본 이관까지 이어진 Git 단계</span>
       </article>
       <article class="summary-card">
         <strong>40</strong>
@@ -561,31 +561,40 @@
       </ol>
     </section>
 
-    <section aria-labelledby="beginner-update-title">
-      <div class="section-heading">
-        <h2 id="beginner-update-title">작업 중인 변경 · 초보자 설명 보강</h2>
-        <p>2026년 9월 10일 작성 · 아래 Git 기반 타임라인과 별도로, 아직 커밋하지 않은 변경입니다.</p>
-      </div>
-      <article class="history-card">
-        <p>워크북 자체와 실습할 백엔드의 기술을 구분한 입문 안내를 추가했습니다.
-          40개 문제와 Starter 코드·설정 35개에 개념·사용 이유·동작 흐름을 설명하고,
-          첫 학습은 Starter, 복습은 Hard로 이어지도록 안내를 보완했습니다.</p>
-        <p><a href="./workbook-viewer.html?file=practice/beginner-guide.md">초보자 기술과 코드 안내 읽기</a></p>
-      </article>
-    </section>
-
     <section aria-labelledby="timeline-title">
       <div class="section-heading">
         <h2 id="timeline-title">변경 타임라인</h2>
         <p>
           커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
-          워크북 사용 흐름의 변화와 대표 배포 확인 이력 26개를 기록하며,
+          워크북 사용 흐름의 변화와 대표 배포 확인 이력 27개를 기록하며,
           이 페이지의 단순 이력 동기화 같은 관리 커밋은 생략할 수 있습니다.
         </p>
       </div>
 
       <ol class="timeline">
         <li class="history-item latest">
+          <time class="history-date" datetime="2026-09-10">2026.09.10</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">초보자 기술 설명과 원본 이관</span>
+              <a class="commit" href="https://github.com/seungikyang/company-work-system/commit/405b8a2930ea2fd7b60002b2885e3cf12a4641c4">405b8a2</a>
+            </div>
+            <h3>기술의 개념·사용 이유·동작을 설명하고 학습 활동을 원본에 보존</h3>
+            <p>워크북 자체와 실습할 백엔드의 기술을 구분한 입문 안내를 추가하고,
+              40개 문제와 Starter 코드·설정 35개에 초보자 설명을 넣었습니다.
+              작업트리의 변경 44개 파일과 구현·검증·문제 해결 기록을 원본 main으로 옮겼습니다.</p>
+            <ul>
+              <li>직원 등록 요청의 전체 흐름과 기술별 선택 이유 설명</li>
+              <li>Starter로 처음 배우고 Hard로 복습하는 학습 순서와 안내 링크 연결</li>
+              <li>모바일 문제집 40개 설명, 기본 펼침 정답 40개와 가로 넘침 없음 확인</li>
+              <li>이관 파일 SHA-256 일치 확인 및 원본 워크북 검증·diff 검사 통과</li>
+              <li>루트 context-notes.md에 작업 위치·설계 결정·검증·이관 파일 목록 기록</li>
+            </ul>
+            <p><a href="./workbook-viewer.html?file=practice/beginner-guide.md">초보자 기술과 코드 안내 읽기</a></p>
+          </article>
+        </li>
+
+        <li class="history-item">
           <time class="history-date" datetime="2026-07-29">2026.07.29</time>
           <article class="history-card">
             <div class="history-meta">
@@ -1284,7 +1293,7 @@
 
   <footer class="page">
     <p>Java 백엔드 취업 포트폴리오 워크북</p>
-    <p>마지막 문서 갱신일 <time datetime="2026-07-29">2026년 7월 29일</time></p>
+    <p>마지막 문서 갱신일 <time datetime="2026-09-10">2026년 9월 10일</time></p>
   </footer>
 </body>
 </html>
