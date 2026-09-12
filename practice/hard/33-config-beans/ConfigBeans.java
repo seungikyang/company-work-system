@@ -2,6 +2,13 @@
 // 목표: Auditing / PasswordEncoder / WebMvc 핵심 Bean 을 거의 백지에서. TRD 3.11, 3.5.
 // 막히면 starter/33-config-beans, answers.md 33장 참고.
 
+// 초보자 안내 (33장): Bean과 설정
+// 개념: Bean은 Spring이 생성·관리하는 객체이며 설정 클래스는 이 객체와 기능을 등록하는 곳입니다.
+// 사용 이유: 여러 Service가 같은 방식으로 인코더 등을 주입받고 공통 설정을 사용하도록 합니다.
+// 동작 흐름: @Bean 메서드가 PasswordEncoder를 제공하고 Auditing 설정이 생성·수정 시각 기록을 돕습니다. WebMvc 설정은 34장의 인터셉터와 인자 해석기를 실제 요청 처리에 연결합니다.
+// 읽는 순서: 먼저 같은 챕터 Starter의 코드 옆 설명을 읽고, 여기서 검사·호출 순서를 직접 구성하세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 // 1. JPA Auditing
 // TODO 01: createdAt/updatedAt 자동 채움 활성화 어노테이션.
 @Configuration

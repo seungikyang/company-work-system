@@ -73,6 +73,8 @@ public class BusinessException extends ____ {
 }
 
 // ===== ErrorResponse =====
+// record는 응답 데이터를 묶는 Java 타입입니다. 각 구성 요소에 이름이 같은 접근자가 생깁니다.
+// 예를 들어 status는 status()로 읽으며 HTTP 상태와 상세 업무 오류 코드는 서로 다른 정보를 전합니다.
 public record ErrorResponse(
     int status,
     String code,

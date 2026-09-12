@@ -75,6 +75,8 @@ public class Employee {
         return e;
     }
 
+    // department는 부서 객체를 가리킵니다. 관리 중인 직원의 참조를 바꾸면 flush 때 FK 변경으로 이어질 수 있습니다.
+    // 이 메서드는 새 부서를 만드는 동작이 아닙니다.
     public void changeDepartment(Department department) {
         this.department = department;
     }
@@ -84,6 +86,7 @@ public class Employee {
         this.status = EmployeeStatus.____;
     }
 
+    // boolean은 참/거짓 결과입니다. 호출하는 Service는 이 결과로 휴가 신청을 계속할지 결정합니다.
     public boolean isActive() {
         // TODO 08: 휴가/결재 신청 가능 여부를 판단하는 도메인 규칙.
         return this.status == EmployeeStatus.____;

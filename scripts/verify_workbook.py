@@ -1,4 +1,7 @@
 # HTML 취업 워크북의 구조와 학습 링크 계약을 반복 검증하는 스크립트
+# 초보자 안내: HTMLParser는 태그 구조를 읽고 pathlib는 파일 경로를 다룹니다.
+# 문서·화면을 수정할 때 링크나 챕터 연결이 깨지는 실수를 찾기 위해 자동 검사를 묶었습니다.
+# 읽는 순서: main의 검사 목록 → 각 validate 함수 → require의 실패 메시지. 실제 Spring API 테스트와는 별개입니다.
 from __future__ import annotations
 
 from html.parser import HTMLParser
@@ -40,6 +43,7 @@ VOID_TAGS = {
 }
 
 
+# HTML을 위에서부터 읽으며 열린 태그·ID·링크를 모읍니다. 정규식만으로 태그 짝을 검사하지 않도록 파서를 사용합니다.
 class HtmlContractParser(HTMLParser):
     def __init__(self, path: Path) -> None:
         super().__init__(convert_charrefs=True)
@@ -76,6 +80,7 @@ class HtmlContractParser(HTMLParser):
         require(opened == tag, f"{self.path.name}: <{opened}> 다음에 </{tag}>가 닫힘")
 
 
+# 조건이 거짓이면 원인이 담긴 예외로 중단합니다. 마지막 진입점이 오류를 출력하고 종료 코드 1로 실패를 알립니다.
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise AssertionError(message)

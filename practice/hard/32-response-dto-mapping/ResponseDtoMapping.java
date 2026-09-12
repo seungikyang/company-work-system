@@ -3,6 +3,13 @@
 // 막히면 starter/32-response-dto-mapping, answers.md 32장 참고.
 // 원칙: 응답 DTO 는 Entity 를 import 해도 되지만, Entity 가 DTO 를 import 하면 안 된다(단방향).
 
+// 초보자 안내 (32장): 응답 DTO 매핑
+// 개념: 매핑은 Entity에서 외부에 공개할 필드만 골라 응답 객체로 옮기는 작업입니다.
+// 사용 이유: 비밀번호와 내부 관계를 숨기고 DB 구조 변경이 API에 바로 퍼지는 것을 줄입니다.
+// 동작 흐름: from 메서드가 Entity 값을 record의 필드로 옮기고 Page.map이 목록 항목마다 이를 적용합니다. 지연 로딩 관계를 읽는 시점과 쿼리 수도 함께 확인합니다.
+// 읽는 순서: 먼저 같은 챕터 Starter의 코드 옆 설명을 읽고, 여기서 검사·호출 순서를 직접 구성하세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 public record EmployeeResponse(
         Long employeeId, String name, String email, String employeeNumber,
         String position, String phone, LocalDate hireDate, String departmentName, EmployeeStatus status) {

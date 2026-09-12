@@ -36,6 +36,8 @@ public class NoticeController {
     // TODO 03: 공지 상세. 조회수가 올라야 한다면 어떤 HTTP 메서드를 사용하는 게 의미상 더 적절한가요?
     //          (GET 이지만 사이드이펙트가 있는 경우의 일반적 합의는?)
     @GetMapping("/{noticeId}")
+    // 상세 조회는 Service의 view를 호출하고 그 안에서 조회 수가 바뀝니다.
+    // HTTP GET이라는 이름만 보지 말고 이어지는 Service에서 DB 변경 여부를 확인하세요.
     public NoticeResponse detail(@PathVariable Long noticeId) {
         return noticeService.view(noticeId);
     }

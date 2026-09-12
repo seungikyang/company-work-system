@@ -59,6 +59,8 @@ public class WebMvcConfig implements ____ {
     }
 
     @Override
+    // 구현 클래스를 작성한 뒤 MVC에 등록해야 Controller 인자를 해석할 때 사용됩니다.
+    // 여기는 CurrentUser 해석기만 등록합니다. 직원 ID·역할용 어노테이션에는 별도 해석·등록이 필요합니다.
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(currentUserArgumentResolver);
     }

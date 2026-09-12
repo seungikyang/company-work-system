@@ -12,6 +12,8 @@
 public Page<ApprovalResponse> findMyDocuments(Long currentEmployeeId, ApprovalStatus status, Pageable pageable) {
 
     Page<ApprovalDocument> page;
+    // status가 없다는 것은 상태로 좁히지 않는다는 뜻입니다. 두 분기 모두 작성자 ID 조건은 유지해야
+    // 상태 필터를 지웠을 때 다른 사람의 문서가 섞이지 않습니다.
     if (status == null) {
         // TODO 01: 내가 작성한 결재 문서 전체.
         page = approvalRepository.____(currentEmployeeId, pageable);

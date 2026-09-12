@@ -24,6 +24,8 @@ public LeaveResponse detail(Long currentEmployeeId, UserRole currentRole, Long l
         .orElseThrow(() -> new BusinessException(ErrorCode.LEAVE_NOT_FOUND));
 
     // TODO 02: 본인 또는 ADMIN 만 상세 조회 가능.
+    // isOwner와 isAdmin은 각각 본인·관리자라는 판정 결과입니다.
+    // !는 부정, &&는 두 조건 모두 참이라는 뜻이므로 아래 if는 둘 다 아닌 사람을 거절합니다.
     boolean isOwner = leave.getEmployee().getId().equals(currentEmployeeId);
     boolean isAdmin = currentRole == UserRole.____;
     if (!isOwner && !isAdmin) {

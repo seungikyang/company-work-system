@@ -11,6 +11,7 @@
   <title>워크북 읽기 · Company Work System</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23185c45'/%3E%3Cpath d='M18 17h20c5 0 8 3 8 8v24H26c-5 0-8-3-8-8V17z' fill='%23fffdf7'/%3E%3Cpath d='M26 17v32' stroke='%23d4682d' stroke-width='4'/%3E%3C/svg%3E">
   <style>
+    /* CSS는 HTML 요소의 모양을 정합니다. 아래 공통 스타일 뒤의 @media는 좁은 화면·인쇄 환경에 맞게 배치를 조정합니다. */
     :root {
       color-scheme: light;
       --ink: #18211b;
@@ -375,7 +376,9 @@
     </article>
   </main>
 
+  <!-- HTML로 입력창과 표시 영역을 먼저 만든 뒤, 아래 JavaScript가 DOM을 찾아 동작을 연결합니다. -->
   <script>
+    // URLSearchParams는 ?file= 뒤의 쿼리 값을 읽습니다. 이 값은 사용자 입력이므로 허용 경로 검사 후 요청합니다.
     const params = new URLSearchParams(window.location.search);
     const sourceFile = params.get("file") || "";
     const allowedSource = /^(?:practice\/[A-Za-z0-9._/-]+\.(?:fragment|java|md)|(?:README|company_work_system_PRD_TRD)\.md)$/;
@@ -395,6 +398,7 @@
       return `section-${index}-${slug || "item"}`;
     }
 
+    // 줄바꿈을 통일하고 # 제목을 기준으로 구획을 나눕니다. 제목이 없는 Java 파일도 본문 구획으로 남깁니다.
     function splitDocument(source) {
       const chunks = [];
       let current = { level: 1, title: "", lines: [] };
@@ -463,6 +467,7 @@
         if (content) {
           const sourceBlock = document.createElement("pre");
           sourceBlock.className = "document-source";
+          // textContent로 넣으면 문서 속 HTML·스크립트를 실행하지 않고 문자로 표시합니다. pre는 코드의 들여쓰기를 보존합니다.
           sourceBlock.textContent = content;
           section.append(sourceBlock);
         }
@@ -479,6 +484,8 @@
       loadStatus.hidden = true;
     }
 
+    // 경로 확인 → raw=1 원문 요청 → HTTP 성공 확인 → 제목·목차·본문 표시 순서입니다.
+    // 서버도 공개 경로를 검사합니다. 브라우저 검사만으로 서버 파일의 접근 권한을 정할 수는 없습니다.
     async function loadDocument() {
       if (sourceFile === "practice/problems.md") {
         window.location.replace("./problems.html");

@@ -2,6 +2,13 @@
 // 목표: 직원 등록(User+Employee 원자적 저장)을 거의 백지에서. TRD 3.7.2, 3.8.1, 3.10.1.
 // 막히면 starter/08-employee-register, answers.md 8장 참고.
 
+// 초보자 안내 (08장): Service와 트랜잭션
+// 개념: Service는 업무 순서를 조율하고 트랜잭션은 여러 DB 변경을 하나의 성공·실패 단위로 묶습니다.
+// 사용 이유: 직원 등록이 실패했는데 로그인 계정만 남는 부분 저장을 막습니다.
+// 동작 흐름: 중복·부서 확인 → 비밀번호 해시 → User 저장 → Employee 저장 → 응답 변환 순서입니다. Spring이 관리하는 트랜잭션 경계 밖으로 RuntimeException이 전달되면 기본 설정에서 두 저장을 롤백합니다.
+// 읽는 순서: 먼저 같은 챕터 Starter의 코드 옆 설명을 읽고, 여기서 검사·호출 순서를 직접 구성하세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 // TODO 01: 트랜잭션 선언.
 @____
 public EmployeeResponse register(EmployeeCreateRequest request) {

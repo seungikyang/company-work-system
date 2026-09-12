@@ -2,6 +2,13 @@
 // 목표: 공통 에러 모델을 거의 백지에서. HttpStatus 매핑은 루트 PRD/TRD 3.9와 일치시킵니다.
 // 막히면 starter/15-error-model, answers.md 15장 참고.
 
+// 초보자 안내 (15장): 예외와 오류 응답 모델
+// 개념: 예외는 정상 처리를 계속할 수 없다는 신호이고 ErrorCode는 실패 이유의 공통 이름입니다.
+// 사용 이유: 각 기능이 서로 다른 형식의 오류를 보내면 화면과 테스트에서 처리하기 어렵습니다.
+// 동작 흐름: 업무 코드가 BusinessException에 오류 코드를 담아 던집니다. ErrorResponse는 클라이언트에 보낼 코드·메시지 등을 담으며 HTTP 응답 변환은 다음 장의 처리기가 맡습니다.
+// 읽는 순서: 먼저 같은 챕터 Starter의 코드 옆 설명을 읽고, 여기서 검사·호출 순서를 직접 구성하세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 // ===== ErrorCode ===== (각 코드의 HttpStatus 를 직접 채우세요)
 public enum ErrorCode {
     INVALID_INPUT(HttpStatus.____, "잘못된 요청입니다."),

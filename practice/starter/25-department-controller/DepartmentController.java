@@ -61,6 +61,8 @@ public class DepartmentController {
 
 
 // ===== DTO =====
+// 요청 record는 전송 필드와 접근자를 제공합니다. name()으로 읽으므로 24장의 getName() 호출과
+// 그대로 조립할 수는 없습니다. 실행 프로젝트에서 DTO 형식과 호출부를 통일하세요.
 public record DepartmentCreateRequest(
         @NotBlank @Size(max = 100) String name,
         @Size(max = 255) String description

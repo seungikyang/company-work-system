@@ -8,6 +8,7 @@
 # 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
 # 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
 
+# YAML은 들여쓰기로 설정의 소속을 표현합니다. datasource는 spring 아래의 DB 연결 설정입니다.
 spring:
   datasource:
     # TODO 01: 인메모리 H2 URL 을 채우세요. (testdb 라는 이름으로 띄운다고 가정)
@@ -38,6 +39,8 @@ spring:
 #          하드코딩하지 않는 이유를 한 줄로 적어보세요.
 app:
   security:
+    # 환경 변수 APP_SESSION_TIMEOUT이 없으면 1800을 사용합니다.
+    # 이 app.* 값은 사용자 정의 값이므로 별도의 바인딩·적용 코드가 있어야 세션에 반영됩니다.
     session-timeout: ${APP_SESSION_TIMEOUT:1800}
 
 # 학습 질문 (면접 대비):

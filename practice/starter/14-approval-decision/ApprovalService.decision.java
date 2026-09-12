@@ -15,6 +15,8 @@ public ApprovalResponse approve(Long currentEmployeeId, Long approvalId) {
         .orElseThrow(() -> new BusinessException(ErrorCode.APPROVAL_NOT_FOUND));
 
     // TODO 01: 도메인 메서드 안에서 결재자/상태 검증 + 승인일시 세팅을 모두 처리합니다.
+    // Service는 문서를 찾고 Entity 메서드는 지정 결재자·현재 상태를 검사합니다.
+    // 06장의 메서드로 이동해 어떤 조건에서 throw로 중단되는지 함께 읽으세요.
     doc.____(currentEmployeeId);
 
     return ApprovalResponse.from(doc);

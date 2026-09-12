@@ -2,6 +2,13 @@
 // 목표: 직원 검색 + 페이징을 거의 백지에서. PRD 2.5.2 (FR-EMP-006/007).
 // 막히면 starter/09-employee-search, answers.md 9장 참고.
 
+// 초보자 안내 (09장): Pageable과 Page
+// 개념: Pageable은 페이지 번호·크기·정렬 조건이고 Page는 조회 결과와 전체 건수 등의 페이지 정보입니다.
+// 사용 이유: 직원이 많아도 한 화면에서 필요한 분량만 조회합니다.
+// 동작 흐름: 검색 조건과 Pageable을 Repository에 전달하고 Page.map으로 각 Employee를 응답 DTO로 바꿉니다. 페이지 정보는 유지되며 전체 건수 계산에 추가 쿼리가 필요할 수 있습니다.
+// 읽는 순서: 먼저 같은 챕터 Starter의 코드 옆 설명을 읽고, 여기서 검사·호출 순서를 직접 구성하세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 // TODO 01: 읽기 전용 트랜잭션.
 @Transactional(readOnly = ____)
 public Page<EmployeeResponse> search(String keyword, Long departmentId, Pageable pageable) {

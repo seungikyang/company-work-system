@@ -30,6 +30,8 @@ public class EmployeeCreateRequest {
     @Size(max = 50)
     private String name;
 
+    // 이 검사는 부서 ID가 입력되었는지만 확인합니다. 999가 실제 부서인지는 Repository 조회가 필요합니다.
+    // 어노테이션은 메타데이터이므로 new로 객체를 만드는 것만으로 모든 제약이 자동 실행되지는 않습니다.
     @NotNull(message = "부서를 선택하세요.")
     private Long departmentId;
 
@@ -62,7 +64,7 @@ public class EmployeeCreateRequest {
 // 심화 노트 (면접 답변 포인트):
 // - @NotNull(null 만 차단) / @NotEmpty(null+빈 문자열, 공백 " " 은 통과) / @NotBlank(null+빈+공백 모두 차단).
 //   문자열 필수값엔 @NotBlank 가 정답.
-// - @Valid 는 Controller 파라미터에 붙어야 동작: body 는 @Valid @RequestBody, PathVariable/RequestParam 검증은
-//   클래스에 @Validated + ConstraintViolationException 처리.
+// - 이 예제의 body 검증은 @Valid @RequestBody로 연결한다. 메서드 검증은 적용 방식·버전에 따라 예외가 다르다.
+//   클래스 @Validated 방식과 Spring MVC 6.1 내장 검증을 구분하고 입문 안내 10절을 참고한다.
 // - 요청/응답 DTO 분리: 응답 스펙을 바꿔도 요청 계약이 안 깨지고, password 같은 입력 전용 필드가 응답에 새지 않는다.
 // - hireDate 미래 금지는 @PastOrPresent. 사번 포맷은 @Pattern(정규식). 형식 검증은 DTO, 비즈니스 규칙은 Service.

@@ -91,6 +91,8 @@ public class LeaveRequest {
         return r;
     }
 
+    // 상태 변경 전에 조건을 검사하는 이유는 이미 처리된 신청을 다시 승인하지 않기 위해서입니다.
+    // throw가 실행되면 아래 대입문으로 진행하지 않습니다. 승인 권한 확인은 Service·보안 계층도 함께 읽으세요.
     public void approve(Long approverId) {
         // TODO 08: PENDING 상태가 아니면 승인할 수 없습니다.
         if (this.status != ApprovalStatus.____) {

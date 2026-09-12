@@ -13,6 +13,7 @@
 @____
 public EmployeeResponse register(EmployeeCreateRequest request) {
 
+    // request는 Controller가 넘긴 입력 DTO입니다. 문자열 메서드의 결과를 email에 담고 같은 값으로 조회·저장합니다.
     String email = request.getEmail().trim().toLowerCase();
 
     // TODO 02: 이메일 중복 검사. 어떤 ErrorCode 를 던질까요?
@@ -26,6 +27,8 @@ public EmployeeResponse register(EmployeeCreateRequest request) {
     }
 
     // TODO 04: 부서가 존재하는지 확인.
+    // findById 결과는 없을 수도 있습니다. Optional.orElseThrow는 값이 없을 때만 예외 생성 함수를 실행합니다.
+    // () -> 는 나중에 호출할 함수를 나타내며, 부서가 없으면 아래 계정 생성으로 진행하지 않습니다.
     Department department = departmentRepository.findById(request.getDepartmentId())
         .orElseThrow(() -> new BusinessException(ErrorCode.____));
 
@@ -40,6 +43,7 @@ public EmployeeResponse register(EmployeeCreateRequest request) {
     // TODO 06: User 가 먼저 저장되어야 Employee 의 FK 를 채울 수 있습니다.
     User savedUser = userRepository.____(user);
 
+    // savedUser를 연결해 계정과 인사 정보를 짝지읍니다. 두 Repository 작업을 감싸는 트랜잭션이 필요합니다.
     Employee employee = Employee.create(
         savedUser,
         department,
@@ -64,8 +68,8 @@ public EmployeeResponse register(EmployeeCreateRequest request) {
 //     A:
 //
 // 심화 노트 (면접 답변 포인트):
-// - 같은 메서드 = 같은 물리 트랜잭션. userRepository.save 후 employee.save 에서 RuntimeException 이 나면
-//   둘 다 rollback (트러블슈팅 3.16.2 의 "부분 저장" 케이스).
+// - Spring 프록시의 트랜잭션 경계 안에서 두 저장이 같은 트랜잭션에 참여해야 부분 저장을 막는다.
+//   RuntimeException이 경계 밖으로 전달되면 기본 설정에서 rollback (트러블슈팅 3.16.2 참고).
 // - checked exception 은 기본 commit → 필요하면 @Transactional(rollbackFor = Exception.class).
 // - save 순서: User 를 먼저 영속화해야 Employee 의 FK(user_id)가 결정된다.
 // - 정규화(trim().toLowerCase())는 중복검사 "전에" 1회 — User@x.com 과 user@x.com 분리 사고 방지.

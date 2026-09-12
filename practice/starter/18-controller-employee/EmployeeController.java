@@ -14,6 +14,8 @@
 @RequiredArgsConstructor
 public class EmployeeController {
 
+    // final 필드는 필요한 협력 객체를 보관합니다. Lombok 생성자를 통해 Spring이 Service를 주입하도록 구성합니다.
+    // 요청마다 Controller가 Service를 새로 만들 필요가 없어 테스트에서 다른 구현을 넣기도 쉽습니다.
     private final EmployeeService employeeService;
 
     // TODO 02: 신규 직원 등록. 어떤 HTTP 메서드일까요?

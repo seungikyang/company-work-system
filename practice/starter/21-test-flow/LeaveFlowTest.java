@@ -22,6 +22,7 @@ class LeaveFlowTest {
     void leaveRequest_then_adminApprove_flow() throws Exception {
 
         // 1. (사전) 부서/관리자/직원 시드 데이터는 @BeforeEach 또는 setup 메서드로 준비했다고 가정.
+        // 두 세션은 서로 다른 로그인 사용자를 재현합니다. 각 요청에 어느 세션을 붙였는지가 권한 검사의 입력입니다.
         MockHttpSession employeeSession = loginAs("employee@test.com", "pass1234!");
         MockHttpSession adminSession    = loginAs("admin@test.com", "adminpw!");
 
@@ -34,6 +35,8 @@ class LeaveFlowTest {
         );
 
         // TODO 01: 로그인 응답에서 얻은 세션을 다음 요청에 연결하세요.
+        // perform은 요청을 실행하고 andExpect는 실제 응답을 예상값과 비교합니다.
+        // MockMvc가 실제 MVC 처리를 호출하려면 실행 프로젝트의 Bean과 테스트 계정 데이터가 준비되어야 합니다.
         MvcResult requestResult = mockMvc.perform(post("/api/leaves")
                 .____(employeeSession)
                 .contentType(MediaType.APPLICATION_JSON)

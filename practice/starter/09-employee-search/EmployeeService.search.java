@@ -15,6 +15,8 @@ public Page<EmployeeResponse> search(String keyword, Long departmentId, Pageable
     // 검색 조건이 다양해질 때는 Querydsl/Specification 이 더 깔끔하지만,
     // 학습 단계에서는 if 분기로 충분합니다.
 
+    // Page는 조회 항목과 전체 개수 등 페이지 정보를 담고 Pageable은 요청한 페이지·크기·정렬 조건입니다.
+    // 이름과 부서가 모두 있는 첫 분기는 아래 예제에서 부서 조건을 아직 적용하지 않으므로 복합 검색 구현이 필요합니다.
     Page<Employee> page;
 
     if (keyword != null && !keyword.isBlank() && departmentId != null) {

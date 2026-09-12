@@ -2,6 +2,13 @@
 // 목표: 휴가 신청 → 관리자 승인 → 결과 확인 MockMvc 통합 테스트를 거의 백지에서. TRD 3.12.
 // 막히면 starter/21-test-flow, answers.md 21장 참고.
 
+// 초보자 안내 (21장): JUnit 5와 MockMvc
+// 개념: JUnit은 테스트를 실행하고 MockMvc는 실제 네트워크 서버를 띄우지 않고 Spring MVC 요청 처리를 시험합니다.
+// 사용 이유: 휴가 신청부터 승인까지의 성공·실패를 수정 후에도 반복 확인합니다.
+// 동작 흐름: 테스트 데이터를 준비하고 로그인·신청·승인 요청을 보낸 뒤 응답 상태와 저장 결과를 비교합니다. 브라우저의 실제 클릭이나 운영 DB의 모든 특성까지 검증하는 것은 아닙니다.
+// 읽는 순서: 먼저 같은 챕터 Starter의 코드 옆 설명을 읽고, 여기서 검사·호출 순서를 직접 구성하세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional

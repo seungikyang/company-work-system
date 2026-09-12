@@ -68,6 +68,8 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
 
     // TODO 09: 기간 겹침 검사 — 같은 직원이 이미 휴가 신청한 기간과 겹치는지.
     //          start_date <= :endDate AND end_date >= :startDate 조건.
+    // 이 JPQL은 테이블명이 아니라 Entity 이름과 속성을 사용합니다. :employeeId 같은 이름은 @Param에 연결됩니다.
+    // 기간 겹침은 기존 시작일 ≤ 새 종료일 AND 기존 종료일 ≥ 새 시작일 조건으로 판단합니다.
     @Query("""
         SELECT COUNT(l) > 0 FROM LeaveRequest l
         WHERE l.employee.id = :employeeId

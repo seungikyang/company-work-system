@@ -11,6 +11,7 @@
   <title>Company Work System 취업 워크북</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23185c45'/%3E%3Cpath d='M18 17h20c5 0 8 3 8 8v24H26c-5 0-8-3-8-8V17z' fill='%23fffdf7'/%3E%3Cpath d='M26 17v32' stroke='%23d4682d' stroke-width='4'/%3E%3C/svg%3E">
   <style>
+    /* CSS는 HTML 요소의 모양을 정합니다. 아래 공통 스타일 뒤의 @media는 좁은 화면·인쇄 환경에 맞게 배치를 조정합니다. */
     :root {
       color-scheme: light;
       --ink: #18211b;
@@ -2339,7 +2340,9 @@
     <p><a href="./history.html">프로그램 변경 이력 보기</a></p>
   </footer>
 
+  <!-- HTML로 입력창과 표시 영역을 먼저 만든 뒤, 아래 JavaScript가 DOM을 찾아 동작을 연결합니다. -->
   <script>
+    // 즉시 실행 함수로 변수의 범위를 묶습니다. 시작 순서는 저장값 복원 → DOM 찾기 → 이벤트 연결 → 화면 반영입니다.
     (() => {
       const storageKey = "company-workbook-state-v1";
       const emptyState = {
@@ -2352,6 +2355,8 @@
       };
       let storageEnabled = true;
 
+      // localStorage는 문자열을 보관하므로 JSON.parse로 객체를 복원합니다.
+      // 기본값과 저장값을 합쳐 예전 기록에 새 필드가 없어도 읽을 수 있게 합니다. ...는 객체의 속성을 펼치는 표기입니다.
       const loadState = () => {
         try {
           const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
@@ -2380,6 +2385,8 @@
       let state = loadState();
       const byId = (id) => document.getElementById(id);
       const workbookBasePath = new URL("./", window.location.href).pathname;
+      // 학습 파일 링크를 읽기 화면 주소로 바꿉니다. encodeURIComponent는 경로를 쿼리 값 하나로 전달하게 인코딩합니다.
+      // 외부 링크는 그대로 두고 이 워크북 안의 자료에만 적용합니다.
       const toWorkbookViewerHref = (rawHref) => {
         if (!rawHref) return rawHref;
         const sourceUrl = new URL(rawHref, window.location.href);
@@ -2476,6 +2483,8 @@
       const expandAllButton = byId("expand-all");
       const collapseAllButton = byId("collapse-all");
 
+      // state는 현재 메모리의 기록이고 JSON.stringify(state)는 저장할 문자열입니다.
+      // 저장 용량·권한 등의 오류는 catch에서 안내하며 이 함수는 서버로 답안을 보내지 않습니다.
       const saveState = () => {
         if (!storageEnabled) return;
         try {
@@ -2609,6 +2618,8 @@
         chapterWorkbookStatus.textContent = answer ? "답안 작성 중" : "답안 미작성";
       };
 
+      // render는 현재 상태를 화면에 반영한다는 뜻입니다. data-chapter 속성과 선택 번호가 같은 행에서
+      // 제목·파일 링크를 읽어 패널을 갱신하므로 다른 챕터 정보가 남지 않게 합니다.
       const renderSelectedChapter = () => {
         chapterRows.forEach((row) => {
           row.classList.toggle("is-selected", row.dataset.chapter === state.today.chapter);
@@ -2801,6 +2812,8 @@
         });
       });
 
+      // input 이벤트는 답안을 편집할 때 발생합니다. 번호별 answers에 기록 → 저장 → 상태 표시 갱신 순서입니다.
+      // 답안을 모두 지우면 그 챕터의 비교 완료도 해제하므로 빈 답안이 완료로 남지 않습니다.
       chapterAnswer.addEventListener("input", (event) => {
         const number = state.today.chapter;
         if (!number) return;
@@ -2829,6 +2842,7 @@
         updateDashboard();
       });
 
+      // 패널의 표시 상태와 aria-expanded를 함께 갱신해 화면을 보는 사람과 화면 읽기 도구에 같은 상태를 알립니다.
       const toggleWorkbookReveal = (button, panel, openLabel, closeLabel) => {
         const willOpen = panel.hidden;
         panel.hidden = !willOpen;
@@ -2895,6 +2909,7 @@
         selectChapterAt(index + 1, true);
       });
 
+      // 오늘 필드와 세션 체크만 초기화합니다. 프로필·누적 진척·챕터 답안은 별도 속성이므로 여기에 대입하지 않습니다.
       const resetTodaySession = () => {
         state.today = { ...emptyState.today };
         state.session = [];

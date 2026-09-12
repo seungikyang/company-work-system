@@ -156,3 +156,80 @@ DB 조회·변경 결과 → Service의 응답 DTO → Controller의 HTTP 응답
 - 무엇으로 확인했나: 성공 입력 하나와 실패 입력 하나, 실제 실행한 테스트 결과가 있나요?
 
 이 질문에 답한 뒤 [학습 워크북 안내](./README.md)의 챕터 완료 기록으로 이어갑니다. 더 자세한 설계 선택은 [정답과 해설](./answers.md), 구현 범위는 [PRD/TRD](../company_work_system_PRD_TRD.md)와 대조합니다.
+
+
+## 7. 파일을 열었을 때 어디부터 읽나요?
+
+코드 전체를 위에서부터 외우기보다 아래 순서로 필요한 파일을 찾아갑니다. Starter에는 중요한 문장 바로 앞에 설명을 넣었고, Hard에도 같은 기술의 개념·목적·흐름을 넣었습니다. Hard에서는 Starter를 덮고 조건과 호출 순서를 스스로 재구성합니다.
+
+| 알고 싶은 동작 | 실제 파일 | 먼저 찾을 이름 | 이 기술이 필요한 이유 |
+|---|---|---|---|
+| 답안을 적고 다시 열기 | index.html | loadState, chapterAnswer의 input 이벤트, saveState | 브라우저 입력·메모리 상태·저장값을 연결 |
+| 선택 챕터 안내 바꾸기 | index.html | renderSelectedChapter | 목차의 같은 번호에서 제목·링크·완료 기준을 함께 가져오기 |
+| 문제와 정답 함께 읽기 | problems.html | loadProblems, parseWorkbookSections, renderProblems | 기존 문제·해설 파일을 번호로 조합해 중복 작성 줄이기 |
+| Java·Markdown 원문 읽기 | workbook-viewer.html | loadDocument, renderDocument | 파일을 내려받지 않고 제목·목차·본문으로 읽기 |
+| 브라우저에 자료 보내기 | scripts/serve_workbook.py | main, do_GET, prepare_workbook_path | HTTP 요청을 허용된 학습 파일의 응답으로 바꾸기 |
+| 깨진 링크 찾기 | scripts/verify_workbook.py | main, require | 여러 문서를 수정한 뒤 같은 기준으로 오류 확인 |
+| 실행 위치 확인하기 | scripts/assert_repo_root.sh | physical_pwd, physical_root | 다른 복사본에서 수정하는 실수 방지 |
+
+이 표의 HTML·scripts 경로는 편집기에서 여는 저장소 상대 경로입니다. 로컬 학습 서버는 scripts 폴더를 공개하지 않으므로 해당 파일은 브라우저 문서 읽기 화면에서 열리지 않습니다.
+
+## 8. 답안 한 줄이 저장되는 과정
+
+이 예시는 현재 워크북에 실제 구현된 동작입니다. 내 프로젝트의 직원 정보가 저장되는 DB 흐름과 구분해서 따라갑니다.
+
+1. 메인 화면에서 08장을 선택하고 답안 입력창에 문장을 적습니다.
+2. 브라우저가 input 이벤트를 발생시킵니다. index.html의 chapterAnswer.addEventListener 안에서 event.target.value가 지금 입력한 문장을 읽습니다.
+3. state.workbook.answers[number]에 문장을 넣습니다. number가 "08"이면 08장 답안만 바뀝니다. state는 실행 중인 페이지 메모리에 있는 객체입니다.
+4. saveState가 JSON.stringify(state)로 문자열을 만들고 localStorage.setItem에 전달합니다. 이 경로에는 HTTP 요청이 없습니다.
+5. renderChapterWorkbookStatus와 updateDashboard가 입력 상태·완료 개수를 화면에 반영합니다. 저장과 화면 갱신은 서로 다른 작업입니다.
+6. 새로고침하면 페이지 메모리는 새로 만들어집니다. loadState가 남아 있는 저장 문자열을 읽고 renderState가 입력창과 선택값을 복원합니다.
+
+직접 확인: 시험용 답안을 입력한 뒤 09장으로 이동했다가 08장으로 돌아옵니다. 이어서 새로고침하고 같은 답안이 남는지 확인합니다. 답안을 모두 지우면 그 챕터의 비교 완료 표시도 해제됩니다. 기존 학습 기록이 있으면 다른 브라우저 프로필에서 연습하세요.
+
+저장이 막히면 catch가 오류를 받아 안내합니다. try/catch는 실패할 수 있는 작업을 시도하고 실패했을 때 대신 할 처리를 정하는 문법입니다. 화면에 문장이 보인다는 사실만으로 다음 실행에도 보존됐다고 판단하지 말고 새로고침 후 결과까지 확인합니다.
+
+## 9. 전체 문제를 열면 파일 세 개를 읽는 이유
+
+문제 본문은 practice/problems.md, 해설은 practice/answers.md, 실제 코드 경로는 index.html 목차에 있습니다. 같은 정보를 여러 파일에 새로 복사하면 한쪽만 수정했을 때 내용이 어긋나므로 기존 자료를 합쳐 보여줍니다.
+
+1. loadProblems가 Promise.all로 세 파일의 요청을 시작합니다. Promise는 나중에 성공 값이나 실패 이유를 받는 비동기 작업을 표현합니다.
+2. fetchText가 URL을 만들고 Markdown에는 raw=1을 붙입니다. raw가 없으면 서버는 문서 읽기 화면으로 이동시키므로 카드에 필요한 원문을 받으려면 이 구분이 필요합니다.
+3. await는 응답 준비 후 해당 함수의 다음 처리를 이어갑니다. 기다리는 동안 브라우저 전체를 멈추는 명령은 아닙니다.
+4. 응답 상태가 성공인지 response.ok로 검사하고 본문을 문자열로 읽습니다. fetch는 404 응답만으로 실패 예외를 발생시키지 않으므로 명시적인 상태 검사가 필요합니다. [MDN fetch 설명](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+5. parseWorkbookSections가 번호 있는 제목으로 문제와 해설을 나눕니다. parseCurriculum은 목차의 data-chapter 등 속성을 읽습니다.
+6. renderProblems가 번호로 세 자료를 맞추고 40개 카드와 실제 파일 링크를 만듭니다. 정답 details는 처음부터 펼쳐져 있으며 버튼으로 접거나 펼칠 수 있습니다.
+7. 요청이나 자료 대응 검사에 실패하면 catch에서 실패 메시지와 복귀 안내를 표시합니다.
+
+코드 링크를 클릭한 다음에는 workbook-viewer.html의 loadDocument를 따라갑니다. 이 화면은 원문을 textContent로 넣어 문자열 속 HTML을 실행하지 않습니다. pre 요소는 공백·줄바꿈을 보존합니다. Markdown 제목으로 구획과 목차를 만들지만 본문은 원문으로 표시하므로 모든 Markdown 문법을 꾸며 주는 편집기로 생각하지 않아도 됩니다.
+
+## 10. Java 문법을 실제 업무 코드로 읽기
+
+| 표기 | 쉬운 뜻 | 이 저장소에서 읽을 예 |
+|---|---|---|
+| private final EmployeeService | 이 객체가 사용할 Service 참조를 보관하고 다시 대입하지 않음 | 18장 Controller의 생성자 주입 |
+| new User() | 메모리에 User 객체 하나 만들기 | 01장 create; 그 자체로 DB 저장은 아님 |
+| this.status | 현재 객체의 status 필드 | 04·06장의 상태 변경 |
+| return | 결과를 호출한 쪽에 돌려주고 메서드를 끝내기 | Service에서 응답 DTO 반환 |
+| throw | 현재 처리를 중단하고 예외를 호출한 쪽으로 전달하기 | 부서 없음·권한 없음·상태 오류 |
+| Optional, orElseThrow | 없을 수도 있는 조회값과 없을 때의 처리 | 08장 부서 조회 |
+| () -> ... | 필요할 때 실행할 함수를 값처럼 전달하기 | 조회 실패 시 만들 예외 지정 |
+| EmployeeResponse::from | from 메서드를 변환 함수로 전달하기 | 09장 조회 결과의 각 직원을 응답 DTO로 변환 |
+| !, &&, 논리 OR 연산자 | 부정, 둘 다 참, 하나 이상 참 | 29장 본인·관리자 접근 검사 |
+| record | 전달할 데이터와 접근자를 간결하게 선언하기 | 23·25장의 요청·응답 타입 |
+
+어노테이션을 읽을 때는 이름 옆에 ‘누가 이 표시를 처리하는가’를 적어 보세요. Lombok은 컴파일 때 생성자·접근자를 만들고, Spring MVC는 요청 매핑을 읽고, Validation은 입력 제약을 검사하며, JPA는 객체와 DB 매핑을 처리합니다. 서로 다른 도구가 담당하므로 어노테이션 하나로 모든 단계가 실행되지는 않습니다.
+
+### 조각들을 연결할 때 꼭 대조할 네 가지
+
+- DTO 접근자: 일반 클래스의 Lombok getter는 getName(), record의 접근자는 name()입니다. 예를 들어 23장 AuthService의 getEmail()과 AuthController에 선언된 LoginRequest record는 그대로 연결되지 않습니다. 실행 프로젝트에서 DTO 형식을 선택하고 사용처를 통일합니다.
+- 식별자: User의 ID는 로그인 계정, Employee의 ID는 인사 정보 식별자입니다. 34장의 CurrentUser 해석기는 계정 ID를 읽으며 CurrentEmployee·CurrentUserRole은 선언만 존재합니다. 필요한 해석기와 33장의 MVC 등록까지 구현해야 합니다.
+- 권한 이름: 01장의 역할과 27장의 APPROVER 표기는 실행 프로젝트에서 권한 모델을 맞춰야 하는 지점입니다. PRD/TRD를 기준으로 역할 이름·인증 정보·검사 표현식을 통일하고 역할 권한과 문서에 지정된 결재자 여부를 각각 확인합니다.
+- 메서드와 조회 조건: 18·28장의 삭제 인자 개수, 09장의 이름+부서 복합 검색처럼 연결하거나 완성해야 하는 부분이 있습니다. 메서드 이름이 같다는 사실만으로 입력과 업무 규칙이 모두 맞지는 않습니다.
+
+### 실패했을 때 어느 파일로 돌아가나요?
+
+- 필수값·문자열 형식이 잘못되면 요청 DTO와 Controller의 검증 연결을 봅니다. MVC의 검증 예외는 검증 방식에 따라 다를 수 있습니다. Spring Framework 6.1의 메서드 검증은 HandlerMethodValidationException을 사용할 수 있으므로 실행 버전과 검증 경로에 맞게 핸들러를 구성합니다. [Spring MVC 검증 설명](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-validation.html)
+- 부서가 없거나 중복이면 Service와 Repository 조건을 봅니다. throw 뒤에는 정상 저장·반환이 이어지지 않는지 확인합니다.
+- 저장 도중 실패하면 트랜잭션 경계를 봅니다. 기본 프록시 방식의 외부 호출과 롤백 규칙을 확인해야 하며 같은 메서드 안에 저장 코드를 나열한 것만으로 원자성이 생기지는 않습니다. [Spring 트랜잭션 설명](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html)
+- 성공 응답에 내부 정보가 섞이면 32장의 DTO 변환에서 복사하는 필드를 봅니다. 응답 변환은 조회·저장과 구분해서 점검합니다.

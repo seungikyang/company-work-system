@@ -23,6 +23,8 @@ public class AuthController {
 
         LoginResponse response = authService.login(loginRequest);
 
+        // true는 세션이 없으면 만들라는 뜻입니다. 로그인 검증이 성공한 뒤 세션에 서버가 확인한 ID·역할을 넣습니다.
+        // 로그아웃의 false는 로그아웃을 위해 새 세션을 만들지 않겠다는 뜻입니다.
         HttpSession session = request.getSession(true);
         // TODO 02: 로그인 전 세션 ID 를 그대로 쓰지 않도록 재발급하세요.
         request.____();

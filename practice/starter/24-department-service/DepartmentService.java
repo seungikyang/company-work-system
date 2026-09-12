@@ -79,6 +79,8 @@ public class DepartmentService {
         accessGuard.requireAdmin(role);
 
         // TODO 06: 소속 직원이 한 명이라도 있으면 삭제를 막아야 할까요? 어떤 비즈니스 규칙이 자연스러운가요?
+        // 삭제 전에 직원 수를 세는 이유는 직원이 참조 중인 부서를 지우지 않기 위해서입니다.
+        // 검사와 삭제 사이의 동시 요청까지 다루려면 DB 외래키 제약도 함께 확인하세요.
         long memberCount = employeeRepository.countByDepartment_Id(departmentId);
         if (memberCount > 0) {
             throw new BusinessException(ErrorCode.____, "소속 직원이 있는 부서는 삭제할 수 없습니다.");

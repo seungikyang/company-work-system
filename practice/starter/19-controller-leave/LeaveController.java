@@ -41,6 +41,8 @@ public class LeaveController {
 
     // TODO 03: 휴가 상세. 본인 또는 ADMIN 만 조회할 수 있습니다.
     @GetMapping("/{leaveId}")
+    // leaveId는 조회 대상이고 currentEmployeeId는 요청한 사람입니다. URL의 대상 ID를 알더라도
+    // 조회 권한이 생기는 것은 아니므로 Service에서 본인·관리자 여부를 검사합니다.
     public LeaveResponse detail(
             @CurrentEmployee Long currentEmployeeId,
             @CurrentUserRole UserRole currentRole,

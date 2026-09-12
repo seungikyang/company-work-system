@@ -45,6 +45,8 @@ public class ApprovalController {
     // TODO 04: 내가 결재해야 할 대기 문서 목록. 권한은 APPROVER 또는 ADMIN.
     @GetMapping("/pending")
     @PreAuthorize("hasAnyRole('____', '____')")
+    // 이름이 pending인 API라도 모든 대기 문서를 반환하면 안 됩니다.
+    // 인증한 직원 ID를 조회 조건에 넣어 본인이 결재할 문서만 찾는지 30장과 대조하세요.
     public Page<ApprovalResponse> pending(
             @CurrentEmployee Long currentEmployeeId,
             Pageable pageable) {

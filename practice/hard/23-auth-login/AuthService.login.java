@@ -2,6 +2,13 @@
 // 목표: 로그인/로그아웃/내 정보/비밀번호 변경을 거의 백지에서. PRD 2.5.1, TRD 3.11.
 // 막히면 starter/23-auth-login, answers.md 23장 참고.
 
+// 초보자 안내 (23장): BCrypt와 로그인 세션
+// 개념: BCrypt는 비밀번호를 단방향 해시로 저장하는 방법이고 세션은 서버가 로그인 상태를 기억하는 공간입니다.
+// 사용 이유: 평문 비밀번호 저장을 피하고 매 요청마다 비밀번호를 다시 보내지 않게 합니다.
+// 동작 흐름: 가입은 encode, 로그인은 matches로 비교합니다. 성공 후 Controller가 세션 ID를 바꾸고 USER_ID·USER_ROLE을 저장하며 로그아웃은 세션을 폐기합니다.
+// 읽는 순서: 먼저 같은 챕터 Starter의 코드 옆 설명을 읽고, 여기서 검사·호출 순서를 직접 구성하세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {

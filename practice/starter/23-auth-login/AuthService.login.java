@@ -20,6 +20,8 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
 
+        // 로그인 Service는 DB 계정과 비밀번호를 검증하고 결과 DTO를 돌려줍니다. 세션 생성은 Controller 책임입니다.
+        // 23장의 record DTO를 사용한다면 getEmail() 같은 호출을 email() 접근자와 맞추는 작업이 필요합니다.
         String email = request.getEmail().trim().toLowerCase();
 
         // TODO 01: 이메일 사용자가 존재하는지 확인. 존재 여부와 비번 불일치를

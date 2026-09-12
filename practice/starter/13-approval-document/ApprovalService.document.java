@@ -42,6 +42,8 @@ public ApprovalResponse submit(Long currentEmployeeId, Long approvalId) {
         .orElseThrow(() -> new BusinessException(ErrorCode.____));
 
     // TODO 03: 본인이 작성한 문서만 결재 요청할 수 있다.
+    // 로그인 여부와 작성자 여부는 다른 검사입니다. 같은 로그인 사용자라도 다른 사람의 초안을 상신하면 안 됩니다.
+    // Long 식별자는 객체 참조 비교 대신 값 비교를 사용합니다.
     if (!doc.getWriterId().equals(currentEmployeeId)) {
         throw new BusinessException(ErrorCode.____);
     }

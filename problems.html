@@ -11,6 +11,7 @@
   <title>코드 연결 문제집 · Company Work System</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23185c45'/%3E%3Cpath d='M18 17h20c5 0 8 3 8 8v24H26c-5 0-8-3-8-8V17z' fill='%23fffdf7'/%3E%3Cpath d='M26 17v32' stroke='%23d4682d' stroke-width='4'/%3E%3C/svg%3E">
   <style>
+    /* CSS는 HTML 요소의 모양을 정합니다. 아래 공통 스타일 뒤의 @media는 좁은 화면·인쇄 환경에 맞게 배치를 조정합니다. */
     :root {
       color-scheme: light;
       --ink: #18211b;
@@ -573,7 +574,9 @@
     </div>
   </main>
 
+  <!-- HTML로 입력창과 표시 영역을 먼저 만든 뒤, 아래 JavaScript가 DOM을 찾아 동작을 연결합니다. -->
   <script>
+    // 이 화면은 기존 Markdown 문제·해설과 index.html 목차를 조합합니다. 별도 문제 DB 없이 자료의 중복 관리를 줄입니다.
     const EXPECTED_CHAPTERS = 40;
     const problemList = document.getElementById("problem-list");
     const problemOutline = document.getElementById("problem-outline");
@@ -598,6 +601,8 @@
       return decodeURIComponent(sourceUrl.pathname.slice(workbookBasePath.length));
     }
 
+    // async/await는 파일 응답을 기다린 뒤 다음 처리를 이어갑니다. raw=1은 읽기 화면 HTML 대신 원문을 요청합니다.
+    // fetch는 HTTP 404만으로 예외를 던지지 않으므로 response.ok를 별도로 검사합니다.
     async function fetchText(path, raw = false) {
       const url = new URL(path, window.location.href);
       if (raw) url.searchParams.set("raw", "1");
@@ -608,6 +613,8 @@
       return response.text();
     }
 
+    // 정규식으로 번호 있는 Markdown 제목을 찾고 다음 제목 전까지를 한 챕터로 자릅니다.
+    // 번호를 00 같은 두 자리 문자열로 맞춰 문제·해설·목차를 같은 키로 연결합니다.
     function parseWorkbookSections(source) {
       const normalized = source.replace(/\r\n?/g, "\n");
       const headingPattern = /^##\s+(\d+)\.\s+(.+?)\s*$/gm;
@@ -623,6 +630,7 @@
       });
     }
 
+    // DOMParser는 받은 HTML 문자열을 검색할 문서 구조로 바꿉니다. 원본 목차의 data-* 속성에서 링크와 설명을 읽습니다.
     function parseCurriculum(source) {
       const documentSource = new DOMParser().parseFromString(source, "text/html");
       return [...documentSource.querySelectorAll("[data-chapter]")].map((row) => ({
@@ -641,6 +649,8 @@
       }));
     }
 
+    // 지원하는 굵은 글씨·코드·링크 문법만 DOM 요소로 만듭니다. 일반 텍스트는 텍스트 노드로 넣으며
+    // 이 함수는 모든 Markdown 문법을 지원하는 범용 변환기가 아닙니다.
     function appendInline(container, text) {
       const tokenPattern = /(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
       let cursor = 0;
@@ -815,6 +825,8 @@
       toggleAllAnswers.textContent = everyAnswerOpen ? "정답 모두 접기" : "정답 모두 펼치기";
     }
 
+    // 40개 번호와 대응 자료를 검사한 뒤 카드를 만듭니다. Map은 번호로 정답·목차를 찾는 자료구조입니다.
+    // DocumentFragment에 카드를 모아 실제 화면에 붙이면 생성 단계와 표시 단계를 나눌 수 있습니다.
     function renderProblems(problems, answers, curriculum) {
       if (
         problems.length !== EXPECTED_CHAPTERS
@@ -848,6 +860,7 @@
       updateToggleAllLabel();
     }
 
+    // 서로 독립적인 파일 세 개를 Promise.all로 함께 요청합니다. 하나라도 실패하면 아래 catch로 오류가 전달됩니다.
     async function loadProblems() {
       const [problemSource, answerSource, indexSource] = await Promise.all([
         fetchText("./practice/problems.md", true),
@@ -861,6 +874,7 @@
       );
     }
 
+    // details.open은 브라우저가 제공하는 펼침 상태입니다. 전체 버튼은 이 값을 바꾸고 개별 토글도 레이블에 반영합니다.
     toggleAllAnswers.addEventListener("click", () => {
       const answers = [...document.querySelectorAll(".answer-panel")];
       const shouldOpen = !answers.every((answer) => answer.open);

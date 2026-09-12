@@ -28,6 +28,8 @@ public record EmployeeResponse(
         EmployeeStatus status
 ) {
     // TODO 01: Entity → DTO 변환 정적 팩토리.
+    // from은 직접 만든 변환 메서드 이름입니다. 필요한 필드만 복사하므로 비밀번호 같은 내부 값의 노출을 줄입니다.
+    // 관련 User·Department를 읽는 시점에 추가 조회가 필요한지도 Service의 조회 범위와 함께 확인하세요.
     public static EmployeeResponse from(Employee e) {
         return new EmployeeResponse(
                 e.getId(),

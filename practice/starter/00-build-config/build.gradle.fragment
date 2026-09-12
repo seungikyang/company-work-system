@@ -27,6 +27,8 @@ repositories {
     mavenCentral()
 }
 
+// 의존성은 가져다 쓰는 라이브러리입니다. implementation은 앱 코드, runtimeOnly는 실행 시,
+// testImplementation은 테스트 코드에 필요한 라이브러리를 지정합니다.
 dependencies {
     // TODO 03: REST Controller / Tomcat / Jackson 묶음
     implementation 'org.springframework.boot:____'
@@ -55,6 +57,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+// Gradle의 test 작업이 JUnit Platform으로 테스트를 찾고 실행하게 연결합니다.
 tasks.named('test') {
     useJUnitPlatform()
 }

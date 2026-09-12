@@ -2,6 +2,13 @@
 // 목표: 휴가 신청 엔티티 + LeaveType + ApprovalStatus 를 거의 백지에서 작성. TRD 3.3.4, 3.6.3, 3.6.4.
 // 막히면 starter/04-leave-entity, answers.md 4·11장 참고.
 
+// 초보자 안내 (04장): LocalDate와 상태 모델
+// 개념: LocalDate는 시각 없는 날짜를, 상태 enum은 신청의 처리 단계를 표현합니다.
+// 사용 이유: 휴가 기간과 승인 여부를 자유로운 문자열 대신 정해진 규칙으로 다룹니다.
+// 동작 흐름: create에서 날짜와 초기 상태를 정하고 approve·reject 같은 메서드가 허용된 상태인지 확인한 뒤 승인자와 처리 결과를 변경합니다.
+// 읽는 순서: 먼저 같은 챕터 Starter의 코드 옆 설명을 읽고, 여기서 검사·호출 순서를 직접 구성하세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 // TODO 01: 연차/반차/병가/공가.
 public enum LeaveType {
     ____, ____, ____, ____

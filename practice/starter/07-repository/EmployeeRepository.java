@@ -9,6 +9,8 @@
 // 읽는 순서: 아래 입력값 → 조건 검사 → 호출·저장 → 반환값을 따라가며 TODO를 채우세요.
 // 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
 
+// interface는 호출할 기능의 약속입니다. JpaRepository의 두 타입은 저장할 객체와 식별자 타입입니다.
+// 메서드 이름의 속성 경로를 Spring Data JPA가 해석하므로 Entity의 실제 필드 이름과 맞아야 합니다.
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     // TODO 01: 이메일 중복 여부를 빠르게 확인하는 메서드 이름은?

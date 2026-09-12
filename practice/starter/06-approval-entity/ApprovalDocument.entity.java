@@ -76,6 +76,8 @@ public class ApprovalDocument {
         return doc;
     }
 
+    // submit은 임시저장을 결재 대기로 옮기는 업무 동작입니다. 필드의 아무 값이나 허용하는 setter 대신
+    // 이름 있는 메서드에 상태 조건을 모아 잘못된 순서의 요청을 막습니다.
     public void submit() {
         // TODO 07: DRAFT 인 문서만 결재 요청할 수 있다.
         if (this.status != ApprovalStatus.____) {

@@ -50,6 +50,8 @@ public void delete(Long employeeId, boolean hardDelete) {
     Employee employee = employeeRepository.findById(employeeId)
         .orElseThrow(() -> new BusinessException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
+    // hardDelete는 행 자체를 지울지 구분하는 입력입니다. 다른 분기는 직원 상태를 변경해 과거 참조를 보존합니다.
+    // 이 예제는 휴가 참조만 검사하므로 실행 프로젝트에서는 결재 등 다른 참조와 삭제 정책도 맞추세요.
     if (hardDelete) {
         // TODO 05: 하드 삭제는 휴가/결재/공지에서 참조 무결성이 깨질 수 있습니다.
         //          어떤 정책으로 막거나 허용해야 할까요?

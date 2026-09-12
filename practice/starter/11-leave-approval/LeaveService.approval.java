@@ -20,6 +20,8 @@ public LeaveResponse approve(Long approverUserId, Long leaveId) {
     leave.____(approverUserId);
 
     // saveAndFlush 를 굳이 부르지 않아도 트랜잭션 종료 시 dirty checking 으로 반영됩니다.
+    // 이 트랜잭션에서 조회한 Entity의 상태 변경은 JPA 변경 감지로 반영됩니다. DTO 변환은 응답 준비이고,
+    // 실제 DB 확정은 트랜잭션 커밋 단계입니다. return 문 자체가 커밋 명령은 아닙니다.
     return LeaveResponse.from(leave);
 }
 

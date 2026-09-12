@@ -62,6 +62,7 @@ public class AuthCheckInterceptor implements ____ {
 public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
+    // MVC가 어떤 인자를 이 해석기에 맡길지 묻는 단계입니다. 어노테이션과 타입이 모두 맞는지 확인합니다.
     public boolean supportsParameter(MethodParameter parameter) {
         // TODO 03: @CurrentUser 가 붙어 있고 타입이 Long 일 때만 처리.
         return parameter.hasParameterAnnotation(____.class)
@@ -69,6 +70,8 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
     }
 
     @Override
+    // 선택된 인자의 실제 값을 만드는 단계입니다. 서버 세션에서 계정 ID를 읽어 반환합니다.
+    // 계정 ID와 직원 ID는 다르므로 CurrentEmployee에는 계정으로 직원을 조회하는 별도 연결이 필요합니다.
     public Object resolveArgument(MethodParameter parameter,
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,

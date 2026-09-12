@@ -55,6 +55,8 @@ public class User {
     private LocalDateTime updatedAt;
 
     // ===== 정적 팩토리 =====
+    // static 팩토리는 객체를 만드는 이름 있는 입구입니다. new User()로 만든 메모리 객체에 값을 넣으며,
+    // 이 메서드 자체는 DB에 INSERT하지 않습니다. 이후 Repository 저장과 트랜잭션을 따라가세요.
     public static User create(String email, String encodedPassword, String name, UserRole role) {
         User user = new User();
         user.email = email;
@@ -65,6 +67,7 @@ public class User {
         return user;
     }
 
+    // this는 현재 User 객체입니다. 인자는 이미 해시한 비밀번호여야 하며, 단순 대입이 해시를 만들지는 않습니다.
     public void changePassword(String encodedPassword) {
         // TODO 10: 평문이 들어올 가능성을 한 번 더 막을 방어 코드를 추가해도 좋습니다.
         this.password = ____;

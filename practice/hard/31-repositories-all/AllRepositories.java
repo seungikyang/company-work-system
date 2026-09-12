@@ -2,6 +2,13 @@
 // 목표: 전 도메인 Repository 를 거의 백지에서. TRD 3.5.
 // 막히면 starter/31-repositories-all, answers.md 31장 참고.
 
+// 초보자 안내 (31장): Repository 역할 분리
+// 개념: 각 Repository는 담당 Entity의 저장·조회 조건을 선언합니다.
+// 사용 이유: 업무 절차를 Service에 두고 데이터 접근 코드를 대상별로 찾기 쉽게 합니다.
+// 동작 흐름: Service가 필요한 Repository를 호출하면 메서드 이름이나 쿼리 정의에 맞춰 조회합니다. 속성 경로는 DB 컬럼명이 아닌 Java Entity 필드 구조와 맞아야 합니다.
+// 읽는 순서: 먼저 같은 챕터 Starter의 코드 옆 설명을 읽고, 여기서 검사·호출 순서를 직접 구성하세요.
+// 전체 기술 안내: practice/beginner-guide.md (저장소 루트 기준). 이 파일은 학습용 조각입니다.
+
 public interface UserRepository extends JpaRepository<User, Long> {
     // TODO 01: 로그인용 이메일 조회.
     ____<User> findBy____(String email);

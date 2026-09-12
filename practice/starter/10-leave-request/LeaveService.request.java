@@ -12,6 +12,8 @@
 public LeaveResponse request(Long currentEmployeeId, LeaveCreateRequest request) {
 
     // TODO 01: 신청 직원이 실제로 존재하는지 확인.
+    // currentEmployeeId는 인증한 계정에서 확인한 직원 ID입니다. 요청자가 body에 적은 ID를 그대로 믿으면
+    // 다른 사람 이름으로 신청할 수 있으므로 19·34장의 사용자 주입과 연결하세요.
     Employee employee = employeeRepository.findById(currentEmployeeId)
         .orElseThrow(() -> new BusinessException(ErrorCode.____));
 

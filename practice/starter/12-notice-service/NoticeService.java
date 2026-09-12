@@ -34,6 +34,8 @@ public class NoticeService {
     public Page<NoticeResponse> list(Pageable pageable) {
         // TODO 02: 중요 공지를 항상 상단에 노출하기 위한 정렬을 채우세요.
         //          힌트: Sort.by(Sort.Order.desc("important"), Sort.Order.desc("createdAt"))
+        // 사용자가 보낸 페이지 번호·크기는 유지하고 정렬은 업무 규칙으로 다시 만듭니다.
+        // 중요 공지 우선, 그 안에서 작성 시각 순서라는 두 기준을 Sort.Order로 조합합니다.
         Pageable effective = PageRequest.of(
             pageable.getPageNumber(),
             pageable.getPageSize(),

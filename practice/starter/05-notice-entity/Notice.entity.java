@@ -65,6 +65,8 @@ public class Notice {
         this.important = important;
     }
 
+    // 이 코드는 현재 객체에서 읽은 수에 1을 더합니다. 동시에 같은 수를 읽으면 증가분을 잃을 수 있습니다.
+    // 31장의 DB UPDATE 방식과 비교하며 어느 계층에서 증가시키는지 확인하세요.
     public void increaseViewCount() {
         // 학습 메모:
         // - 단순 ++ 는 동시성 경합에서 카운트가 누락될 수 있습니다.

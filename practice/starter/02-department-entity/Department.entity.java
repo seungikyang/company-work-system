@@ -47,6 +47,8 @@ public class Department {
         return d;
     }
 
+    // null 확인 뒤 && 오른쪽을 평가하므로 null에 isBlank()를 호출하지 않습니다.
+    // 이름을 생략한 요청과 이름을 빈 값으로 지우는 요청의 정책을 구분해서 읽으세요.
     public void update(String name, String description) {
         // TODO 04: 이름이 비어 있거나 null 이면 변경하지 않도록 가드를 두세요.
         if (name != null && !name.isBlank()) {
