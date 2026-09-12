@@ -510,8 +510,8 @@
   <main class="page">
     <section class="summary-grid" aria-label="히스토리 요약">
       <article class="summary-card">
-        <strong>27</strong>
-        <span>최초 생성부터 초보자 기술 설명과 원본 이관까지 이어진 Git 단계</span>
+        <strong>28</strong>
+        <span>최초 생성부터 초보자 코드 흐름 설명 보강까지 이어진 Git 단계</span>
       </article>
       <article class="summary-card">
         <strong>40</strong>
@@ -522,15 +522,6 @@
         <span>준비·설계·구현·검증·지원으로 이어지는 통과 단계</span>
       </article>
     </section>
-
-    <aside class="rule" aria-labelledby="beginner-update-title">
-      <h2 id="beginner-update-title">초보자 설명 보강 · 작업 중 변경</h2>
-      <p>2026년 9월 12일: Starter 35개 파일의 주요 코드 옆에 입력·검사·호출·반환 설명을 추가하고,
-        Hard 35개 파일에도 기술의 개념·사용 이유·동작 흐름을 연결했습니다.
-        워크북 화면과 실행 스크립트의 주석, 입문 안내의 파일 지도·저장 예시·Java 문법도 보강했습니다.
-        이 내용은 아래 Git 배포 이력과 구분한 미커밋 변경입니다.</p>
-      <p><a href="./workbook-viewer.html?file=practice%2Fbeginner-guide.md">초보자 기술 안내 읽기</a></p>
-    </aside>
 
     <section aria-labelledby="stage-title">
       <div class="section-heading">
@@ -575,13 +566,34 @@
         <h2 id="timeline-title">변경 타임라인</h2>
         <p>
           커밋 해시가 있는 항목은 실제 Git 이력으로 연결됩니다.
-          워크북 사용 흐름의 변화와 대표 배포 확인 이력 27개를 기록하며,
+          워크북 사용 흐름의 변화와 대표 배포 확인 이력 28개를 기록하며,
           이 페이지의 단순 이력 동기화 같은 관리 커밋은 생략할 수 있습니다.
         </p>
       </div>
 
       <ol class="timeline">
         <li class="history-item latest">
+          <time class="history-date" datetime="2026-09-12">2026.09.12</time>
+          <article class="history-card">
+            <div class="history-meta">
+              <span class="tag">초보자 코드 흐름 설명</span>
+              <a class="commit" href="https://github.com/seungikyang/company-work-system/commit/afa06ccd8a02e8f6e92d9ac9e86769bb91738b53">afa06cc</a>
+            </div>
+            <h3>기술을 쓰는 이유와 실제 코드의 입력·처리·결과를 연결</h3>
+            <p>Starter 35개 파일의 주요 코드 옆에 설명을 추가하고 Hard 35개 파일에도
+              기술의 개념·사용 이유·동작 흐름을 제공합니다. 워크북 화면과 실행 스크립트에는
+              답안 저장·파일 요청·화면 표시 흐름을 주석으로 연결했습니다.</p>
+            <ul>
+              <li>입문 안내에 파일 지도, 답안 저장·문제 로딩 예시와 Java 문법 추가</li>
+              <li>DTO 접근자, 계정·직원 ID, 권한과 조각 코드 연결 시 확인할 차이 설명</li>
+              <li>학습 파일 70개의 코드·빈칸과 화면·스크립트 실행 부분 보존 확인</li>
+              <li>워크북 전체 검증, 셸 구문 검사와 Git diff 검사 통과</li>
+            </ul>
+            <p><a href="./workbook-viewer.html?file=practice%2Fbeginner-guide.md">초보자 기술 안내 읽기</a></p>
+          </article>
+        </li>
+
+        <li class="history-item">
           <time class="history-date" datetime="2026-09-10">2026.09.10</time>
           <article class="history-card">
             <div class="history-meta">
@@ -1302,7 +1314,7 @@
 
   <footer class="page">
     <p>Java 백엔드 취업 포트폴리오 워크북</p>
-    <p>마지막 문서 갱신일 <time datetime="2026-09-10">2026년 9월 10일</time></p>
+    <p>마지막 문서 갱신일 <time datetime="2026-09-12">2026년 9월 12일</time></p>
   </footer>
 </body>
 </html>
