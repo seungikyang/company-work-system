@@ -1,0 +1,1232 @@
+[
+  {
+    "file": "practice/starter/00-build-config/application.yml.fragment",
+    "indent": "",
+    "comment": "#",
+    "originals": [
+      "ddl-auto 의 create / create-drop / update / validate / none 을 각각 한 줄로 구분해 보세요. \"로컬은 create, 운영은 validate(또는 none)\" 이라고 말하는 이유는?",
+      "show-sql=true 와 logging.level.org.hibernate.SQL=debug 는 무엇이 다를까요? 운영에서 show-sql 을 끄는 이유는?",
+      "DB 비밀번호/토큰을 application.yml 에 하드코딩하면 안 되는 이유와, ${APP_SESSION_TIMEOUT:1800} 처럼 환경변수+기본값으로 빼는 패턴의 장점은?"
+    ],
+    "outsideHash": "7e318518a140b944e9b08b20241d0920cb2919c2ad98dc431d04c889797b999d",
+    "keys": [
+      "00-yml-1",
+      "00-yml-2",
+      "00-yml-3"
+    ],
+    "executableHash": "8c376377b2ece987aa5da3cafed88370e2b8e0dee90ed27513f8b65715557c4f"
+  },
+  {
+    "file": "practice/starter/00-build-config/build.gradle.fragment",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "spring-boot-starter-web 하나에 Tomcat, Spring MVC, Jackson 이 함께 들어옵니다. \"스타터(starter)\"가 단순 라이브러리와 다른 점은 무엇일까요?",
+      "io.spring.dependency-management 플러그인이 있으면 의존성 version 을 대부분 생략할 수 있습니다. 왜 버전을 직접 적지 않는 편이 안전할까요? (BOM 개념)",
+      "Spring Boot 3.x 로 올리면서 javax.* 가 jakarta.* 로 바뀌었습니다. 이 변경이 Validation/JPA 코드에 구체적으로 어떤 영향을 줄까요?",
+      "1차 세션 단계에서 spring-security-crypto 만 사용하고, 2차 단계에서 spring-boot-starter-security 를 추가하는 이유는 무엇일까요?"
+    ],
+    "outsideHash": "e398acfa65c5ee701ae2dc2bd9ea90410a377000cbac49d87692b6a11476a242",
+    "keys": [
+      "00-gradle-1",
+      "00-gradle-2",
+      "00-gradle-3",
+      "00-gradle-4"
+    ],
+    "executableHash": "a216a442ffba8cfc03b3425feb8d1473e5154898168c62ba8f812a947179f532"
+  },
+  {
+    "file": "practice/starter/01-user-entity/User.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "로그인 계정(User)과 인사 정보(Employee)를 한 테이블이 아니라 둘로 나눈 이유는? (면접 Q3)",
+      "@Enumerated(EnumType.STRING) 대신 ORDINAL 을 쓰면 운영 중 enum 에 값을 추가/재정렬할 때 어떤 사고가 날 수 있을까요?",
+      "password 컬럼 길이를 100 이 아니라 255 로 잡는 이유는? (BCrypt 결과 길이와 연결해서)",
+      "createdAt 을 updatable=false 로 둔 이유, 그리고 @CreatedDate 가 동작하려면 설정 어디에 무엇이 켜져 있어야 하나요? (33장 @EnableJpaAuditing 와 연결)"
+    ],
+    "outsideHash": "8df27a293ed6633dfaa07346af05c45c6078de073c0d13e77dac7eefac824c1f",
+    "keys": [
+      "01-1",
+      "01-2",
+      "01-3",
+      "01-4"
+    ],
+    "executableHash": "f7368728122616893f1b59dbe7d42b3ed6ca30401b88d3dc24f3b6764f520f5c"
+  },
+  {
+    "file": "practice/starter/02-department-entity/Department.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "부서명 중복을 Service 의 existsByName 검사로 막는데도 DB unique 제약을 또 두는 이유는? (동시 요청 race 를 그려 보세요 — 두 요청이 동시에 exists 통과 후 둘 다 insert)",
+      "of(...) 정적 팩토리에서 name.trim() 으로 공백을 제거하는데, 이걸 Service 가 아니라 도메인(엔티티)에서 하면 어떤 장점이 있을까요?",
+      "update(...) 가 name 이 blank 면 변경하지 않도록 가드를 둡니다. 이런 \"부분 갱신\" 의도라면 HTTP 메서드는 PUT 과 PATCH 중 무엇이 더 자연스러울까요? (25장과 연결)"
+    ],
+    "outsideHash": "42e01ce54699762673904a4e65c22725113e03120beed7075a57ab441172a301",
+    "keys": [
+      "02-1",
+      "02-2",
+      "02-3"
+    ],
+    "executableHash": "9c2b9ab1d43d064d217012a9de617fd510ee07afa2d38aa5328f031ea538ecb5"
+  },
+  {
+    "file": "practice/starter/03-employee-entity/Employee.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@ManyToOne 의 fetch 기본값은 EAGER 입니다. 왜 굳이 LAZY 로 바꿀까요? 직원 목록 100건을 조회할 때 EAGER 면 무슨 일이 벌어지나요? (N+1)",
+      "퇴사를 DELETE 가 아니라 status=RESIGNED(soft delete)로 두는 이유를, 이 직원이 과거에 신청한 휴가/결재 기록과 연결해 설명해 보세요.",
+      "Service 가 employee.setStatus(...) 를 직접 부르지 않고 resign()/changeDepartment() 같은 도메인 메서드를 두는 이유는? (캡슐화/불변식)",
+      "isActive() 같은 판단 로직을 Service 의 if 문이 아니라 Entity 에 두면 무엇이 좋아질까요?"
+    ],
+    "outsideHash": "4a4cb98e4ddb4ee72ccb12fcc7cbd6f06288d7c66c7b1b93fd8d60fc1d9035ac",
+    "keys": [
+      "03-1",
+      "03-2",
+      "03-3",
+      "03-4"
+    ],
+    "executableHash": "c84af08142779d94eef72a47b1e3ec2b0295ef99709aba0f5ff3b1873cfd19f7"
+  },
+  {
+    "file": "practice/starter/04-leave-entity/LeaveRequest.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "상태 검증(PENDING 인지)을 approve()/reject() 같은 Entity 도메인 메서드에 두는 것과 Service 의 if 문에만 두는 것은 어떤 차이가 있나요? Service 에만 두면 어떤 우회 버그가 가능한가요? (TRD 3.16.1 트러블슈팅과 연결)",
+      "휴가 status 는 결재와 같은 ApprovalStatus 를 공유하지만 DRAFT 는 쓰지 않습니다. enum 을 공유하는 것의 장점과, 휴가에 DRAFT 가 노출될 때의 위험을 말해 보세요.",
+      "두 관리자가 같은 PENDING 휴가를 \"동시에\" 승인하면 어떤 일이 벌어질까요? 낙관적 락(@Version) 과 비관적 락 중 무엇으로 막을 수 있을까요?",
+      "취소를 REJECTED 로 재사용하는 것과 별도 CANCELED 상태를 추가하는 것 중 \"휴가 통계/이력\"관점에서 무엇이 더 정확할까요?"
+    ],
+    "outsideHash": "7279ad8c4f0eca97e11d4b752b953f879c0f09edcdc67047f8b430da2b38b696",
+    "keys": [
+      "04-1",
+      "04-2",
+      "04-3",
+      "04-4"
+    ],
+    "executableHash": "87c7a110b4431d2323342cc28711b6e7adc05dff9f10e3771782f96c975d979f"
+  },
+  {
+    "file": "practice/starter/05-notice-entity/Notice.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "content 를 VARCHAR 가 아니라 @Lob / TEXT 로 두는 기준은? VARCHAR(255) 로 두면 언제 터지나요?",
+      "조회수 증가를 GET 상세 조회 안에서 처리하면 검색봇/링크 미리보기로 viewCount 가 부풀 수 있습니다. 대안(별도 PATCH /view, 중복 집계 방지)을 한 가지 제시해 보세요.",
+      "read 100개 동시 요청에서 this.viewCount + 1 방식이 카운트를 누락하는 과정을 단계로 설명하고, 원자적 UPDATE 쿼리가 왜 안전한지 말해 보세요. (31장 @Modifying 과 연결)",
+      "중요 공지를 상단에 고정하려면 정렬을 어떻게 줘야 하나요? important 가 boolean 인데 true 를 먼저 두려면 어떤 방향 정렬이 필요한가요?"
+    ],
+    "outsideHash": "1c5d138672438b795b46ddea7d4961e930bec071c4447c0fa1b84d46d4295553",
+    "keys": [
+      "05-1",
+      "05-2",
+      "05-3",
+      "05-4"
+    ],
+    "executableHash": "c957a9e6df06b270e14a6ce0ca1b3685f35332432cdb65c4523af221e7f50ba6"
+  },
+  {
+    "file": "practice/starter/06-approval-entity/ApprovalDocument.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "결재 상태 머신(DRAFT→PENDING→APPROVED/REJECTED)에서 \"허용되지 않는 전이\"의 예를 두 개 들고, 그것을 어디에서(Entity/Service/DB) 막는 것이 가장 견고한지 말해 보세요.",
+      "작성자=결재자 금지 검증을 Entity createDraft() 에 둔 것과 Service 에 둔 것의 차이는? DB 제약으로 표현하기 어려운 이유는 무엇인가요?",
+      "approvedAt 을 nullable 로 둔 이유는? 만약 NOT NULL + 기본값으로 두면 어떤 의미가 왜곡되나요?",
+      "DRAFT 와 PENDING 을 굳이 분리하면 어떤 사용자 기능(임시저장 등)을 자연스럽게 표현할 수 있나요?",
+      "writerId.equals(approverId) 처럼 Long 을 == 가 아니라 equals 로 비교해야 하는 이유는? (Long 캐시 범위 -128~127 함정)"
+    ],
+    "outsideHash": "dbb0997796f3560ab654a433fe86e6a30b4edf4e721e8399717a4cf9ce895f94",
+    "keys": [
+      "06-1",
+      "06-2",
+      "06-3",
+      "06-4",
+      "06-5"
+    ],
+    "executableHash": "c4d42015f86f8b9837cde112e9dcbf43e0b1d72512a2d9c5c776e929d38eeaef"
+  },
+  {
+    "file": "practice/starter/07-repository/EmployeeRepository.java",
+    "indent": "    ",
+    "comment": "//",
+    "originals": [
+      "findByUser_Email 의 밑줄(_)은 무엇을 의미하나요? Employee→User→email 처럼 연관 엔티티의 속성을 타고 들어가는 nested property 쿼리를 직접 만들어 보세요.",
+      "existsByX 와 findByX 는 같은 조건이라도 생성되는 SQL/비용이 다릅니다. \"중복 여부만 알면 될 때\" exists 를 쓰는 것이 왜 유리한가요?",
+      "findByUser_NameContainingOrEmployeeNumberContaining 처럼 메서드 이름이 길어질 때 @Query 또는 Querydsl 로 옮기는 \"기준선\"은 무엇이라고 생각하나요?",
+      "Page<Employee> 를 그대로 Controller 응답으로 내보내면 안 되는 이유는? (Entity 직접 노출 + LAZY 직렬화) — 32장 Page.map 과 연결."
+    ],
+    "outsideHash": "42660d49af7870f7154b1e047097448e5b7209bb99f82d3b835d61e700e2116c",
+    "keys": [
+      "07-1",
+      "07-2",
+      "07-3",
+      "07-4"
+    ],
+    "executableHash": "7b73246ca2a0c8f8781e0508c35348dc3c27558d52ae48025e15f13f1f20405b"
+  },
+  {
+    "file": "practice/starter/08-employee-register/EmployeeService.register.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "이 메서드에서 @Transactional 이 빠지면 어떤 데이터 정합성 문제가 생기는가?",
+      "userRepository.save 가 성공한 뒤 employeeRepository.save 에서 RuntimeException 이 나면?",
+      "중복 이메일 검증을 했는데도 unique 제약을 두는 이유는?"
+    ],
+    "outsideHash": "dc16ec966a6b03ae8ff49943e2561a567eb439d0e5c4dd568586ed7a4cd5cf17",
+    "keys": [
+      "08-1",
+      "08-2",
+      "08-3"
+    ],
+    "executableHash": "e7d8fd31e0785617dbb3bfc11fcc8873ec1d680b1caa4d9404bc8648c094e803"
+  },
+  {
+    "file": "practice/starter/09-employee-search/EmployeeService.search.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "Controller 가 Pageable 을 그대로 받으면 클라이언트는 어떤 쿼리스트링으로 페이지/사이즈/정렬을 보내나?",
+      "List<EmployeeResponse> 가 아니라 Page<EmployeeResponse> 로 반환하는 이유는?",
+      "정렬 기준을 클라이언트가 자유롭게 지정할 때 발생할 수 있는 위험은?"
+    ],
+    "outsideHash": "7804e70c6aca6aa282addbe9a7eab8f99b807dc0e5a1a31726b9d95ef848c2bb",
+    "keys": [
+      "09-1",
+      "09-2",
+      "09-3"
+    ],
+    "executableHash": "be82ef1a3c9c5f4bbe47c303b48cbf1fd8bca14a8202af075da2c31cc201e84d"
+  },
+  {
+    "file": "practice/starter/10-leave-request/LeaveService.request.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "시작일 > 종료일 검증을 DTO 의 @AssertTrue 로 옮기면 어떤 장점이 있을까요?",
+      "같은 기간의 휴가가 이미 PENDING/APPROVED 상태로 있다면 새 신청을 막아야 할까요?",
+      "신청 직후 알림을 보내야 한다면, 트랜잭션 안에서 보낼지 밖에서 보낼지?"
+    ],
+    "outsideHash": "446c38427fce589d4dfff7edd67c58ae27f365272085e04778f1201ff251f888",
+    "keys": [
+      "10-1",
+      "10-2",
+      "10-3"
+    ],
+    "executableHash": "50a50948244720acc51be6d4eb9ef3abc421ef3c57fb7d0a402172381bf32516"
+  },
+  {
+    "file": "practice/starter/11-leave-approval/LeaveService.approval.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "PENDING 상태 검증을 Entity.approve 가 아닌 Service 에서만 했다면 어떤 버그가 가능할까요?",
+      "두 관리자가 동시에 같은 휴가 승인을 시도하면 어떤 상황이 벌어질까요?",
+      "승인 후 직원에게 알림을 보내야 한다면, 어디서 트리거하는 게 안전할까요?"
+    ],
+    "outsideHash": "7920fddc475fe3848d952a5da167c6660c84bf322aa3015981593c22efce8750",
+    "keys": [
+      "11-1",
+      "11-2",
+      "11-3"
+    ],
+    "executableHash": "0f6f5f4858eb11d61847ab20d475518f49b849d0e9a5b3f754d71d2ade81e898"
+  },
+  {
+    "file": "practice/starter/12-notice-service/NoticeService.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "ADMIN 검사를 Controller(@PreAuthorize)에만 두는 것의 약점은?",
+      "important=true 공지를 위로 끌어올리기 위해 인덱스가 필요한 컬럼은?",
+      "조회수 증가를 별도 트랜잭션으로 분리하려면 어떤 어노테이션 옵션을 쓰면 좋을까요?"
+    ],
+    "outsideHash": "5c0408b674197c068ce36d310351118c1e2628d698b4344e7bdff28250cda05b",
+    "keys": [
+      "12-1",
+      "12-2",
+      "12-3"
+    ],
+    "executableHash": "600299bfc0851deac5c15be37403c9dea94d7136fdd6c9acca6acd26f49039ba"
+  },
+  {
+    "file": "practice/starter/13-approval-document/ApprovalService.document.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "작성과 결재 요청을 분리하는 이유(임시저장)는?",
+      "결재자가 존재하지 않는 ID 라면 어떤 상태/에러 코드로 응답해야 하나?",
+      "doc.submit() 안의 상태 검증을 Service 가 if 로 하도록 바꾸면 어떤 단점이 있을까?"
+    ],
+    "outsideHash": "74c7f8afac9e929c20761655e2bc7fe19dc1c0259d301f39da3690ebcb7db94e",
+    "keys": [
+      "13-1",
+      "13-2",
+      "13-3"
+    ],
+    "executableHash": "42ef16d811f73a75f99e9de1d25fd1e9552c155f328619824b51a97edc4b3c07"
+  },
+  {
+    "file": "practice/starter/14-approval-decision/ApprovalService.decision.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "도메인 메서드 안에서 검증을 모두 처리하면 Service 가 가벼워지는데, 단점은 없을까?",
+      "결재자가 자기 자신을 승인자로 등록한 문서를 승인하려고 하면 어디서 어떻게 막히는가?",
+      "approvedAt 을 LocalDateTime.now() 로 직접 채우는 대신 시계(Clock) 를 주입하면 어떤 이점이 있나?"
+    ],
+    "outsideHash": "b7cb2f68861e127b83acce82da1c1d12742fe40c1f153656edb13a0ca8bd6b04",
+    "keys": [
+      "14-1",
+      "14-2",
+      "14-3"
+    ],
+    "executableHash": "63cf090821ea506f06695014c64fd3f42d6e2478f8a5d642ff10bc73ef6d8279"
+  },
+  {
+    "file": "practice/starter/15-error-model/ErrorCodeAndResponse.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "status(HTTP) 와 code(비즈니스) 를 따로 두는 이유는?",
+      "ErrorResponse 에 stack trace 를 넣지 않는 이유는?",
+      "BusinessException 을 Checked Exception 으로 만들면 어떤 불편이 생길까?"
+    ],
+    "outsideHash": "1f175c37f93b5772bdfbc57627855496e83e8d3cd6e3df0b3e0b974b6b8fc346",
+    "keys": [
+      "15-1",
+      "15-2",
+      "15-3"
+    ],
+    "executableHash": "b1e8177e1cb356d4e2b5b858ec0b149e7ef0b0b9a710495471c0f729e8016ade"
+  },
+  {
+    "file": "practice/starter/16-global-handler/GlobalExceptionHandler.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@RestControllerAdvice 와 @ControllerAdvice 의 차이는?",
+      "마지막 Exception 핸들러를 두지 않으면 어떤 일이 생기나?",
+      "Spring Security 의 인증/인가 예외(AccessDeniedException, AuthenticationException) 는 ExceptionTranslationFilter 가 먼저 잡기 때문에 여기서 못 잡을 수 있다. 어디서 변환해야 할까?"
+    ],
+    "outsideHash": "c31b95ac8988d991b2b28673f157d08bf98ff36523729e2df88cdebb39a862e6",
+    "keys": [
+      "16-1",
+      "16-2",
+      "16-3"
+    ],
+    "executableHash": "123467a27da106426f482f3f0ede08cf082257f5de7798e73ec4d8dd2eaed094"
+  },
+  {
+    "file": "practice/starter/17-dto-validation/EmployeeCreateRequest.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@NotBlank, @NotEmpty, @NotNull 의 차이는?",
+      "DTO 검증이 동작하려면 Controller 의 파라미터에 어떤 어노테이션을 붙여야 하나?",
+      "응답 DTO 와 요청 DTO 를 같은 클래스로 두면 무슨 문제가 생기나?"
+    ],
+    "outsideHash": "0f615ee3c8db61b629d26a3dc8b209aeb8e5ef4c6275c3a9cff6612831120aa6",
+    "keys": [
+      "17-1",
+      "17-2",
+      "17-3"
+    ],
+    "executableHash": "b3e500a15d563c3038c44bd06983e0377df63e60d7cb8e27606a1ba766734c46"
+  },
+  {
+    "file": "practice/starter/18-controller-employee/EmployeeController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@PreAuthorize 가 Controller 에서 검사한 권한을 Service 에서 또 검사해야 할까?",
+      "직원 등록 응답에 Location 헤더를 추가하려면 어떻게 할까?",
+      "PUT 과 PATCH 의 의미 차이를 한 줄로 설명해 보세요."
+    ],
+    "outsideHash": "b714096c96e5f2e5ae50bf69cdee96f4ae19877b199bf08c8907c6aa5f6b5b21",
+    "keys": [
+      "18-1",
+      "18-2",
+      "18-3"
+    ],
+    "executableHash": "af3acca9c907dac6df4ba4be3c02e8b1da0b7e00eb72ff7bd00652ec70e91c4a"
+  },
+  {
+    "file": "practice/starter/19-controller-leave/LeaveController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "/api/leaves 와 /api/admin/leaves 로 분리하는 장점/단점은?",
+      "PATCH 와 PUT 중 상태 전이에 어울리는 것은?",
+      "권한 체크를 어디(필터/AOP/Service)에서 할지, 다층 방어를 위한 권장 패턴은?"
+    ],
+    "outsideHash": "8244983f7196b5fa509f1f41d300a6141400fe08bad233febf8355d0cea2532d",
+    "keys": [
+      "19-1",
+      "19-2",
+      "19-3"
+    ],
+    "executableHash": "8575586421f8de59bcac836bde5cf570f043c866cd6c1fcd89d904df347127c0"
+  },
+  {
+    "file": "practice/starter/21-test-flow/LeaveFlowTest.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@Transactional 을 테스트 메서드에 달면 어떤 이점/단점이 있나?",
+      "@SpringBootTest 와 @WebMvcTest 의 차이는?",
+      "통합 테스트에서 시간(LocalDateTime.now()) 같은 비결정성을 다루는 패턴은?",
+      "JWT 단계로 바꾸면 MockHttpSession 대신 무엇을 요청에 넣어야 하나?"
+    ],
+    "outsideHash": "19db859f984a19fec0f9c2ef1c970dd3390beba68e248e7e301aa5cedabeb733",
+    "keys": [
+      "21-1",
+      "21-2",
+      "21-3",
+      "21-4"
+    ],
+    "executableHash": "0c0ef43b87641206cd3b3a8759bffdb2517aa707bab9b89307eea3e82285eeb5"
+  },
+  {
+    "file": "practice/starter/23-auth-login/AuthController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "/api/auth/login 은 왜 permitAll() 이어야 하는가? (Spring Security 단계 기준)",
+      "/api/users/me 의 비밀번호 변경을 PATCH 로 둔 이유는?",
+      "LoginResponse 에 사용자 ID 를 노출해도 괜찮은가? (idor 공격 관점)",
+      "세션 생성/폐기를 Service 가 아니라 Controller 에 둔 이유는?"
+    ],
+    "outsideHash": "cf27f721c2bf193dd2c910aee3bcefe2a52ba49605cb9a52de32cf7bf3d4dd02",
+    "keys": [
+      "23-controller-1",
+      "23-controller-2",
+      "23-controller-3",
+      "23-controller-4"
+    ],
+    "executableHash": "efd543cd5590aff9f2fddde9e600dcda06d73050327d4b0b211c1995e9f4ba46"
+  },
+  {
+    "file": "practice/starter/23-auth-login/AuthService.login.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "로그인 실패 시 “존재하지 않는 이메일” / “비밀번호 틀림” 을 구분해서 응답하면 안 되는 이유는?",
+      "세션 ID 를 로그인 직후에 재발급하는 이유 (Session Fixation) 는?",
+      "비밀번호 변경 후 사용자의 기존 세션/토큰을 어떻게 처리하는 것이 안전한가?",
+      "login() 에 @Transactional(readOnly=true) 를 단 이유와 changePassword() 에는 빼고 그냥 @Transactional 을 단 이유는?",
+      "AuthService 가 HttpSession/HttpServletRequest 를 직접 다루지 않게 한 이유는?"
+    ],
+    "outsideHash": "68f3bcb4adb71956e548f0b0f274fd65a0eaa03c71b225a782ff48c6413319c4",
+    "keys": [
+      "23-service-1",
+      "23-service-2",
+      "23-service-3",
+      "23-service-4",
+      "23-service-5"
+    ],
+    "executableHash": "b5d309573bdd25d9dab70ddde06efbbffd3eb7ca8bbc67c36c734fd7f27753ca"
+  },
+  {
+    "file": "practice/starter/24-department-service/DepartmentService.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "부서 목록을 페이징하지 않은 이유는? 운영 단계에서 부서가 1000개가 넘는다면?",
+      "부서 삭제 시 소속 직원이 있으면 어떤 정책을 둘 수 있을까? (거부 / 기본 부서 이동 / NULL 허용)",
+      "부서 상세에서 소속 직원까지 N+1 없이 가져오려면 어떤 방법이 있나?"
+    ],
+    "outsideHash": "c25595fb39fea2fdfcc9018e95b87ec1c2076dc6df8afcfb5430b9cf23f28ca3",
+    "keys": [
+      "24-1",
+      "24-2",
+      "24-3"
+    ],
+    "executableHash": "3d2b27676f1b2c8687f891d6c10fbe412169f6b91786c91cad83e00a87f6f2fe"
+  },
+  {
+    "file": "practice/starter/25-department-controller/DepartmentController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "부서 목록은 List 인데 직원 목록은 Page 입니다. 무엇으로 이 차이를 결정했나요?",
+      "부서 수정에 PUT 과 PATCH 중 무엇을 골랐고, 그 근거는?",
+      "DepartmentDetailResponse 안에 MemberItem 을 nested record 로 둔 이유는? (Employee 를 그대로 안 쓰는 이유)"
+    ],
+    "outsideHash": "9cb1631fece1dfd8d75f386a06b2ef63c049fe8e2fb8b7d75859d8960de65dea",
+    "keys": [
+      "25-1",
+      "25-2",
+      "25-3"
+    ],
+    "executableHash": "e3c4bbf2407a149c2b29391af4f4d83f6d8005daba2f6375b8e4acac7a8d1e30"
+  },
+  {
+    "file": "practice/starter/26-notice-controller/NoticeController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "GET 상세에서 조회수를 올리는 패턴의 문제와 대안은?",
+      "PUT 과 PATCH 중 공지 수정에 어울리는 것은? PRD 기준은?",
+      "공지 본문(content)을 응답 list 에 그대로 포함하면 어떤 단점이 있을까? (페이로드 크기)"
+    ],
+    "outsideHash": "d9ad5e299475eaab2c8f35943f57fa7b4d05c505884ceaae7126b338e03ba846",
+    "keys": [
+      "26-1",
+      "26-2",
+      "26-3"
+    ],
+    "executableHash": "f7bfa40ca2fc64e137b0ef3fbe0167832c6acdb4a4c8b5ef8d38bca6bf47a875"
+  },
+  {
+    "file": "practice/starter/27-approval-controller/ApprovalController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "/my 와 /pending 의 권한 차이를 정리해 보세요.",
+      "결재 작성 후 자동으로 submit 까지 하지 않고 별도 호출로 둔 이유는?",
+      "결재자 본인이 아닌 사람이 /pending 을 호출하면 어떻게 막혀야 하는가?"
+    ],
+    "outsideHash": "fda015a2bddfd738f384d1401b2dcb9ad468b9b4d889ec8eb2f98405bf14d291",
+    "keys": [
+      "27-1",
+      "27-2",
+      "27-3"
+    ],
+    "executableHash": "e627ed404702579fb5107922f4c61d0c64315018c1a2644ae98c5692d29df0aa"
+  },
+  {
+    "file": "practice/starter/28-employee-detail-update/EmployeeService.detail.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "Service 에서 employee.setName(...) 처럼 setter 를 직접 쓰지 않고 도메인 메서드를 만든 이유는?",
+      "부서 변경 시 기존 부서의 직원 수 캐시 같은 게 있다면 동시에 갱신해야 한다. 어디서 처리하는 게 좋은가?",
+      "soft delete (RESIGNED) 와 hard delete 의 트레이드오프를 한 줄로 정리해 보세요."
+    ],
+    "outsideHash": "58e59205c68ca0f2d8fe51691513bc62eaf2bb1c7de38d13e86fd87a4edab872",
+    "keys": [
+      "28-1",
+      "28-2",
+      "28-3"
+    ],
+    "executableHash": "67490230d0483cd0559f0e4e8c28bba77a4263cabbf0b2f5dd0ccf6df733a03a"
+  },
+  {
+    "file": "practice/starter/29-leave-my-cancel/LeaveService.my.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "내 휴가만 보여주는 안전망을 Service 에서만 두면 충분한가? Repository 쿼리 차원의 보호는 필요한가?",
+      "관리자 목록에서 status + employeeId 외에 기간(from/to) 조건도 자주 요구된다. 어떻게 확장할까?",
+      "'CANCELED' 라는 별도 상태를 두는 편이 'REJECTED' 로 합치는 것보다 좋은 점은?"
+    ],
+    "outsideHash": "5e3e6efc6db473172b6fd79972daf4e54cf574a4dbbaacf6bbd275203835b259",
+    "keys": [
+      "29-1",
+      "29-2",
+      "29-3"
+    ],
+    "executableHash": "bc90be584aab48563a3b7efe79e208bf3819c4ff79e819960fbedb4f62d4bdbf"
+  },
+  {
+    "file": "practice/starter/30-approval-lists/ApprovalService.lists.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "/my 와 /pending 을 같은 메서드에서 분기하지 않고 분리한 이유는?",
+      "결재자 변경(권한 위임)이 가능해진다면 ‘승인 대기 목록’ 조회 쿼리는 어떻게 바뀌어야 하나?",
+      "관리자에게 모든 문서를 보여줄 때, Service 시그니처를 어떻게 두는 게 깔끔할까?"
+    ],
+    "outsideHash": "5427a78d6a472e58311d9d8628080c80c377ea036a79c76fe049949db217fab4",
+    "keys": [
+      "30-1",
+      "30-2",
+      "30-3"
+    ],
+    "executableHash": "9c4f890221eb439aaed86055fb859d812c0ec6b1a0c43d996fcf0e6222e8a06d"
+  },
+  {
+    "file": "practice/starter/31-repositories-all/AllRepositories.java",
+    "indent": "    ",
+    "comment": "//",
+    "originals": [
+      "메서드 이름이 너무 길어지면 어떤 시점에 @Query 로 옮길까?",
+      "Spring Data JPA 가 메서드 이름을 어떤 규칙으로 파싱하는지 한 줄로 적어 보세요.",
+      "중간에 컬럼명이 바뀌었을 때, 메서드 이름 쿼리는 어떻게 깨지는가? (Property → Column 매핑 관점)"
+    ],
+    "outsideHash": "e5a8876d5556c0aa498c138d033ee90bf030d2b5fef5bf53701bf6523317cf40",
+    "keys": [
+      "31-1",
+      "31-2",
+      "31-3"
+    ],
+    "executableHash": "2c8821fd9903c2c0023423ea9154d1ff920ce59183adf1d99d0ae0ca156e734d"
+  },
+  {
+    "file": "practice/starter/32-response-dto-mapping/ResponseDtoMapping.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "Entity 를 그대로 응답하면 발생할 수 있는 보안 / 직렬화 문제 3 가지를 적어 보세요.",
+      "record 와 일반 class DTO 의 차이를 한 줄로 설명해 보세요.",
+      "응답 DTO 를 만들 때 Entity 의 모든 필드를 1:1 로 옮기지 않는 이유는?",
+      "MapStruct / ModelMapper 같은 자동 매핑 도구를 도입할 만한 시점은?"
+    ],
+    "outsideHash": "c21793fa8cccd91da7af1877da5911ab0fcab12555cbf4bbcf46fd5585a22c78",
+    "keys": [
+      "32-1",
+      "32-2",
+      "32-3",
+      "32-4"
+    ],
+    "executableHash": "9aab7a9b77c715b4e86cc46fa5b7b7ef95a1154ceb254a7601e98b6e3997892c"
+  },
+  {
+    "file": "practice/starter/33-config-beans/ConfigBeans.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@EnableJpaAuditing 을 빼면 createdAt 이 null 로 들어옵니다. 왜 그럴까요?",
+      "BCrypt 가 SHA-256 보다 안전한 이유 2 가지(salt, work factor)를 한 줄로 설명해 보세요.",
+      "WebMvcConfigurer 와 SecurityConfig 가 공존할 때, 권한 검사 순서는 어떻게 되는가?",
+      "Spring Boot 의 자동 설정만으로 PasswordEncoder 가 자동 등록되지 않는 이유는?"
+    ],
+    "outsideHash": "4eb23be5fcffbdc070e38a9176a8c8555b92f5454cd57e3a3a89e1cdff64962e",
+    "keys": [
+      "33-1",
+      "33-2",
+      "33-3",
+      "33-4"
+    ],
+    "executableHash": "c1652a0f167aa6341f5e52babd0b6746a92171364a56a88acadd8feeb4b9c1e2"
+  },
+  {
+    "file": "practice/starter/34-current-user-interceptor/CurrentUserAndInterceptor.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "ArgumentResolver 가 없다면 Controller 마다 어떤 코드가 반복되어야 할까?",
+      "@AuthenticationPrincipal 과 @CurrentUser 의 차이는?",
+      "Interceptor 와 Filter 의 실행 순서를 한 줄로 설명해 보세요.",
+      "JWT 단계로 진화하면 이 ArgumentResolver 는 어떻게 바뀌어야 하나?"
+    ],
+    "outsideHash": "f65aabb5a39dd0023b1da3c6333a2bbfc8a692daa4987f62343c6ebd253e3feb",
+    "keys": [
+      "34-1",
+      "34-2",
+      "34-3",
+      "34-4"
+    ],
+    "executableHash": "324e2660b63e89a1bd642b972e6a3166fc2544234d11599c297fa4b20fee953b"
+  },
+  {
+    "file": "practice/hard/00-build-config/application.yml.fragment",
+    "indent": "",
+    "comment": "#",
+    "originals": [
+      "ddl-auto 의 create/create-drop/update/validate/none 을 한 줄씩 구분.",
+      "show-sql=true 와 logging.level.org.hibernate.SQL=debug 의 차이?",
+      "토큰/비번을 yml 에 하드코딩하면 안 되는 이유 + 환경변수+기본값 패턴의 장점?"
+    ],
+    "outsideHash": "9ac98b3e35f1e9921d7dd50628af78a8f5a33b60c207bd8c9f2aa9d8e0ddb241",
+    "keys": [
+      "00-yml-1",
+      "00-yml-2",
+      "00-yml-3"
+    ],
+    "executableHash": "8c376377b2ece987aa5da3cafed88370e2b8e0dee90ed27513f8b65715557c4f"
+  },
+  {
+    "file": "practice/hard/00-build-config/build.gradle.fragment",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "\"스타터\" 가 단순 라이브러리와 다른 점은?",
+      "dependency-management 플러그인이 있으면 version 을 생략하는 이유(BOM)?",
+      "javax.* → jakarta.* 변경이 Validation/JPA 코드에 주는 영향?",
+      "security-crypto 와 starter-security 를 단계별로 나누는 이유?"
+    ],
+    "outsideHash": "981b5cf9dee76c2b8b0d18ba0e5ee7aec3a9973ff442aa1b1660d457a9e86cea",
+    "keys": [
+      "00-gradle-1",
+      "00-gradle-2",
+      "00-gradle-3",
+      "00-gradle-4"
+    ],
+    "executableHash": "2d9fe1e6299f0fc50cd6108da5a7f100d575ef8a27c7f40e019b5304768269b2"
+  },
+  {
+    "file": "practice/hard/01-user-entity/User.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "User 와 Employee 를 왜 분리했나?",
+      "EnumType.STRING 대신 ORDINAL 을 쓰면 운영 중 무슨 사고가 나나?",
+      "createdAt 에 updatable=false 를 둔 이유 + @CreatedDate 가 동작하려면 어디에 무엇이 필요한가?"
+    ],
+    "outsideHash": "4ca666c5313b3dcd65eb15fb5b408ebd1f1f775ed8ad59f87cf7949d2a6a7a25",
+    "keys": [
+      "01-1",
+      "01-2",
+      "01-4"
+    ],
+    "executableHash": "8ca381d5d55c51aa4f925baf011e74e33f8b4707ce0c58c6d404a2f0b78a2fec"
+  },
+  {
+    "file": "practice/hard/02-department-entity/Department.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "Service 의 existsByName 검사가 있는데도 DB unique 를 또 두는 이유는? (동시 등록 race)",
+      "trim 정규화를 Service 가 아니라 도메인 팩토리에 두면 무엇이 좋아지나?",
+      "부서명 변경 시 중복검사를 \"자기 자신 제외\" 로 해야 하는 이유는?"
+    ],
+    "outsideHash": "14629f164a1dcb27bf5d585ef570d5ecc5a9157d8974a07f9a22dabed09ad564",
+    "keys": [
+      "02-1",
+      "02-2",
+      "02-hard-3"
+    ],
+    "executableHash": "d98c7402853eb6aa71566891acea42cc1e06a778f1c33e510312d12ac7c6e121"
+  },
+  {
+    "file": "practice/hard/03-employee-entity/Employee.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@ManyToOne 기본값 EAGER 를 LAZY 로 바꾸는 이유는? (목록 100건 + N+1)",
+      "퇴사를 DELETE 가 아니라 RESIGNED 로 두는 이유는? (과거 휴가/결재 참조)",
+      "Service 가 setter 대신 resign()/changeDepartment() 도메인 메서드를 쓰는 이유는?"
+    ],
+    "outsideHash": "0a3721b0ad22e56ba7d69b2bf7471b8516aa6004117a5549b841700f2d78c9f7",
+    "keys": [
+      "03-1",
+      "03-2",
+      "03-3"
+    ],
+    "executableHash": "5e790dfc6fbc6d11373e85edeefe3810990757271e11cbaf1ddca84ff14e8d18"
+  },
+  {
+    "file": "practice/hard/04-leave-entity/LeaveRequest.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "PENDING 검증을 도메인 메서드가 아닌 Service if 에만 두면 어떤 버그가 가능한가?",
+      "휴가가 ApprovalStatus 를 공유하되 DRAFT 를 쓰지 않는 이유/위험은?",
+      "두 관리자가 동시에 같은 휴가를 승인하면? 어떤 락으로 막나?"
+    ],
+    "outsideHash": "1107a0c1e32b73610717d74814ac5d84b4496fc74dbdf4a44b84203c3cbd3eef",
+    "keys": [
+      "04-1",
+      "04-2",
+      "04-3"
+    ],
+    "executableHash": "9795a8f2fb66720b30ad395a3ae11bd1448299f1c5d5e4bcab0a581b2e258f3b"
+  },
+  {
+    "file": "practice/hard/05-notice-entity/Notice.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "content 를 @Lob/TEXT 로 두는 기준은? VARCHAR(255) 면 언제 터지나?",
+      "GET 상세에서 조회수를 올리면 무엇이 문제고 대안은?",
+      "this.viewCount+1 이 동시 요청에서 카운트를 누락하는 과정을 단계로 설명."
+    ],
+    "outsideHash": "b08ec3950ca401bd2a427f0a9bd28b2f45044e2aa632124c69d562063a798d83",
+    "keys": [
+      "05-1",
+      "05-2",
+      "05-3"
+    ],
+    "executableHash": "e760ce23ae434fb4ad4b1aa2bc8b9d42988141d934a9ad26921ecaf5aafb9f19"
+  },
+  {
+    "file": "practice/hard/06-approval-entity/ApprovalDocument.entity.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "허용되지 않는 상태 전이 2개를 들고, 어디서 막는 게 가장 견고한가?",
+      "작성자=결재자 금지를 Entity 에 두는 것과 Service 에 두는 것의 차이는?",
+      "writerId.equals(approverId) 를 == 가 아니라 equals 로 비교해야 하는 이유는? (Long 캐시)"
+    ],
+    "outsideHash": "d6d6a3749ee973a5fd6af15ca3f39a582cff32ccb91829f1420bd1a688d59887",
+    "keys": [
+      "06-1",
+      "06-2",
+      "06-5"
+    ],
+    "executableHash": "e888ae1ced46ffc3fc5c78e10441e0f72551db11e2ae620a8b937e18d601d7ea"
+  },
+  {
+    "file": "practice/hard/07-repository/EmployeeRepository.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "findByUser_Email 의 밑줄(_)은 무엇을 의미하나?",
+      "existsByX 와 findByX 의 비용 차이는? 중복검사에 exists 가 유리한 이유?",
+      "메서드 이름이 길어지면 언제 @Query/Querydsl 로 옮기나?"
+    ],
+    "outsideHash": "5f89989f10c588fa1dda4a8f92cd335dc0e5e67c6f04a2cdb4672c734f0596ce",
+    "keys": [
+      "07-1",
+      "07-2",
+      "07-3"
+    ],
+    "executableHash": "f1744bee063513842e5ebebb41bc6c6fc0414226a983d1a91b5f8b12d8f726ac"
+  },
+  {
+    "file": "practice/hard/08-employee-register/EmployeeService.register.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@Transactional 이 빠지면 어떤 정합성 문제가 생기나?",
+      "userRepository.save 성공 후 employee.save 에서 RuntimeException 이 나면?",
+      "중복 이메일 검증을 했는데도 DB unique 가 필요한 이유는?"
+    ],
+    "outsideHash": "2dd3c02aafa45e50c1bfa9b8916061c2d82be59d2b5ecc4b0d87556bd47b0290",
+    "keys": [
+      "08-1",
+      "08-2",
+      "08-3"
+    ],
+    "executableHash": "c4ab7f7a7581b423be5949c263e29f1bced525d982c467b7d5c1b8c5ed301ec3"
+  },
+  {
+    "file": "practice/hard/09-employee-search/EmployeeService.search.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "Controller 가 Pageable 을 그대로 받으면 클라이언트는 어떤 쿼리스트링을 보내나?",
+      "List 가 아니라 Page 로 반환하는 이유는?",
+      "정렬을 클라이언트가 자유 지정할 때의 위험은?"
+    ],
+    "outsideHash": "8107eca61f1caa8e259b9e65eb459e6fe253ec937593463017011d2c5bcc56f3",
+    "keys": [
+      "09-1",
+      "09-2",
+      "09-3"
+    ],
+    "executableHash": "be82ef1a3c9c5f4bbe47c303b48cbf1fd8bca14a8202af075da2c31cc201e84d"
+  },
+  {
+    "file": "practice/hard/10-leave-request/LeaveService.request.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "시작일>종료일 검증을 DTO @AssertTrue 로 옮기면 장점은?",
+      "같은 기간 PENDING/APPROVED 휴가가 이미 있으면 막아야 하나? 조건식은?",
+      "신청 알림은 트랜잭션 안/밖 중 어디서?"
+    ],
+    "outsideHash": "b6f4555f9b044a1190eb0cd4e2e31047cbd311211718294c56e77eeb18ff4ab7",
+    "keys": [
+      "10-1",
+      "10-2",
+      "10-3"
+    ],
+    "executableHash": "8d3c10c76b7943ffacb555d6785f01a5f443db63caa9b30ad65c2f2dc29e6a4a"
+  },
+  {
+    "file": "practice/hard/11-leave-approval/LeaveService.approval.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "PENDING 검증을 Entity.approve 가 아닌 Service 에서만 했다면 어떤 버그가 가능?",
+      "두 관리자가 동시에 같은 휴가 승인을 시도하면?",
+      "승인 후 알림은 어디서 트리거하는 게 안전?"
+    ],
+    "outsideHash": "92255c3ad5d87083dcb167a28c15b081647c8d4ff0b8e588cc0cd33dc67249cf",
+    "keys": [
+      "11-1",
+      "11-2",
+      "11-3"
+    ],
+    "executableHash": "7d96abbfee903f13e9f5b6effe4db76ca42dad3760b3629a698eb2e75c63341f"
+  },
+  {
+    "file": "practice/hard/12-notice-service/NoticeService.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "ADMIN 검사를 Controller(@PreAuthorize)에만 두는 약점은?",
+      "important 공지를 상단에 두려면 어떤 컬럼에 인덱스?",
+      "조회수 증가를 별도 트랜잭션으로 분리하려면 어떤 옵션?"
+    ],
+    "outsideHash": "833ae436bba2028e2e39a2ece3855ae9807b14fdbbf1de5eca41e712b1f45a51",
+    "keys": [
+      "12-1",
+      "12-2",
+      "12-3"
+    ],
+    "executableHash": "e574eca2ca25236c8c580ab00392bbf5ec333d432399e05db9a95b3b5741b107"
+  },
+  {
+    "file": "practice/hard/13-approval-document/ApprovalService.document.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "작성과 결재 요청을 분리하는 이유(임시저장)는?",
+      "결재자가 존재하지 않는 ID 라면 어떤 에러?",
+      "doc.submit() 의 상태 검증을 Service if 로 바꾸면 단점은?"
+    ],
+    "outsideHash": "e5f6a2a890f5883cf6724a43f0c0085e68c6216f1c23d30d5788214a2ab23961",
+    "keys": [
+      "13-1",
+      "13-2",
+      "13-3"
+    ],
+    "executableHash": "2bf93ce953a1c6f3248343f470eb38addc0ea758f7c4f8e70e7a828b68e506e5"
+  },
+  {
+    "file": "practice/hard/14-approval-decision/ApprovalService.decision.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "도메인 메서드 안에서 검증을 다 하면 Service 가 가벼워지는데, 단점은?",
+      "결재자가 아닌 사람이 승인하려고 하면 어디서 어떻게 막히나?",
+      "approvedAt 을 LocalDateTime.now() 대신 Clock 주입하면 이점은?"
+    ],
+    "outsideHash": "9cb1d62228f244c13872e7b629eedb3c58d4c98d3dc48df833a3fc1b4553cb14",
+    "keys": [
+      "14-1",
+      "14-2",
+      "14-3"
+    ],
+    "executableHash": "df751ed802eb59d373b0e19e5abdb49bfb09d848e6352497ae77fbcb7a69b78b"
+  },
+  {
+    "file": "practice/hard/15-error-model/ErrorCodeAndResponse.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "status(HTTP) 와 code(비즈니스) 를 따로 두는 이유는?",
+      "ErrorResponse 에 stack trace 를 넣지 않는 이유는?",
+      "BusinessException 을 Checked 로 만들면 어떤 불편이 생기나?"
+    ],
+    "outsideHash": "eeba663f40a81fe122042f60889d37f1772370abc58785bdbcb49191e4818de8",
+    "keys": [
+      "15-1",
+      "15-2",
+      "15-3"
+    ],
+    "executableHash": "9860a459d77edd19745429941a109b8827371e1d0fc2c014fcb2bcd1043bea80"
+  },
+  {
+    "file": "practice/hard/16-global-handler/GlobalExceptionHandler.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@RestControllerAdvice 와 @ControllerAdvice 의 차이는?",
+      "마지막 Exception 핸들러를 두지 않으면 어떤 일이?",
+      "Security 인증/인가 예외는 왜 여기서 못 잡을 수 있고, 어디서 변환해야 하나?"
+    ],
+    "outsideHash": "89cea18fa00be15030d2a3e8686a2e627a9bda29f1800a47b148f2628007096b",
+    "keys": [
+      "16-1",
+      "16-2",
+      "16-3"
+    ],
+    "executableHash": "679f78a1d7bb727bef05580ecfed504b8c69ad98aad47b76f87ba5b2fc706044"
+  },
+  {
+    "file": "practice/hard/17-dto-validation/EmployeeCreateRequest.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@NotBlank, @NotEmpty, @NotNull 의 차이는?",
+      "DTO 검증이 동작하려면 Controller 파라미터에 무엇을 붙이나?",
+      "요청 DTO 와 응답 DTO 를 같은 클래스로 두면 무슨 문제가?"
+    ],
+    "outsideHash": "a2840857e16cccfb0fb6865fc15fb7d639354c10a2a8f0bfcfee345c2aab9ddb",
+    "keys": [
+      "17-1",
+      "17-2",
+      "17-3"
+    ],
+    "executableHash": "b3e500a15d563c3038c44bd06983e0377df63e60d7cb8e27606a1ba766734c46"
+  },
+  {
+    "file": "practice/hard/18-controller-employee/EmployeeController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@PreAuthorize 로 막았는데 Service 에서 또 검사해야 하나?",
+      "등록 응답에 Location 헤더를 추가하려면?",
+      "PUT 과 PATCH 의 차이를 한 줄로."
+    ],
+    "outsideHash": "8331eab8fbcf82fbc88d86790adcbc0b24ae743b1c97c6f1079f6f0dbe3dfe2e",
+    "keys": [
+      "18-1",
+      "18-2",
+      "18-3"
+    ],
+    "executableHash": "20dd4f6773cd056fc60ba19e8ab9857b3c0ef8f80c903b1a804b7007d71b2ddf"
+  },
+  {
+    "file": "practice/hard/19-controller-leave/LeaveController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "/api/leaves 와 /api/admin/leaves 분리의 장단점은?",
+      "상태 전이에 PATCH 와 PUT 중 어울리는 것은?",
+      "권한 체크 다층 방어 권장 패턴은?"
+    ],
+    "outsideHash": "85a0abcc57cfabdf2c74299c82fb3e7551cffc0c803ba379cfa757adb4063a95",
+    "keys": [
+      "19-1",
+      "19-2",
+      "19-3"
+    ],
+    "executableHash": "b8b17d69e73bcd6a4bbf9a4779c1768dd61a1c9cf3b02bda950952f2cc725092"
+  },
+  {
+    "file": "practice/hard/21-test-flow/LeaveFlowTest.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@Transactional 을 테스트에 달면 이점/단점은?",
+      "@SpringBootTest 와 @WebMvcTest 의 차이는?",
+      "시간(now()) 같은 비결정성을 테스트에서 다루는 패턴은?",
+      "JWT 단계에서는 세션 대신 무엇을 전달하나?"
+    ],
+    "outsideHash": "c44e2a121502a8d316f462ae01741e2a8d658ed44f34302ab061604765309b3e",
+    "keys": [
+      "21-1",
+      "21-2",
+      "21-3",
+      "21-4"
+    ],
+    "executableHash": "23f071a4adc432d4b3ca0aa53b52d0ab401db4abef36c7f7abceb226028112f3"
+  },
+  {
+    "file": "practice/hard/23-auth-login/AuthController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "/api/auth/login 은 왜 permitAll() 이어야 하나?",
+      "비밀번호 변경을 PATCH 로 둔 이유는?",
+      "LoginResponse 에 userId 를 노출해도 괜찮은가? (IDOR 관점)",
+      "Service 에 HttpSession 을 넘기지 않는 이유는?"
+    ],
+    "outsideHash": "eefcdbd73084b424792859c58ba1b0ec7902229e8575cd8d878afc83762232c0",
+    "keys": [
+      "23-controller-1",
+      "23-controller-2",
+      "23-controller-3",
+      "23-controller-4"
+    ],
+    "executableHash": "de5d11a8efd6c88f7fd77fe6318074733cdf2faaa93d334dbf63ff1a6c2e877b"
+  },
+  {
+    "file": "practice/hard/23-auth-login/AuthService.login.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "로그인 실패 시 \"이메일 없음/비번 틀림\" 을 구분하면 안 되는 이유는?",
+      "로그인 직후 세션 ID 재발급(Session Fixation)의 이유는?",
+      "비밀번호 변경 후 기존 세션/토큰은 어떻게 처리?",
+      "Service 에서 Servlet API 를 제거하면 테스트와 계층 책임에 어떤 장점이 있나?"
+    ],
+    "outsideHash": "011323bbd3170f9f2158660068f72367dea761ed0803d30e2b153d206dc32f24",
+    "keys": [
+      "23-service-1",
+      "23-service-2",
+      "23-service-3",
+      "23-service-5"
+    ],
+    "executableHash": "245ba843dfcba50c6de25684c47e577e9c3319f0c32c0824f6aeacb1f89970f1"
+  },
+  {
+    "file": "practice/hard/24-department-service/DepartmentService.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "부서 목록을 페이징하지 않은 이유는? 1000개가 넘으면?",
+      "부서 삭제 시 소속 직원 정책 3가지는?",
+      "소속 직원까지 N+1 없이 가져오려면?"
+    ],
+    "outsideHash": "e1b490cb07c94408cdaa3fde6564f36fd9b41aba646174059acb722c1b4433be",
+    "keys": [
+      "24-1",
+      "24-2",
+      "24-3"
+    ],
+    "executableHash": "c8d7c2880f475e8dfa0814078f4b159f06f3dddea9b40962444136f84047ecfa"
+  },
+  {
+    "file": "practice/hard/25-department-controller/DepartmentController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "부서 목록은 List, 직원 목록은 Page 인 차이를 무엇으로 결정하나?",
+      "부서 수정에 PUT vs PATCH?",
+      "MemberItem 을 nested record 로 둔 이유는?"
+    ],
+    "outsideHash": "ef8e00d484410c649ebed9d27e890544d1ebac0f0bc74e8bf50fbd1080779991",
+    "keys": [
+      "25-1",
+      "25-2",
+      "25-3"
+    ],
+    "executableHash": "2097b961826a119d0bc7ebb1e31da25556cf3871e166503b43a90a34322182a5"
+  },
+  {
+    "file": "practice/hard/26-notice-controller/NoticeController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "GET 상세에서 조회수를 올리는 문제와 대안은?",
+      "공지 수정에 PUT vs PATCH? PRD 기준은?",
+      "목록 응답에 content 를 그대로 넣으면 단점은?"
+    ],
+    "outsideHash": "8a161953123b6713f8d5a1c6ac07f194c65219392771bc8b57d840c0b3f9c157",
+    "keys": [
+      "26-1",
+      "26-2",
+      "26-3"
+    ],
+    "executableHash": "1f156617a55e8e282213bded6ac389092a180cace88abc607c619c5465fcb4a1"
+  },
+  {
+    "file": "practice/hard/27-approval-controller/ApprovalController.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "/my 와 /pending 의 권한 차이는?",
+      "작성 후 자동 submit 하지 않고 별도 호출로 둔 이유는?",
+      "결재자 본인이 아닌 사람이 /pending 을 호출하면 어떻게 막히나?"
+    ],
+    "outsideHash": "9f7a0967e5d0fe6586e7a3e1451283f4a8e1ba2dbd4c7a4613a1e5fd4bd09077",
+    "keys": [
+      "27-1",
+      "27-2",
+      "27-3"
+    ],
+    "executableHash": "faf2b6f47c94ee47c7aa01153dab89ee05ce0338dcf58396fb40a5ec9cd75b4e"
+  },
+  {
+    "file": "practice/hard/28-employee-detail-update/EmployeeService.detail.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "Service 가 setter 대신 도메인 메서드를 만든 이유는?",
+      "부서 변경 시 부서 직원 수 캐시가 있다면 어디서 갱신?",
+      "soft(RESIGNED) vs hard delete 트레이드오프 한 줄."
+    ],
+    "outsideHash": "14d928c262664eda66e0b6b01d417613858744c5cca02d69ccdec3f38008857e",
+    "keys": [
+      "28-1",
+      "28-2",
+      "28-3"
+    ],
+    "executableHash": "e65f444d63765bc655700d950795240f1021acfd3d1ec6f42992ef1e93532d53"
+  },
+  {
+    "file": "practice/hard/29-leave-my-cancel/LeaveService.my.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "내 휴가만 보여주는 안전망을 Service 에만 두면 충분한가? Repository 차원 보호는?",
+      "관리자 목록에 기간(from/to) 조건도 자주 필요하다. 어떻게 확장?",
+      "CANCELED 별도 상태가 REJECTED 합치기보다 좋은 점은?"
+    ],
+    "outsideHash": "524fc804b97173f0d8ffeffee0e454134f266a3dcbd5bf8fe800a378486005ee",
+    "keys": [
+      "29-1",
+      "29-2",
+      "29-3"
+    ],
+    "executableHash": "2db3aa72bbf66681e61396a070d6f90e5f197bc244f00b1e6b1ba5c0a1ab5da0"
+  },
+  {
+    "file": "practice/hard/30-approval-lists/ApprovalService.lists.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "/my 와 /pending 을 한 메서드에서 분기하지 않고 분리한 이유는?",
+      "결재자 변경(권한 위임)이 가능해지면 pending 쿼리는 어떻게 바뀌나?",
+      "관리자에게 모든 문서를 보여줄 때 Service 시그니처를 어떻게?"
+    ],
+    "outsideHash": "b406a60accecb0b64b5438cfef515f32eff17e488e401fc8eb3812c71ea9596c",
+    "keys": [
+      "30-1",
+      "30-2",
+      "30-3"
+    ],
+    "executableHash": "9c4f890221eb439aaed86055fb859d812c0ec6b1a0c43d996fcf0e6222e8a06d"
+  },
+  {
+    "file": "practice/hard/31-repositories-all/AllRepositories.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "메서드 이름이 너무 길면 언제 @Query 로?",
+      "Spring Data 가 메서드 이름을 파싱하는 규칙 한 줄.",
+      "컬럼명이 바뀌면 메서드 이름 쿼리는 어떻게 깨지나? (필드명 vs 컬럼명)"
+    ],
+    "outsideHash": "d7fb53768363d8570afcb63ce3d3aa85ac5fc7555354dfbf3c8ae59cfbdb9df9",
+    "keys": [
+      "31-1",
+      "31-2",
+      "31-3"
+    ],
+    "executableHash": "6a121db8ef48be471eeb09f7a2e906fadd6235b47f0014890d0416fd94e48d56"
+  },
+  {
+    "file": "practice/hard/32-response-dto-mapping/ResponseDtoMapping.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "Entity 직접 응답의 보안/직렬화 문제 3가지.",
+      "record vs class DTO 차이 한 줄.",
+      "Entity 의 모든 필드를 1:1 로 옮기지 않는 이유."
+    ],
+    "outsideHash": "9439f1a4f78d7bc3d2749c6d248c894e966052c070424382491ae0f310f8748d",
+    "keys": [
+      "32-1",
+      "32-2",
+      "32-3"
+    ],
+    "executableHash": "28027110b6fc941f3ea6ebbe52d0cc1bd63e340a306e20125612f07bb64403a0"
+  },
+  {
+    "file": "practice/hard/33-config-beans/ConfigBeans.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "@EnableJpaAuditing 을 빼면 createdAt 이 null 인 이유는?",
+      "BCrypt 가 SHA-256 보다 안전한 2가지(salt, work factor).",
+      "WebMvcConfig 와 SecurityConfig 공존 시 권한 검사 순서는?"
+    ],
+    "outsideHash": "f6223478e070b8f768814e81a96c8e95830548fbda4db72501aa932af5ff3ab2",
+    "keys": [
+      "33-1",
+      "33-2",
+      "33-3"
+    ],
+    "executableHash": "90177c0677f905eda79b516e8af607a0585c6f592cf299f7d26f0f0978dce756"
+  },
+  {
+    "file": "practice/hard/34-current-user-interceptor/CurrentUserAndInterceptor.java",
+    "indent": "",
+    "comment": "//",
+    "originals": [
+      "ArgumentResolver 가 없다면 Controller 마다 어떤 코드가 반복?",
+      "@AuthenticationPrincipal 과 @CurrentUser 의 차이는?",
+      "Interceptor 와 Filter 의 실행 순서 한 줄.",
+      "JWT 단계로 가면 이 ArgumentResolver 는 어떻게 바뀌나?"
+    ],
+    "outsideHash": "a80d0fc97eae1567ed4bdb82db37cf3e7fa69e9edd2373994ba0a59469883cd5",
+    "keys": [
+      "34-1",
+      "34-2",
+      "34-3",
+      "34-4"
+    ],
+    "executableHash": "5103ae6bd85dd9fe21869b89e9ca8bf04cc0afb18a7eff598a7507b35cca6b28"
+  }
+]

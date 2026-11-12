@@ -1,0 +1,69 @@
+/* 중학생 눈높이: 기본기 문제집의 모양을 정합니다. 색·글자·배치만 담당하며 점수를 계산하지 않습니다. */
+/* :root의 --이름은 여러 곳에서 재사용할 색 이름표이고, var(--이름)으로 그 값을 가져옵니다. */
+:root { color-scheme: light; --ink: #18211b; --muted: #58655e; --paper: #f5f2e9; --surface: #fffdf7; --line: #d7d4c9; --green: #185c45; --orange: #a34b1d; }
+/* box-sizing은 테두리와 안쪽 여백을 지정한 크기에 포함해 전체 폭을 계산하기 쉽게 합니다. */
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); background: var(--paper); font-family: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif; line-height: 1.7; }
+a { color: var(--green); text-underline-offset: 4px; }
+button, input, select { font: inherit; }
+button, select, input[type="search"] { min-height: 44px; border: 1px solid var(--line); border-radius: 9px; padding: .6rem .8rem; background: var(--surface); color: var(--ink); }
+button { cursor: pointer; font-weight: 700; }
+button:disabled { cursor: default; opacity: .5; }
+button:not(:disabled):hover { border-color: var(--green); background: #e8f0e8; }
+/* Tab 키로 이동하는 사람도 현재 선택 위치를 알 수 있도록 눈에 띄는 테두리를 표시합니다. */
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+[hidden] { display: none !important; }
+.skip-link { position: absolute; left: 1rem; top: -100px; background: white; padding: .8rem; z-index: 10; }
+.skip-link:focus { top: 1rem; }
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem max(1rem, calc((100% - 1100px) / 2)); border-bottom: 1px solid var(--line); background: var(--surface); }
+.topbar nav { display: flex; flex-wrap: wrap; gap: 1rem; }
+.brand { font-weight: 800; text-decoration: none; }
+.page { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; }
+.hero { max-width: 870px; padding: 3rem 0 2rem; }
+.eyebrow { font-size: .85rem; color: var(--green); font-weight: 800; }
+h1 { font-size: clamp(2rem, 5vw, 3.7rem); line-height: 1.2; letter-spacing: -.055em; margin: .6rem 0 1.5rem; }
+h1 span { color: var(--green); white-space: nowrap; }
+.intro { font-size: 1.15rem; }
+.muted, footer { color: var(--muted); font-size: .9rem; }
+/* 현황 칸 네 개를 같은 폭으로 나란히 배치합니다. 진행 수치는 JavaScript가 넣습니다. */
+.progress-panel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding: 1.5rem; border-radius: 16px; background: #dfece3; }
+.progress-panel strong, .progress-panel span { display: block; }
+.progress-panel strong { font-size: 2rem; line-height: 1.25; color: var(--green); }
+.progress-panel span { font-size: .9rem; }
+progress { grid-column: 1 / -1; width: 100%; height: 8px; accent-color: var(--green); }
+.filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; align-items: end; margin-top: 2rem; }
+.filters label { display: grid; gap: .4rem; font-size: .9rem; font-weight: 700; min-width: 0; }
+.filters select, .filters input { width: 100%; min-width: 0; }
+#apply-filters, .grade-button { background: var(--green); color: white; border-color: var(--green); }
+#apply-filters:hover, .grade-button:hover { background: #103d2f; color: white; }
+.list-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-top: 2rem; }
+.list-heading h2 { margin: 0; }
+.pagination { display: flex; align-items: center; justify-content: space-between; gap: .7rem; margin: 1.2rem 0; }
+.question-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.6rem; margin-bottom: 1.2rem; }
+.question-meta { font-size: .83rem; font-weight: 700; color: var(--green); margin: 0 0 .5rem; }
+.scope-label { font-size: .85rem; color: var(--muted); margin: 0 0 .6rem; }
+.source-evidence { margin: 0 0 1rem; padding: .8rem; background: #f0f4ed; border-radius: 9px; overflow-wrap: anywhere; }
+.source-evidence p { margin: 0 0 .35rem; font-size: .82rem; color: var(--muted); }
+.source-evidence code { font-size: .9rem; white-space: pre-wrap; }
+.question-card h3 { font-size: 1.16rem; margin: 0 0 1rem; overflow-wrap: anywhere; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.choice { display: flex; align-items: baseline; gap: .7rem; border: 1px solid var(--line); border-radius: 9px; margin-bottom: .6rem; padding: .75rem; cursor: pointer; overflow-wrap: anywhere; }
+.choice:hover { background: #f0f4ed; }
+.choice:has(input:checked) { border-color: var(--green); background: #e8f0e8; }
+.choice.correct { border-color: var(--green); background: #e5f0e7; }
+.choice.incorrect { border-color: var(--orange); background: #fff0e5; }
+.choice input { accent-color: var(--green); flex-shrink: 0; margin: 0; }
+.question-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+.feedback { margin-top: 1rem; }
+.feedback p { margin: .5rem 0; }
+.feedback .verdict { font-weight: 800; color: var(--green); }
+.feedback .wrong-verdict { color: var(--orange); }
+.explanation { background: #f0f4ed; padding: 1rem; border-radius: 9px; }
+.explanation ul { padding-left: 1.3rem; }
+.empty { padding: 3rem 1rem; text-align: center; border: 1px dashed var(--line); border-radius: 16px; }
+footer { margin: 3rem 0; border-top: 1px solid var(--line); padding-top: 1.5rem; }
+@media (max-width: 900px) { .filters { grid-template-columns: 1fr 1fr; } .filters button { grid-column: 1 / -1; } }
+@media (max-width: 600px) { .topbar { align-items: flex-start; flex-direction: column; } .hero { padding-top: 2rem; } .progress-panel { grid-template-columns: repeat(2, 1fr); } .question-card { padding: 1rem; } .list-heading { display: block; } .pagination { font-size: .85rem; } .pagination button { padding: .5rem; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print { .topbar, .filters, .pagination, .question-actions, .skip-link { display: none; } .question-card { break-inside: avoid; } body { background: white; } }

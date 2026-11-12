@@ -1,3 +1,9 @@
+// 중학생 눈높이: 공통 오류 응답
+// 여러 곳에서 생긴 오류를 한곳에서 같은 모양의 안내로 바꿉니다.
+// HTTP 상태 코드는 요청 결과의 번호입니다. 잘못된 입력과 서버 내부 오류를 구별할 수 있습니다.
+// 오류 받기 → 오류 종류 확인 → 알맞은 응답 만들기 순서로 봅니다.
+// Hard는 힌트가 적은 복습용입니다. 같은 챕터의 Starter 설명을 읽은 뒤 빈칸을 채워 보세요.
+// ____는 직접 채울 빈칸입니다. 주석은 사람이 읽는 설명이므로 프로그램이 실행하지 않습니다.
 // 실제 구현 위치 예: exception/GlobalExceptionHandler.java
 // 목표: 전역 예외 핸들러를 거의 백지에서. TRD 3.9.
 // 막히면 starter/16-global-handler, answers.md 16장 참고.
@@ -18,6 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(____.class)
     public ResponseEntity<ErrorResponse> handleBusiness(BusinessException e) {
         log.warn("BusinessException: {} - {}", e.getErrorCode(), e.getMessage());
+        // return은 결과를 호출한 곳에 돌려주고 이 메서드를 끝냅니다. 값이 없는 return은 종료만 합니다.
         return ResponseEntity
             .status(e.getErrorCode().getStatus())
             .body(ErrorResponse.of(e.getErrorCode(), e.getMessage()));
@@ -50,13 +57,34 @@ public class GlobalExceptionHandler {
     }
 }
 
-// 학습 질문 (직접 답):
-// Q1. @RestControllerAdvice 와 @ControllerAdvice 의 차이는?
-//     A:
-// Q2. 마지막 Exception 핸들러를 두지 않으면 어떤 일이?
-//     A:
-// Q3. Security 인증/인가 예외는 왜 여기서 못 잡을 수 있고, 어디서 변환해야 하나?
-//     A:
+// 4지선다 학습 문제 (자동 생성 시작)
+// 선택·채점 화면 (저장소 루트 기준): problems.html#problem-16
+//
+// Q1. @RestControllerAdvice와 @ControllerAdvice의 차이로 알맞은 것은? [chapter-v1-16-04]
+// ① ControllerAdvice는 모든 필터 예외를 무조건 처리한다.
+// ② RestControllerAdvice는 HTML view 이름만 반환할 수 있다.
+// ③ RestControllerAdvice는 ControllerAdvice와 ResponseBody 의미를 함께 제공해 반환값을 응답 본문으로 처리한다.
+// ④ 두 어노테이션은 예외 처리와 관련이 없다.
+// 정답: ③
+// 해설: ControllerAdvice에서도 ResponseBody를 지정할 수 있다. REST 조언은 본문 응답을 기본으로 쓰는 합성 어노테이션이다.
+//
+// Q2. 최종 Exception 핸들러를 두는 목적과 한계는? [chapter-v1-16-05]
+// ① 최종 핸들러가 있으면 예외 발생 자체가 없어지는 것이다.
+// ② 예상하지 못한 MVC 오류의 응답 형식과 서버 로그를 일관되게 관리하되 모든 계층의 예외를 잡는다고 가정하지 않는다.
+// ③ 핸들러가 없으면 어떤 서버에서도 응답이 절대로 반환되지 않는다.
+// ④ 최종 핸들러가 모든 오류를 성공 200으로 변환해야 한다.
+// 정답: ②
+// 해설: 기본 오류 처리도 있을 수 있으나 프로젝트 계약과 다를 수 있다. 구체적 오류와 최종 오류의 응답·로그 정책을 정한다.
+//
+// Q3. Security 필터 단계의 인증·인가 실패 응답은 어디서 조정하는가? [chapter-v1-16-06]
+// ① AuthenticationEntryPoint와 AccessDeniedHandler 등 Security의 실패 처리 경로에서 조정한다.
+// ② 모든 실패가 반드시 MVC ControllerAdvice까지 도달한다고 가정한다.
+// ③ JPA Auditing listener에서 HTTP 인증 오류를 변환한다.
+// ④ Entity의 toString에서 응답 코드를 정한다.
+// 정답: ①
+// 해설: DispatcherServlet 밖의 필터에서 발생한 오류는 MVC 조언으로 처리되지 않을 수 있다. Security 예외 변환 경로를 구성한다.
+//
+// 4지선다 학습 문제 (자동 생성 끝)
 
 // 자가 채점:
 // □ @RestControllerAdvice  □ @ExceptionHandler(BusinessException)  □ MethodArgumentNotValidException

@@ -1,3 +1,9 @@
+// 중학생 눈높이: 휴가 신청
+// LeaveRequest는 누가 언제 쉬려고 하는지 기록하는 휴가 신청서입니다.
+// LocalDate는 시각 없이 날짜만 담습니다. 상태는 대기·승인·반려처럼 진행 단계를 나타냅니다.
+// 날짜와 신청자 읽기 → 신청 만들기 → 승인 또는 반려로 상태 바꾸기 순서로 봅니다.
+// Hard는 힌트가 적은 복습용입니다. 같은 챕터의 Starter 설명을 읽은 뒤 빈칸을 채워 보세요.
+// ____는 직접 채울 빈칸입니다. 주석은 사람이 읽는 설명이므로 프로그램이 실행하지 않습니다.
 // 실제 구현 위치 예: src/main/java/com/example/companywork/domain/LeaveRequest.java
 // 목표: 휴가 신청 엔티티 + LeaveType + ApprovalStatus 를 거의 백지에서 작성. TRD 3.3.4, 3.6.3, 3.6.4.
 // 막히면 starter/04-leave-entity, answers.md 4·11장 참고.
@@ -71,7 +77,9 @@ public class LeaveRequest {
     // TODO 06: 정적 팩토리 — 시작일>종료일이면 막고, 초기 상태는?
     public static LeaveRequest create(Employee employee, LeaveType type,
                                       LocalDate startDate, LocalDate endDate, String reason) {
+        // if는 조건이 맞을 때만 안쪽 작업을 실행합니다. 조건을 확인하는 갈림길입니다.
         if (startDate == null || endDate == null || startDate.____(____)) {
+            // throw는 문제를 알리는 예외를 던집니다. 이 지점 뒤의 정상 작업은 계속 진행하지 않습니다.
             throw new ____("휴가 시작일은 종료일보다 늦을 수 없습니다.");
         }
         ____ r = new ____();
@@ -81,6 +89,7 @@ public class LeaveRequest {
         r.endDate = endDate;
         r.reason = reason;
         r.status = ApprovalStatus.____;
+        // return은 결과를 호출한 곳에 돌려주고 이 메서드를 끝냅니다. 값이 없는 return은 종료만 합니다.
         return r;
     }
 
@@ -115,13 +124,34 @@ public class LeaveRequest {
     }
 }
 
-// 학습 질문 (직접 답):
-// Q1. PENDING 검증을 도메인 메서드가 아닌 Service if 에만 두면 어떤 버그가 가능한가?
-//     A:
-// Q2. 휴가가 ApprovalStatus 를 공유하되 DRAFT 를 쓰지 않는 이유/위험은?
-//     A:
-// Q3. 두 관리자가 동시에 같은 휴가를 승인하면? 어떤 락으로 막나?
-//     A:
+// 4지선다 학습 문제 (자동 생성 시작)
+// 선택·채점 화면 (저장소 루트 기준): problems.html#problem-04
+//
+// Q1. 휴가 상태 검사를 Service에만 두었을 때의 우회 위험은? [chapter-v1-04-05]
+// ① 모든 Entity 호출이 자동으로 Service를 거친다.
+// ② DB가 모든 자바 상태 전이를 자동 검사한다.
+// ③ 다른 호출 경로가 Entity를 직접 변경하면 완료된 휴가를 다시 승인할 수 있다.
+// ④ Controller에 버튼이 없으면 재승인 호출도 불가능하다.
+// 정답: ③
+// 해설: approve·reject 내부에서 허용 상태를 확인해야 호출 경로가 달라도 도메인 규칙을 지킨다.
+//
+// Q2. 휴가와 결재가 상태 enum을 공유할 때 올바른 설계는? [chapter-v1-04-06]
+// ① enum에 DRAFT가 있으므로 모든 휴가를 DRAFT로 만든다.
+// ② 같은 enum을 쓰면 두 업무의 상태 전이가 항상 같다.
+// ③ 요청에서 어떤 enum 값이 오든 저장한다.
+// ④ 공통 이름을 재사용하되 휴가에 허용되지 않는 DRAFT 상태를 생성·전이 규칙으로 막는다.
+// 정답: ④
+// 해설: 상태 이름 공유와 업무별 허용 상태는 별개다. 필요하면 별도 enum으로 더 강하게 제약할 수 있다.
+//
+// Q3. 두 관리자의 동시 휴가 승인에서 상태 검사만으로 부족한 이유는? [chapter-v1-04-07]
+// ① 둘 다 PENDING을 읽을 수 있으므로 낙관적 버전 검사나 비관적 잠금과 충돌 처리가 필요하다.
+// ② PENDING 문자열이 자동으로 DB 잠금을 건다.
+// ③ @Transactional만 붙이면 모든 동시 승인이 순서대로 실행된다.
+// ④ 나중 요청의 결과를 무조건 덮어쓰면 승인 이력도 안전하다.
+// 정답: ①
+// 해설: 읽은 뒤 쓰기까지의 경쟁을 제어해야 한다. @Version 충돌 또는 잠금 정책과 재시도·실패 응답을 검증한다.
+//
+// 4지선다 학습 문제 (자동 생성 끝)
 
 // 자가 채점:
 // □ LeaveType 4값  □ ApprovalStatus 4값  □ @ManyToOne(LAZY) employee  □ LocalDate 날짜

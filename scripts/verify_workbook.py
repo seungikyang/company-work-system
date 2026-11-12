@@ -1,3 +1,5 @@
+# 중학생 눈높이: 이 파일은 워크북의 자동 점검표입니다. 파일·링크·문제·화면 연결을 검사합니다.
+# 틀린 조건을 찾으면 원인을 적고 멈춥니다. 검사 통과는 모든 Java 실습 기능이 완성됐다는 뜻은 아닙니다.
 # HTML 취업 워크북의 구조와 학습 링크 계약을 반복 검증하는 스크립트
 # 초보자 안내: HTMLParser는 태그 구조를 읽고 pathlib는 파일 경로를 다룹니다.
 # 문서·화면을 수정할 때 링크나 챕터 연결이 깨지는 실수를 찾기 위해 자동 검사를 묶었습니다.
@@ -18,11 +20,15 @@ HTML_FILES = (
     ROOT / "problems.html",
     ROOT / "history.html",
     ROOT / "workbook-viewer.html",
+    ROOT / "fundamentals.html",
+    ROOT / "quiz.html",
 )
 STARTER_ROOT = ROOT / "practice" / "starter"
 HARD_ROOT = ROOT / "practice" / "hard"
 SERVER_SCRIPT = ROOT / "scripts" / "serve_workbook.py"
 OPEN_ORCA_SCRIPT = ROOT / "scripts" / "open_workbook_in_orca.sh"
+# 점검·화면 검증 산출물 폴더는 학습 자료가 아니므로 Markdown 링크 검사에서 제외합니다.
+GENERATED_DIRECTORIES = {"output", "outputs"}
 FAVICON_PREFIX = '<link rel="icon" href="data:image/svg+xml,'
 CODE_CHAPTERS = tuple([*range(20), 21, *range(23, 35)])
 VOID_TAGS = {
@@ -86,6 +92,7 @@ def require(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
+# HTML 글을 태그 구조로 읽어서 이름표와 링크 정보를 모읍니다.
 def parse_html(path: Path) -> HtmlContractParser:
     parser = HtmlContractParser(path)
     parser.feed(path.read_text(encoding="utf-8"))
@@ -151,13 +158,14 @@ def validate_problem_page_contract(problem_page: str, index: str) -> None:
         "parseWorkbookSections",
         "parseCurriculum",
         "makeProblemCard",
-        'problemTitle.textContent = "1. 문제"',
+        'problemTitle.textContent = "1. 4지선다 문제"',
+        "ChapterQuizUI.mount",
         'hintTitle.textContent = "2. 힌트"',
         'codeTitle.textContent = "3. 실제 코드에 바로 연결"',
         'hint.className = "hint-box"',
         'answerPanel.className = "answer-panel"',
-        "answerPanel.open = true",
-        'answerSummary.textContent = "4. 정답과 해설"',
+        "answerPanel.open = false",
+        'answerSummary.textContent = "4. 챕터 기술 해설"',
         'codeBox.className = "code-box"',
         'path.className = "code-path"',
         "link.dataset.sourceFile = sourceFile",
@@ -211,6 +219,7 @@ def is_external(raw: str) -> bool:
     return bool(parsed.scheme or parsed.netloc or raw.startswith(("mailto:", "tel:", "data:")))
 
 
+# 화면에서 누르는 저장소 안의 링크가 실제 파일이나 실제 화면 위치로 이어지는지 확인합니다.
 def validate_html_links(parsers: dict[Path, HtmlContractParser]) -> int:
     checked = 0
     for source, parser in parsers.items():
@@ -230,10 +239,13 @@ def validate_html_links(parsers: dict[Path, HtmlContractParser]) -> int:
     return checked
 
 
+# 학습 문서의 상대 경로는 그 문서가 있는 폴더에서 출발합니다. 그 위치를 기준으로 연결을 확인합니다.
 def validate_markdown_links() -> int:
     checked = 0
     link_pattern = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
     for source in ROOT.rglob("*.md"):
+        if source.relative_to(ROOT).parts[0] in GENERATED_DIRECTORIES:
+            continue
         for raw in link_pattern.findall(source.read_text(encoding="utf-8")):
             raw = raw.strip().strip("<>")
             if not raw or is_external(raw) or raw.startswith("#"):
@@ -245,6 +257,7 @@ def validate_markdown_links() -> int:
     return checked
 
 
+# 챕터 번호와 Starter·Hard 폴더를 대조해 학습 파일이 빠지거나 잘못 연결되지 않았는지 봅니다.
 def validate_program_folders(index_parser: HtmlContractParser) -> tuple[int, int]:
     starter_directories = sorted(path for path in STARTER_ROOT.iterdir() if path.is_dir())
     hard_directories = sorted(path for path in HARD_ROOT.iterdir() if path.is_dir())
@@ -315,6 +328,7 @@ def validate_program_folders(index_parser: HtmlContractParser) -> tuple[int, int
 
 def extract_single(text: str, tag: str) -> str:
     matches = re.findall(rf"<{tag}(?:\s[^>]*)?>([\s\S]*?)</{tag}>", text, flags=re.IGNORECASE)
+    matches = [match for match in matches if match.strip()]
     require(len(matches) == 1, f"index.html: 인라인 {tag}가 1개가 아님")
     return matches[0]
 
@@ -372,9 +386,10 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
     require("prefersReducedMotion" in index, "모션 축소 감지 계약이 없음")
     require("window.history.replaceState" in index, "프로그램 화면 전환의 현재 메뉴 동기화가 없음")
     require(index.count('class="skip-link"') == 1, "본문 바로 가기 링크가 1개가 아님")
-    require('workbook: { answers: {}, reviewed: [] }' in index, "챕터별 문제집 기본 상태가 없음")
-    require("state.workbook.answers[number]" in index, "챕터별 답안 저장 계약이 없음")
-    require("state.workbook.reviewed" in index, "정답 비교 완료 저장 계약이 없음")
+    require('workbook: { answers: {}, reviewed: [], multipleChoice: {} }' in index, "챕터별 객관식 기본 상태가 없음")
+    require("state.workbook.answers[number]" in index, "이전 답안 보존 계약이 없음")
+    require("state.workbook.multipleChoice[id]" in index, "객관식 선택·채점 저장 계약이 없음")
+    require("ChapterQuizUI.mount" in index, "공통 객관식 렌더링 계약이 없음")
 
     required_ids = {
         "learning-map",
@@ -398,7 +413,9 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
         "chapter-workbook",
         "chapter-question-title",
         "chapter-question",
-        "chapter-answer",
+        "chapter-choice-questions",
+        "legacy-answer-panel",
+        "legacy-answer-text",
         "chapter-workbook-status",
         "toggle-chapter-hint",
         "toggle-chapter-answer",
@@ -408,7 +425,6 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
         "chapter-answer-responsibility",
         "chapter-answer-output",
         "chapter-answer-verification",
-        "chapter-reviewed",
         "chapter-sequence",
         "chapter-position",
         "previous-chapter",
@@ -419,6 +435,13 @@ def validate_index_contract(index: str, index_parser: HtmlContractParser) -> Non
         "verification-status-title",
         "verification-status-copy",
         "reset-today-session",
+        "export-study-records",
+        "import-study-records",
+        "restore-study-records",
+        "cancel-study-restore",
+        "backup-summary",
+        "backup-preview",
+        "backup-status",
     }
     require(required_ids <= index_parser.ids, f"필수 ID 누락 {sorted(required_ids - index_parser.ids)}")
 
@@ -490,8 +513,8 @@ def validate_history_contract(history: str) -> int:
     )
     require(updated_match is not None, "history.html: 마지막 문서 갱신일이 없음")
     require(
-        updated_match.group(1) == dates[0],
-        "history.html: 마지막 문서 갱신일과 최신 이력 날짜가 다름",
+        updated_match.group(1) >= dates[0],
+        "history.html: 마지막 문서 갱신일이 최신 Git 이력보다 과거임",
     )
     return item_count
 
@@ -556,6 +579,7 @@ def validate_orca_launch_contract() -> None:
         require(contract in readme, f"README Orca 실행 안내 누락: {contract}")
 
 
+# 각 점검을 차례로 실행하는 시작 지점입니다. 결과를 모아 통과한 내용과 개수를 출력합니다.
 def main() -> int:
     require(Path.cwd().resolve() == ROOT, "저장소 루트에서 실행해야 합니다")
     parsers = {path: parse_html(path) for path in HTML_FILES}
@@ -572,18 +596,52 @@ def main() -> int:
     history = (ROOT / "history.html").read_text(encoding="utf-8")
     history_items = validate_history_contract(history)
     validate_orca_launch_contract()
+    quiz_result = subprocess.run(
+        ["node", str(ROOT / "scripts" / "verify_fundamentals.cjs")],
+        text=True, capture_output=True, check=False,
+    )
+    require(quiz_result.returncode == 0, f"기본기 2,000제 검사 실패\n{quiz_result.stderr.strip()}")
+    records_result = subprocess.run(
+        ["node", str(ROOT / "scripts" / "verify_study_records.cjs")],
+        text=True, capture_output=True, check=False,
+    )
+    require(records_result.returncode == 0, f"학습 기록 백업 검사 실패\n{records_result.stderr.strip()}")
+    chapter_quiz_result = subprocess.run(
+        ["node", str(ROOT / "scripts" / "verify_chapter_quiz.cjs")],
+        text=True, capture_output=True, check=False,
+    )
+    require(chapter_quiz_result.returncode == 0, f"코드 연결 객관식 검사 실패\n{chapter_quiz_result.stderr.strip()}")
+    focus_result = subprocess.run(
+        ["node", str(ROOT / "scripts" / "verify_focus_quiz.cjs")],
+        text=True, capture_output=True, check=False,
+    )
+    require(focus_result.returncode == 0, f"집중 퀴즈 범위 검사 실패\n{focus_result.stderr.strip()}")
+    for filename, label in (
+        ("verify_quiz_storage.cjs", "기본기 문제집 탭 간 저장"),
+        ("verify_document_viewer.cjs", "문서 코드 블록과 목차"),
+    ):
+        result = subprocess.run(
+            ["node", str(ROOT / "scripts" / filename)],
+            text=True, capture_output=True, check=False,
+        )
+        require(result.returncode == 0, f"{label} 검사 실패\n{result.stderr.strip()}")
 
     print("워크북 검증 통과")
+    print("- 학습 기록 백업·복원·큰 한글 백업·손상 데이터 정리·저장 실패 복구 검사")
+    print("- 기본기 문제집 탭 간 답안 병합·재풀이 삭제·저장 재시도")
+    print("- 문서 코드 블록 원문 보존·목차 연결·중복 ID 방지")
     print(f"- HTML {len(HTML_FILES)}개와 로컬 링크 {html_links}개")
     print(f"- Markdown 상대 링크 {markdown_links}개")
     print(f"- 내부 목표·계약과 HTML 연결이 있는 프로그램 폴더 {program_folders}개·학습 파일 {program_files}개")
     print("- 학습 목차 6단계, 취업 로드맵 5단계, 취업 결과물 계약이 있는 챕터 40개, 세션 체크 5개")
-    print("- 선택 챕터별 답안 저장, 힌트·정답 기준 토글과 40개 문제 비교 완료 기록")
-    print("- 통합 문제 페이지의 기본 펼침 정답 40개와 경로가 표시된 실제 Starter·Hard·워크시트 연결")
+    print("- 40챕터의 289개 객관식·선택·채점·재풀이·이전 답안 보존·백업 호환")
+    print("- 통합 문제 페이지의 힌트·기술 해설과 실제 Starter·Hard·학습 문서 연결")
     print("- 00~39 이전·다음 연속 탐색과 챕터 번호별 프로그램 폴더 대응")
     print(f"- 실제 Git 커밋에 연결된 대표 변경 이력 {history_items}개")
     print("- JavaScript 구문·DOM ID 계약과 920px·680px 반응형 분기")
     print("- 127.0.0.1:4174 폴더 이름 URI 서버와 Orca 실행 계약")
+    print("- 기본기 4지선다 2,000문항, 정답·해설·출처, 채점·필터·저장 데이터 검사")
+    print("- 집중 퀴즈 10/20/50문제 범위·주소 복원·오답 재풀이·코드 문서 70개의 문항 연결")
     return 0
 
 

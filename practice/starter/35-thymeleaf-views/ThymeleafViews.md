@@ -1,8 +1,6 @@
 # Thymeleaf 화면 워크북
 
-PRD 2.7 의 화면 요구사항을 Thymeleaf 템플릿으로 옮길 때 외워야 할 기본기를 채워봅니다. 화면은 백엔드 포트폴리오에서도 데모 페이지로 자주 쓰입니다.
-
-워크북 프로그램에서 화면의 목적은 디자인 기능을 늘리는 것이 아니라 백엔드 업무 흐름을 면접관이 직접 확인할 수 있게 만드는 것입니다. 핵심 시나리오를 시연할 최소 화면만 구현하고, 인증·검증·에러 표시를 함께 확인합니다.
+이 챕터의 개념과 설계 판단을 4지선다로 확인합니다. [선택·채점 화면](../../../problems.html#problem-35)에서 풀고 실제 구현·검증 결과를 [통합 워크북](../../job-preparation-workbook.md)에 남깁니다.
 
 ## 챕터 계약
 
@@ -12,166 +10,76 @@ PRD 2.7 의 화면 요구사항을 Thymeleaf 템플릿으로 옮길 때 외워�
 | 취업 결과물 | 로그인부터 휴가 신청·승인 결과까지 시연하는 최소 화면 |
 | 완료 검증 | 모델 렌더링·HTML escape·CSRF·Validation 실패 표시를 화면 테스트로 확인한다. |
 
----
+<!-- 객관식 시작 -->
+## 4지선다 문제
 
-## 1. 디렉터리 구조 채우기
+### Q35-01. Thymeleaf 템플릿의 일반적인 위치와 구성은?
 
-```text
-src/main/resources/
-├── ____            # Thymeleaf 템플릿 (.html)
-│   ├── fragments/
-│   │   ├── header.html
-│   │   └── nav.html
-│   ├── auth/
-│   │   └── login.html
-│   ├── employee/
-│   │   ├── list.html
-│   │   ├── detail.html
-│   │   └── form.html
-│   ├── leave/
-│   │   ├── request.html
-│   │   ├── my-list.html
-│   │   └── admin-list.html
-│   ├── notice/
-│   │   ├── list.html
-│   │   └── detail.html
-│   └── approval/
-│       ├── my-list.html
-│       └── pending.html
-└── ____            # 정적 리소스 (.css, .js, .png)
-    ├── css/
-    └── js/
-```
+- ① src/main/resources/templates 아래에 도메인별 화면과 공통 fragments를 둔다.
+- ② 모든 HTML을 .git 폴더에 둔다.
+- ③ 템플릿은 DB 비밀번호 설정 파일 안에만 둔다.
+- ④ templates에는 Java Entity만 둔다.
 
----
+**정답:** ①
 
-## 2. 기본 문법 빈칸 채우기
+**해설:** 화면과 공통 조각을 분리해 찾기·재사용·유지보수를 쉽게 한다.
 
-### A. 네임스페이스 선언
+### Q35-02. 사용자 입력을 템플릿에 출력할 때 안전한 기본 선택은?
 
-```html
-<!DOCTYPE html>
-<html xmlns:th="____">
-<head>...</head>
-```
+- ① 사용자 입력을 항상 th:utext로 그대로 출력한다.
+- ② HTML escape를 수행하는 th:text를 사용한다.
+- ③ 스크립트 태그를 허용하면 자동으로 안전해진다.
+- ④ 비밀번호를 HTML 주석에 넣는다.
 
-### B. 텍스트 출력
+**정답:** ②
 
-```html
-<!-- TODO 01: model 에 담긴 employee.name 을 escape 처리하여 출력 -->
-<span th:____="${employee.name}">기본값</span>
-```
+**해설:** th:utext는 HTML을 해석하므로 신뢰하지 않는 입력에는 정제·검증이 필요하다.
 
-### C. 조건 / 반복
+### Q35-03. CSRF 보호가 활성화된 폼 요청에 필요한 것은?
 
-```html
-<!-- TODO 02: 직원 목록이 비어 있으면 안내 메시지 -->
-<p th:____="${#lists.isEmpty(employees)}">등록된 직원이 없습니다.</p>
+- ① 폼의 색상을 초록색으로 지정한다.
+- ② 사용자 ID를 CSRF 토큰 대신 넣는다.
+- ③ 서버가 기대하는 유효한 CSRF 토큰을 포함하고 인증·인가도 검사한다.
+- ④ CSRF를 적용하면 모든 권한 검사를 제거한다.
 
-<!-- TODO 03: 반복문 -->
-<tr th:____="emp : ${employees}">
-    <td th:text="${emp.employeeNumber}">EMP-001</td>
-    <td th:text="${emp.name}">홍길동</td>
-    <td th:text="${emp.departmentName}">개발팀</td>
-</tr>
-```
+**정답:** ③
 
-### D. URL / 폼
+**해설:** 쿠키 기반 인증 요청에서 토큰을 검증하며 CSRF와 권한 검사는 다른 목적이다.
 
-```html
-<!-- TODO 04: 동적 URL — /api/employees/{id} -->
-<a th:____="@{/employees/{id}(id=${emp.employeeId})}">상세</a>
+### Q35-04. Thymeleaf 공통 화면 조각 재사용의 올바른 조합은?
 
-<!-- TODO 05: CSRF 토큰을 폼에 자동으로 넣는 방법 -->
-<form th:action="@{/api/leaves}" method="post">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.____}"/>
-    ...
-</form>
-```
+- ① th:text로 DB 트랜잭션을 시작한다.
+- ② th:utext로 로그인 역할을 설정한다.
+- ③ 모든 화면에 헤더를 복사해야만 렌더링된다.
+- ④ th:fragment로 조각을 정의하고 th:replace 등으로 포함한다.
 
-### E. Fragment 재사용
+**정답:** ④
 
-```html
-<!-- header.html -->
-<header th:____="header">
-    <h1>사내 업무관리 시스템</h1>
-</header>
+**해설:** 공통 헤더·메뉴 등을 조각으로 관리하여 중복을 줄인다.
 
-<!-- 사용처 -->
-<div th:____="~{fragments/header :: header}"></div>
-```
+### Q35-05. @Controller와 @RestController의 차이로 알맞은 것은?
 
----
+- ① Controller는 뷰 렌더링을 할 수 있고 RestController는 반환값을 응답 본문으로 전달한다.
+- ② RestController에서 문자열을 반환하면 항상 템플릿 이름으로 처리된다.
+- ③ Controller는 인증된 사용자만 자동 허용한다.
+- ④ 두 어노테이션은 모든 동작과 응답 방식이 항상 같다.
 
-## 3. Controller 가 view 를 반환하는 흐름
+**정답:** ①
+
+**해설:** 화면용과 JSON API용 Controller를 역할에 맞게 나눠 함께 운영할 수 있다.
+
+## 렌더링 코드 참고
 
 ```java
-@Controller
-@RequestMapping("/employees")
-@RequiredArgsConstructor
-public class EmployeeViewController {
-
-    private final EmployeeService employeeService;
-
-    @GetMapping
-    public String list(Model model,
-                       @RequestParam(required = false) String keyword,
-                       Pageable pageable) {
-        Page<EmployeeResponse> page = employeeService.search(keyword, null, pageable);
-        // TODO 06: 템플릿에서 ${employees}, ${page} 로 접근하기 위해 어떻게 담을까?
-        model.____("employees", page.getContent());
-        model.addAttribute("page", page);
-        return "employee/list"; // → templates/employee/list.html
-    }
-}
+return "employee/list";
 ```
 
-`@RestController` 와 `@Controller` 의 차이를 한 줄로 적어 보세요.
-
-> A:
-
----
-
-## 4. JSON API 와 View 동시 운영
-
-REST API 와 Thymeleaf 페이지를 같은 프로젝트에 두는 패턴:
-
-| 경로 | 역할 | 컨트롤러 |
-|---|---|---|
-| `/api/**` | JSON 응답 | `@RestController` |
-| `/employees`, `/leaves`, ... | 화면 응답 | `@Controller` (View 이름 반환) |
-
-이 구조는 PRD 2.7 화면 요구사항과 TRD 3.7 API 명세를 자연스럽게 동시에 만족시킵니다.
-
----
-
-## 5. 자주 빠뜨리는 보안 포인트
-
-- [ ] `th:text` 가 아닌 `th:utext` 를 쓰면 HTML escape 가 사라집니다. 어떤 경우에만 사용 가능한가요?
-- [ ] 로그인하지 않은 사용자가 보호 화면(/leaves/admin) 에 접근할 때 어디서 막아야 하나요?
-- [ ] 폼 제출에 CSRF 토큰이 빠지면 어떤 상황에서 문제가 되나요?
-- [ ] 응답에 비밀번호 같은 민감 정보를 model 에 담아 두지 않았는지 점검했나요?
-
----
-
-## 6. 학습 질문
-
-- Q1. SPA(React 등) 대신 Thymeleaf 를 선택했을 때의 장점/단점을 한 줄씩 적어 보세요.
-- Q2. JSP 와 Thymeleaf 의 가장 큰 차이는?
-- Q3. Thymeleaf 의 `th:object`, `th:field` 가 일반 form 과 다른 점은?
-- Q4. 페이지가 깨졌을 때 Spring Boot 기본 에러 페이지를 커스텀하려면 어디에 어떤 템플릿을 두면 될까요? (templates/error/*.html)
-
-### 완료 후 남길 증거
-
-- [ ] 로그인부터 휴가 신청·승인 결과 확인까지 화면으로 시연할 수 있다.
-- [ ] Validation 오류와 권한 실패가 사용자에게 안전하게 표시된다.
-- [ ] 대표 화면 캡처 또는 데모 링크를 [취업 준비 통합 워크북](../../job-preparation-workbook.md)에 기록했다.
-
-| 증거 ID | 시연 흐름 | 화면·영상 링크 | 실패 화면 확인 | 마지막 확인일 |
-|---|---|---|---|---|
-| E-DOC-DEMO | 로그인 → 휴가 신청 → 승인 결과 |  | Validation·403 |  |
-
----
+```html
+<p th:text="${employee.name}"></p>
+<tr th:each="emp : ${employees}"></tr>
+<input th:field="*{name}">
+<header th:replace="~{fragments/header :: header}"></header>
+```
 
 ## 7. 심화 노트 (면접 답변 포인트)
 

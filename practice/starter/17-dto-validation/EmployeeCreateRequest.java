@@ -1,3 +1,8 @@
+// 중학생 눈높이: 직원 등록 입력표
+// DTO는 필요한 정보만 담아 다른 부분에 전달하는 작은 메모입니다.
+// 이 입력표에는 이메일·비밀번호·부서 같은 등록 정보를 담고, 형식이 맞는지 규칙을 붙입니다.
+// 받을 항목 읽기 → 빈 값·길이·형식 검사 규칙 보기 순서로 봅니다.
+// ____는 직접 채울 빈칸입니다. 주석은 사람이 읽는 설명이므로 프로그램이 실행하지 않습니다.
 // 실제 구현 위치 예: src/main/java/com/example/companywork/dto/EmployeeCreateRequest.java
 // 목표: Bean Validation 어노테이션을 채우세요. TRD 3.7.2, PRD 2.6 비기능 요구사항 검증 참고.
 // 주의: Spring Boot 3.x 이므로 import 는 jakarta.validation.constraints.* 입니다.
@@ -53,13 +58,34 @@ public class EmployeeCreateRequest {
     private LocalDate hireDate;
 }
 
-// 학습 질문:
-// Q1. @NotBlank, @NotEmpty, @NotNull 의 차이는?
-//     A:
-// Q2. DTO 검증이 동작하려면 Controller 의 파라미터에 어떤 어노테이션을 붙여야 하나?
-//     A:
-// Q3. 응답 DTO 와 요청 DTO 를 같은 클래스로 두면 무슨 문제가 생기나?
-//     A:
+// 4지선다 학습 문제 (자동 생성 시작)
+// 선택·채점 화면 (저장소 루트 기준): problems.html#problem-17
+//
+// Q1. NotNull·NotEmpty·NotBlank를 올바르게 비교한 것은? [chapter-v1-17-04]
+// ① NotNull은 빈 문자열과 공백을 모두 금지한다.
+// ② NotNull은 null 금지, NotEmpty는 null·빈 컨테이너 금지, NotBlank는 null·공백뿐인 문자열 금지다.
+// ③ NotEmpty는 공백 문자열도 반드시 금지한다.
+// ④ NotBlank는 어떤 숫자 자료형에도 문자열처럼 적용한다.
+// 정답: ②
+// 해설: 제약마다 적용 자료형과 허용 값이 다르다. null·빈 값·공백 입력을 구분해 테스트한다.
+//
+// Q2. 요청 DTO 제약을 MVC에서 검사하려는 파라미터의 일반적인 구성은? [chapter-v1-17-05]
+// ① @RequestBody만 붙이면 모든 제약이 자동 검사된다.
+// ② @Entity만 붙이면 요청 DTO가 검증된다.
+// ③ @Valid @RequestBody로 DTO를 받고 검증 오류를 공통 응답으로 처리한다.
+// ④ @Transactional만 붙이면 문자열 길이가 검사된다.
+// 정답: ③
+// 해설: 본문 바인딩과 제약 검증은 다른 단계다. 검증 실행 설정과 실패 응답 계약을 함께 확인한다.
+//
+// Q3. 요청 DTO와 응답 DTO를 분리하는 이유로 알맞은 것은? [chapter-v1-17-06]
+// ① 분리하면 모든 필드가 자동으로 암호화된다.
+// ② 응답의 민감 정보를 요청에도 모두 허용하기 위해서다.
+// ③ 분리하면 API 변경 검토가 필요 없어진다.
+// ④ 입력 허용 필드·검증 규칙과 공개 응답 필드가 달라 과입력·정보 노출·계약 결합을 줄이기 위해서다.
+// 정답: ④
+// 해설: 입력과 출력의 목적별 계약을 설계한다. 특히 비밀번호·역할·서버 관리 값의 입력과 공개 범위를 명시한다.
+//
+// 4지선다 학습 문제 (자동 생성 끝)
 //
 // 심화 노트 (면접 답변 포인트):
 // - @NotNull(null 만 차단) / @NotEmpty(null+빈 문자열, 공백 " " 은 통과) / @NotBlank(null+빈+공백 모두 차단).

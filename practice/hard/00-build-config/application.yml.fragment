@@ -1,3 +1,7 @@
+# 중학생 눈높이: 이 파일은 프로그램 설정표입니다. DB 주소와 학습용 화면 설정 등을 적습니다.
+# 들여쓰기는 소속을 뜻합니다. spring 아래 datasource는 Spring의 DB 연결 설정입니다.
+# H2는 연습용 DB입니다. mem 방식의 데이터는 서버를 끝내면 사라집니다.
+# ____는 연습할 빈칸이고, # 뒤의 글자는 실행하지 않는 설명입니다.
 # 실제 위치 후보: src/main/resources/application.yml
 # 목표: 로컬 학습용 H2 + JPA 설정을 거의 백지에서. 막히면 starter/00-build-config, answers.md 0장.
 
@@ -37,13 +41,34 @@ app:
   security:
     session-timeout: ${APP_SESSION_TIMEOUT:1800}
 
-# 학습 질문 (직접 답):
-# Q1. ddl-auto 의 create/create-drop/update/validate/none 을 한 줄씩 구분.
-#     A:
-# Q2. show-sql=true 와 logging.level.org.hibernate.SQL=debug 의 차이?
-#     A:
-# Q3. 토큰/비번을 yml 에 하드코딩하면 안 되는 이유 + 환경변수+기본값 패턴의 장점?
-#     A:
+# 4지선다 학습 문제 (자동 생성 시작)
+# 선택·채점 화면 (저장소 루트 기준): problems.html#problem-00
+#
+# Q1. ddl-auto 옵션과 운영 환경의 선택을 올바르게 설명한 것은? [chapter-v1-00-06]
+# ① create는 기존 자료를 항상 보존하므로 운영에서 무조건 사용한다.
+# ② validate가 누락된 테이블과 컬럼을 자동으로 생성한다.
+# ③ create는 재생성, create-drop은 종료 시 삭제도 수행하고 update는 변경, validate는 검사, none은 자동 처리를 하지 않는다.
+# ④ none을 지정하면 모든 SQL 실행이 금지된다.
+# 정답: ③
+# 해설: 스키마 생성·변경·검사를 구분한다. 운영에서는 validate 또는 none과 별도 마이그레이션을 검토한다.
+#
+# Q2. show-sql과 Hibernate SQL 로깅 설정을 비교한 설명으로 알맞은 것은? [chapter-v1-00-07]
+# ① show-sql을 끄면 DB 쿼리도 실행되지 않는다.
+# ② show-sql은 콘솔 출력이고 로깅 설정은 로그 레벨·출력 대상을 관리하며 운영에서는 노출·출력량을 제한한다.
+# ③ debug 로깅을 켜면 비밀번호가 자동으로 마스킹된다.
+# ④ 두 설정은 테이블 생성 전략을 바꾸는 같은 옵션이다.
+# 정답: ②
+# 해설: SQL 표시와 실행은 별개다. 로깅 프레임워크로 출력 정책을 관리하고 민감 데이터와 과도한 출력을 점검한다.
+#
+# Q3. DB 비밀번호와 세션 설정을 외부화하는 올바른 방법은? [chapter-v1-00-08]
+# ① 비밀은 환경변수나 비밀 저장소로 주입하고 세션 시간 같은 일반 설정에는 환경별 값과 기본값을 적용한다.
+# ② DB 비밀번호를 공개 저장소의 application.yml에 직접 적는다.
+# ③ 비밀번호를 주석으로 옮기면 안전하다.
+# ④ 세션 시간에 기본값을 두면 비밀번호 암호화까지 자동 적용된다.
+# 정답: ①
+# 해설: 외부화는 환경별 설정과 비밀 관리에 도움이 된다. 비밀에 공개된 기본 비밀번호를 두는 방식은 피한다.
+#
+# 4지선다 학습 문제 (자동 생성 끝)
 
 # 자가 채점:
 # □ jdbc:h2:mem:testdb  □ enabled: true  □ ddl-auto: create(로컬)/validate(운영)  □ format_sql: true  □ show-sql: true

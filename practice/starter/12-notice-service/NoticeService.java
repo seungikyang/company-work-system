@@ -1,3 +1,8 @@
+// 중학생 눈높이: 공지 관리
+// 공지를 만들고, 찾아보고, 고치고, 지우는 작업을 맡습니다.
+// CRUD는 만들기·읽기·수정·삭제의 네 작업입니다. 정렬은 어떤 글을 먼저 보여 줄지 정하는 일입니다.
+// 작업 종류 읽기 → 관리자 권한 확인 → 공지 처리 → 응답 순서로 봅니다.
+// ____는 직접 채울 빈칸입니다. 주석은 사람이 읽는 설명이므로 프로그램이 실행하지 않습니다.
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/NoticeService.java
 // 목표: 공지사항 CRUD + 중요 공지 우선 정렬. TRD 3.7.5, 3.8.3 참고.
 
@@ -27,6 +32,7 @@ public class NoticeService {
             request.isImportant()
         );
 
+        // return은 결과를 호출한 곳에 돌려주고 이 메서드를 끝냅니다. 값이 없는 return은 종료만 합니다.
         return NoticeResponse.from(noticeRepository.save(notice));
     }
 
@@ -73,20 +79,43 @@ public class NoticeService {
         accessGuard.requireAdmin(currentRole);
 
         // TODO 04: 존재하지 않는 공지를 삭제하면 어떤 응답을 줘야 할까요?
+        // if는 조건이 맞을 때만 안쪽 작업을 실행합니다. 조건을 확인하는 갈림길입니다.
         if (!noticeRepository.existsById(noticeId)) {
+            // throw는 문제를 알리는 예외를 던집니다. 이 지점 뒤의 정상 작업은 계속 진행하지 않습니다.
             throw new BusinessException(ErrorCode.____);
         }
         noticeRepository.deleteById(noticeId);
     }
 }
 
-// 학습 질문:
-// Q1. ADMIN 검사를 Controller(@PreAuthorize)에만 두는 것의 약점은?
-//     A:
-// Q2. important=true 공지를 위로 끌어올리기 위해 인덱스가 필요한 컬럼은?
-//     A:
-// Q3. 조회수 증가를 별도 트랜잭션으로 분리하려면 어떤 어노테이션 옵션을 쓰면 좋을까요?
-//     A:
+// 4지선다 학습 문제 (자동 생성 시작)
+// 선택·채점 화면 (저장소 루트 기준): problems.html#problem-12
+//
+// Q1. 공지 작성의 ADMIN 검사를 Controller에만 두었을 때의 약점은? [chapter-v1-12-04]
+// ① 다른 호출 경로가 Service를 사용하면 역할 검사가 누락될 수 있다.
+// ② Controller 검사가 Service의 모든 직접 호출에도 자동 적용된다.
+// ③ @PreAuthorize를 쓰면 자료 소유권도 자동 검증된다.
+// ④ 로그인 여부만 확인하면 공지 관리 권한은 모두 같아진다.
+// 정답: ①
+// 해설: HTTP 경로의 인가와 업무 진입점의 역할 검사를 함께 설계한다. 계층별 검사는 서로 다른 우회를 방어한다.
+//
+// Q2. 중요 공지 우선·최신순 조회의 인덱스 설계로 알맞은 것은? [chapter-v1-12-05]
+// ① important 단일 인덱스가 어떤 데이터 분포에서도 최적이다.
+// ② 인덱스는 공지의 본문 색상에 맞춰 선택한다.
+// ③ 인덱스만 추가하면 ORDER BY 없이도 정렬 순서가 보장된다.
+// ④ important와 createdAt 등 실제 정렬·필터 조합의 인덱스를 실행 계획으로 검토한다.
+// 정답: ④
+// 해설: 선택도가 낮은 boolean 단일 인덱스의 효과를 단정하지 않는다. 쿼리·DB·분포에 맞는 복합 인덱스를 측정한다.
+//
+// Q3. 조회수 변경을 호출자와 독립된 트랜잭션으로 실행할 때 검토할 옵션은? [chapter-v1-12-06]
+// ① readOnly=true만 붙이면 항상 새 쓰기 트랜잭션이 생긴다.
+// ② 같은 객체 안의 직접 호출에도 프록시 규칙이 무조건 적용된다.
+// ③ 프록시를 거치는 별도 메서드의 @Transactional(propagation = REQUIRES_NEW)를 사용한다.
+// ④ 트랜잭션이 없는 메서드에 @GetMapping만 붙인다.
+// 정답: ③
+// 해설: REQUIRES_NEW는 호출자의 트랜잭션과 독립되므로 롤백·연결 자원·자가 호출 문제도 함께 검토한다.
+//
+// 4지선다 학습 문제 (자동 생성 끝)
 //
 // 심화 노트 (면접 답변 포인트):
 // - 권한 다층: Controller @PreAuthorize(1차, HTTP 경계) + Service accessGuard.requireAdmin(2차, 내부호출 우회 방지).

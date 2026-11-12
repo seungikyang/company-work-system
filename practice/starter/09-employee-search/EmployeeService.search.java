@@ -1,3 +1,8 @@
+// 중학생 눈높이: 직원 검색과 페이지
+// 많은 직원을 한 번에 보여 주지 않고 조건에 맞는 일부씩 나눠 가져옵니다.
+// Pageable은 몇 번째 묶음을 가져올지 적은 요청표이고, Page는 결과와 전체 개수 정보를 담습니다.
+// 검색 조건 고르기 → DB에서 한 페이지 찾기 → 화면에 필요한 정보로 바꾸기 순서로 봅니다.
+// ____는 직접 채울 빈칸입니다. 주석은 사람이 읽는 설명이므로 프로그램이 실행하지 않습니다.
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/EmployeeService.java
 // 목표: 직원 목록을 검색 + 페이징으로 반환하세요. PRD 2.5.2 (FR-EMP-006/007) 참고.
 
@@ -19,6 +24,7 @@ public Page<EmployeeResponse> search(String keyword, Long departmentId, Pageable
     // 이름과 부서가 모두 있는 첫 분기는 아래 예제에서 부서 조건을 아직 적용하지 않으므로 복합 검색 구현이 필요합니다.
     Page<Employee> page;
 
+    // if는 조건이 맞을 때만 안쪽 작업을 실행합니다. 조건을 확인하는 갈림길입니다.
     if (keyword != null && !keyword.isBlank() && departmentId != null) {
         // TODO 02: 이름/사번 검색 + 부서 조건이 동시에 들어온 경우.
         //          여기서는 학습용으로 단순하게 두 단계 필터를 거치는 예시를 보여줍니다.
@@ -35,16 +41,38 @@ public Page<EmployeeResponse> search(String keyword, Long departmentId, Pageable
     }
 
     // TODO 03: Page<Entity> 를 Page<DTO> 로 변환하세요. (페이지 메타 정보가 유지됩니다)
+    // return은 결과를 호출한 곳에 돌려주고 이 메서드를 끝냅니다. 값이 없는 return은 종료만 합니다.
     return page.____(EmployeeResponse::from);
 }
 
-// 학습 질문:
-// Q1. Controller 가 Pageable 을 그대로 받으면 클라이언트는 어떤 쿼리스트링으로 페이지/사이즈/정렬을 보내나?
-//     A:
-// Q2. List<EmployeeResponse> 가 아니라 Page<EmployeeResponse> 로 반환하는 이유는?
-//     A:
-// Q3. 정렬 기준을 클라이언트가 자유롭게 지정할 때 발생할 수 있는 위험은?
-//     A:
+// 4지선다 학습 문제 (자동 생성 시작)
+// 선택·채점 화면 (저장소 루트 기준): problems.html#problem-09
+//
+// Q1. Pageable 요청의 일반적인 쿼리 파라미터 조합은? [chapter-v1-09-04]
+// ① offsetName=ADMIN&password=plain
+// ② page=0&size=20&sort=name,asc
+// ③ pageSize를 URL 경로의 직원 ID로만 보낸다.
+// ④ Pageable은 JSON 본문으로만 전달할 수 있다.
+// 정답: ②
+// 해설: 기본 페이지 번호는 0부터 시작하며 페이지 크기·정렬 파라미터를 사용한다. 실제 설정으로 최대 크기와 허용 정렬도 관리한다.
+//
+// Q2. 직원 검색 응답을 List 대신 Page DTO로 반환하는 이점은? [chapter-v1-09-05]
+// ① Page가 모든 검색 결과를 한 번에 메모리에 넣는다.
+// ② Page는 로그인 역할을 자동 검증한다.
+// ③ 현재 결과와 함께 페이지 번호·크기·전체 건수 등 탐색 정보를 전달한다.
+// ④ Page이면 응답 DTO 변환이 필요 없다.
+// 정답: ③
+// 해설: 클라이언트가 다음 페이지를 탐색할 정보를 제공한다. 전체 건수 조회 비용에 따라 Slice 같은 대안도 검토한다.
+//
+// Q3. 클라이언트가 정렬 필드를 자유롭게 지정할 때 필요한 방어는? [chapter-v1-09-06]
+// ① 모든 요청 값을 SQL 문자열에 그대로 연결한다.
+// ② 정렬 요청이면 권한 검사를 생략한다.
+// ③ 필드명 오류는 언제나 자동 수정된다고 가정한다.
+// ④ 허용 필드·방향과 최대 페이지 크기를 제한하고 비용 큰 조회·잘못된 속성을 거절한다.
+// 정답: ④
+// 해설: 일반적인 속성 기반 정렬과 문자열 SQL 연결의 위험을 구분한다. 허용 목록과 성능·오류 처리를 검증한다.
+//
+// 4지선다 학습 문제 (자동 생성 끝)
 //
 // 심화 노트 (면접 답변 포인트):
 // - @Transactional(readOnly=true) → Hibernate flush 모드 MANUAL, dirty checking 생략 → 성능 + 의도 표현.

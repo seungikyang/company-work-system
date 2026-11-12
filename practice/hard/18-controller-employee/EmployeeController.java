@@ -1,3 +1,9 @@
+// 중학생 눈높이: 직원 요청 창구
+// Controller는 브라우저의 요청을 받는 창구입니다. 직원 관련 요청을 Service에 맡깁니다.
+// API는 다른 프로그램이 정해진 주소와 형식으로 작업을 요청하는 약속입니다.
+// 요청 주소·방식 확인 → 입력 검사 → Service 호출 → 결과 응답 순서로 봅니다.
+// Hard는 힌트가 적은 복습용입니다. 같은 챕터의 Starter 설명을 읽은 뒤 빈칸을 채워 보세요.
+// ____는 직접 채울 빈칸입니다. 주석은 사람이 읽는 설명이므로 프로그램이 실행하지 않습니다.
 // 실제 구현 위치 예: controller/EmployeeController.java
 // 목표: 직원 REST API 매핑을 거의 백지에서. TRD 3.7.2.
 // 막히면 starter/18-controller-employee, answers.md 18장 참고.
@@ -25,6 +31,7 @@ public class EmployeeController {
             @____ @RequestBody EmployeeCreateRequest request) {
         EmployeeResponse response = employeeService.register(request);
         // TODO 04: 생성 상태 코드.
+        // return은 결과를 호출한 곳에 돌려주고 이 메서드를 끝냅니다. 값이 없는 return은 종료만 합니다.
         return ResponseEntity.status(HttpStatus.____).body(response);
     }
 
@@ -63,13 +70,34 @@ public class EmployeeController {
     }
 }
 
-// 학습 질문 (직접 답):
-// Q1. @PreAuthorize 로 막았는데 Service 에서 또 검사해야 하나?
-//     A:
-// Q2. 등록 응답에 Location 헤더를 추가하려면?
-//     A:
-// Q3. PUT 과 PATCH 의 차이를 한 줄로.
-//     A:
+// 4지선다 학습 문제 (자동 생성 시작)
+// 선택·채점 화면 (저장소 루트 기준): problems.html#problem-18
+//
+// Q1. Controller 인가와 Service 업무 권한 검사의 관계로 알맞은 것은? [chapter-v1-18-04]
+// ① HTTP 진입점의 역할 인가와 Service의 소유권·업무 가드를 각각 필요한 범위에서 유지한다.
+// ② Controller 검사가 배치·다른 Service 호출에도 항상 자동 적용된다.
+// ③ @PreAuthorize 하나로 모든 데이터 소유권이 자동 확인된다.
+// ④ Service에는 인증된 행위자 정보가 절대로 필요 없다.
+// 정답: ①
+// 해설: 역할 기반 진입 제한과 자료별 업무 권한은 구분한다. 다른 호출 경로에서도 핵심 규칙을 지킨다.
+//
+// Q2. 직원 생성 성공 응답에 Location을 넣는 일반적인 방법은? [chapter-v1-18-05]
+// ① 기존 모든 자원의 목록을 비밀번호와 함께 헤더에 넣는다.
+// ② Location에는 HTTP 상태 숫자만 넣는다.
+// ③ GET 요청을 다시 보내기 전에는 생성 URI를 응답할 수 없다.
+// ④ 생성 자원의 URI로 ResponseEntity.created(uri).body(response)를 구성한다.
+// 정답: ④
+// 해설: Location은 생성된 자원의 위치를 알린다. 201 응답과 실제 접근 가능한 URI 계약을 함께 확인한다.
+//
+// Q3. PUT과 PATCH의 요청 의미를 올바르게 구분한 것은? [chapter-v1-18-06]
+// ① PUT은 읽기, PATCH는 삭제를 의미한다.
+// ② 두 메서드는 언제나 같은 생략 필드 처리 규칙을 가진다.
+// ③ PUT은 자원 표현의 교체 의도, PATCH는 부분 변경 의도를 나타낸다.
+// ④ PATCH는 인증 없이 실행해야 한다.
+// 정답: ③
+// 해설: 전체 교체와 부분 변경의 계약을 구분하고 생략·null·공백의 처리와 멱등성 요구를 명시한다.
+//
+// 4지선다 학습 문제 (자동 생성 끝)
 
 // 자가 채점:
 // □ @RestController+@RequestMapping("/api/employees")  □ @PostMapping+hasRole('ADMIN')  □ @Valid

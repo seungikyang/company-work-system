@@ -1,3 +1,5 @@
+# 중학생 눈높이: 서버는 브라우저의 파일 요청에 답하는 배달 담당입니다.
+# 이 서버는 HTML·코드·학습 문서를 전달합니다. 풀이 노트는 브라우저가 별도로 보관합니다.
 # 저장소 폴더 이름 URI로 취업 워크북만 제공하는 로컬 HTTP 서버
 # 초보자 안내: Python 표준 라이브러리로 학습 파일을 HTTP 응답으로 제공하는 서버입니다.
 # 브라우저 fetch가 파일을 읽을 수 있도록 사용하며 목표·답안을 DB에 저장하는 백엔드는 아닙니다.
@@ -12,14 +14,18 @@ from urllib.parse import parse_qs, quote, unquote, urlsplit, urlunsplit
 
 # __file__은 현재 스크립트의 경로입니다. 두 단계 위를 기준으로 파일을 제공하고 127.0.0.1에서 로컬 요청을 받습니다.
 REPO_ROOT = Path(__file__).resolve().parent.parent
+# 127.0.0.1은 지금 사용하는 컴퓨터의 주소입니다. PORT는 여러 프로그램을 구별하는 문 번호입니다.
 HOST = "127.0.0.1"
 PORT = 4174
 URI_PREFIX = f"/{REPO_ROOT.name}"
 WORKBOOK_URL = f"http://{HOST}:{PORT}{URI_PREFIX}/"
+# 전달할 수 있는 파일의 목록입니다. 프로그램 내부 폴더까지 전부 공개하지 않습니다.
 PUBLIC_ROOT_FILES = {
     "index.html",
     "history.html",
     "problems.html",
+    "fundamentals.html",
+    "quiz.html",
     "README.md",
     "company_work_system_PRD_TRD.md",
     "workbook-viewer.html",
@@ -39,12 +45,14 @@ class WorkbookRequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args: object, **kwargs: object) -> None:
         super().__init__(*args, directory=str(REPO_ROOT), **kwargs)
 
+    # 응답 헤더는 본문을 읽는 방법 같은 안내표입니다. no-cache는 다시 쓰기 전에 서버에 확인하라는 뜻입니다.
     def end_headers(self) -> None:
         self.send_header("Cache-Control", "no-cache")
         super().end_headers()
 
     # URL의 폴더 접두사와 공개 경로를 검사합니다. 거절할 때 False를 반환하면 호출자가 응답 처리를 중단합니다.
     def prepare_workbook_path(self) -> bool:
+        # 브라우저가 보낸 주소를 경로와 물음표 뒤의 요청 조건으로 나누어 확인합니다.
         parsed = urlsplit(self.path)
         if parsed.path == URI_PREFIX:
             self.send_response(HTTPStatus.PERMANENT_REDIRECT)
@@ -57,6 +65,7 @@ class WorkbookRequestHandler(SimpleHTTPRequestHandler):
             self.send_error(HTTPStatus.NOT_FOUND)
             return False
 
+        # 주소의 특수 문자 표시를 원래 글자로 바꾼 뒤 숨김 폴더나 상위 경로 요청인지 검사합니다.
         decoded_path = unquote(parsed.path[len(allowed_prefix) :])
         path_parts = PurePosixPath(decoded_path).parts
         if any(part in {".", ".."} or part.startswith(".") for part in path_parts):
@@ -97,6 +106,7 @@ class WorkbookRequestHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         return True
 
+    # GET은 파일 내용을 보내 달라는 요청입니다. 주소를 확인하고 필요하면 읽기 화면으로 안내합니다.
     def do_GET(self) -> None:
         if not self.prepare_workbook_path():
             return
@@ -112,6 +122,7 @@ class WorkbookRequestHandler(SimpleHTTPRequestHandler):
             return
         super().do_HEAD()
 
+    # 폴더만 요청했을 때 전체 파일 목록을 보여 주지 않습니다. 공개한 자료를 정확한 주소로 읽게 합니다.
     def list_directory(self, path: str) -> None:
         self.send_error(HTTPStatus.NOT_FOUND)
         return None
@@ -120,8 +131,14 @@ class WorkbookRequestHandler(SimpleHTTPRequestHandler):
         print(f"[workbook] {self.address_string()} {message % args}", flush=True)
 
 
+class WorkbookHTTPServer(ThreadingHTTPServer):
+    # 객관식 화면의 CSS·문항 묶음·스크립트가 동시에 연결되어도 수용합니다.
+    request_queue_size = 32
+
+
+# main은 서버 시작 지점입니다. 정해진 주소와 포트에서 요청을 기다리고, Ctrl+C로 종료할 수 있습니다.
 def main() -> None:
-    with ThreadingHTTPServer((HOST, PORT), WorkbookRequestHandler) as server:
+    with WorkbookHTTPServer((HOST, PORT), WorkbookRequestHandler) as server:
         print(f"취업 워크북 서버 실행: {WORKBOOK_URL}", flush=True)
         server.serve_forever()
 

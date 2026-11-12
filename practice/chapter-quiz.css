@@ -1,0 +1,44 @@
+/* 공통 카드: 실제 radio 입력으로 키보드와 화면 읽기 도구도 지원합니다. */
+.chapter-choice-card { margin: 18px 0; padding: 24px; border: 1px solid #dfe6e2; border-radius: 20px; background: #fff; color: #202c28; }
+.chapter-choice-card .chapter-choice-heading { margin: 0 0 24px; font-size: 1.08rem; font-weight: 750; line-height: 1.65; overflow-wrap: anywhere; white-space: pre-line; }
+.chapter-choices { margin: 0; padding: 0; border: 0; min-width: 0; display: grid; gap: 10px; }
+.chapter-choice { position: relative; display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 12px 16px; border: 1px solid #e3e9e5; border-radius: 12px; line-height: 1.6; cursor: pointer; transition: background .15s, border-color .15s; }
+.chapter-choice:not(:has(input:disabled)):hover { border-color: #91b6a5; background: #f6faf8; }
+.chapter-choice input[type=radio] { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; padding: 0; }
+.chapter-choice .choice-marker { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; border-radius: 50%; background: #f0f3f2; color: #5f6d65; font-size: .9rem; font-weight: 750; }
+.chapter-choice .choice-text { min-width: 0; overflow-wrap: anywhere; }
+.chapter-choice .choice-status { margin-left: auto; flex-shrink: 0; font-size: .75rem; font-weight: 700; }
+.chapter-choice:focus-within { outline: 3px solid #779f8e; outline-offset: 3px; }
+.chapter-choice.is-selected { border-color: #237755; background: #f0f8f3; }
+.chapter-choice.is-selected .choice-marker { color: #fff; background: #237755; }
+.chapter-choice.is-correct { background: #f0faf5; border-color: #2c9364; }
+.chapter-choice.is-correct .choice-marker { background: #138554; color: #fff; }
+.chapter-choice.is-correct .choice-status { color: #19734b; }
+.chapter-choice.is-wrong { background: #fff5f2; border-color: #c36c51; }
+.chapter-choice.is-wrong .choice-marker { background: #b24f36; color: #fff; }
+.chapter-choice.is-wrong .choice-status { color: #a3422c; }
+.chapter-choice:has(input:disabled) { cursor: default; }
+.chapter-grade { margin-top: 20px; padding: 11px 18px; min-height: 44px; border: 1px solid #237755; border-radius: 10px; background: #237755; color: #fff; font: inherit; font-size: .9rem; font-weight: 700; cursor: pointer; }
+.chapter-grade:hover { background: #185d41; }
+.chapter-grade:focus-visible, .choice-explanation summary:focus-visible { outline: 3px solid #ba7044; outline-offset: 3px; }
+.is-graded .chapter-grade { background: #fff; color: #286448; border-color: #d4e3da; }
+.chapter-choice-feedback { line-height: 1.75; overflow-wrap: anywhere; }
+.chapter-choice-feedback:empty { display: none; }
+.chapter-choice-feedback p { margin: 10px 0; }
+.choice-verdict { color: #19734b; font-size: .9rem; font-weight: 700; }
+.choice-verdict.is-wrong { color: #a3422c; }
+.choice-explanation { margin-top: 16px; }
+.choice-explanation summary { width: fit-content; min-height: 44px; padding: 8px 0; cursor: pointer; font-size: .9rem; font-weight: 700; color: #526158; }
+.choice-explanation-body { margin-top: 8px; padding: 20px; border-radius: 12px; background: #f5f7f6; font-size: .95rem; }
+.choice-explanation-body strong { font-size: .85rem; color: #384c40; }
+.chapter-choices .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (max-width: 680px) {
+  #selected-chapter-guide { padding: 16px; }
+  #chapter-workbook { padding: 12px; }
+  .chapter-choice-card { padding: 18px; }
+  .chapter-choice { padding: 12px; gap: 10px; flex-wrap: wrap; }
+  .chapter-choice .choice-text { flex: 1; }
+  .chapter-choice .choice-status:not(:empty) { margin-left: 46px; width: calc(100% - 46px); }
+  .choice-explanation-body { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .chapter-choice { transition: none; } }

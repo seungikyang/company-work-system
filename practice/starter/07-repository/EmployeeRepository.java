@@ -1,3 +1,8 @@
+// 중학생 눈높이: 직원 찾기
+// Repository는 DB에서 자료를 찾아오거나 저장하는 담당자입니다.
+// 메서드는 이름이 있는 작업입니다. 검색 메서드의 이름에는 무엇을 찾을지 조건이 담깁니다.
+// 찾을 조건 읽기 → 필요한 입력값 보기 → 돌려받는 결과의 종류 확인 순서로 봅니다.
+// ____는 직접 채울 빈칸입니다. 주석은 사람이 읽는 설명이므로 프로그램이 실행하지 않습니다.
 // 실제 구현 위치 예: src/main/java/com/example/companywork/repository/EmployeeRepository.java
 // 목표: 직원 검색 / 페이징 / 부서별 조회를 위한 메서드 쿼리를 채우세요.
 //       PRD 2.5.2, TRD 3.7.2 참고.
@@ -41,17 +46,40 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     // - Sort 기준을 클라이언트가 자유롭게 지정하게 두면, 인덱스 없는 컬럼으로 정렬당해 느려질 수 있습니다.
     //   허용 컬럼 목록을 두는 패턴을 검토하세요.
 
-    // 학습 질문 (면접 대비):
-    // Q1. findByUser_Email 의 밑줄(_)은 무엇을 의미하나요? Employee→User→email 처럼
-    //     연관 엔티티의 속성을 타고 들어가는 nested property 쿼리를 직접 만들어 보세요.
-    //     A:
-    // Q2. existsByX 와 findByX 는 같은 조건이라도 생성되는 SQL/비용이 다릅니다.
-    //     "중복 여부만 알면 될 때" exists 를 쓰는 것이 왜 유리한가요?
-    //     A:
-    // Q3. findByUser_NameContainingOrEmployeeNumberContaining 처럼 메서드 이름이 길어질 때
-    //     @Query 또는 Querydsl 로 옮기는 "기준선"은 무엇이라고 생각하나요?
-    //     A:
-    // Q4. Page<Employee> 를 그대로 Controller 응답으로 내보내면 안 되는 이유는?
-    //     (Entity 직접 노출 + LAZY 직렬화) — 32장 Page.map 과 연결.
-    //     A:
+    // 4지선다 학습 문제 (자동 생성 시작)
+    // 선택·채점 화면 (저장소 루트 기준): problems.html#problem-07
+    //
+    // Q1. findByUser_Email의 밑줄이 의미하는 것은? [chapter-v1-07-05]
+    // ① DB 컬럼명에 반드시 밑줄을 추가한다.
+    // ② email 값의 공백을 자동 제거한다.
+    // ③ Employee의 user 관계를 거쳐 email 속성으로 탐색하는 경계를 명시한다.
+    // ④ Repository 메서드를 비동기로 실행한다.
+    // 정답: ③
+    // 해설: 파생 쿼리는 엔티티 속성 경로를 파싱한다. 밑줄은 중첩 속성의 탐색 경계를 명확히 하는 데 사용한다.
+    //
+    // Q2. existsByX와 findByX 중 중복 여부만 필요한 경우 exists 조회가 적절한 이유는? [chapter-v1-07-06]
+    // ① exists는 어떤 DB에서도 항상 같은 SQL과 같은 실행 비용을 보장한다.
+    // ② exists 조회 자체가 동시 등록의 unique를 대체한다.
+    // ③ find 조회는 존재하지 않는 자료에서도 반드시 객체를 반환한다.
+    // ④ 전체 엔티티 대신 존재 여부를 반환해 불필요한 데이터 로딩을 줄일 수 있다.
+    // 정답: ④
+    // 해설: 반환 목적에 맞는 조회를 선택하고 실제 SQL·실행 계획을 확인한다. 중복 무결성은 DB 제약으로 보장한다.
+    //
+    // Q3. 긴 파생 쿼리를 @Query나 Querydsl로 옮길 판단 기준은? [chapter-v1-07-07]
+    // ① 복잡한 조건·조인·동적 검색 때문에 메서드 이름의 가독성과 유지보수가 떨어지는지 확인한다.
+    // ② 메서드 이름이 정확히 20자를 넘으면 무조건 Querydsl로 바꾼다.
+    // ③ @Query로 옮기면 쿼리 검증이 필요 없어지는지 확인한다.
+    // ④ Repository 없이 Controller에서 문자열 SQL만 연결한다.
+    // 정답: ①
+    // 해설: 조건 복잡도와 변경 빈도에 따라 명시적 쿼리나 동적 쿼리를 선택하며 결과·권한·성능을 검증한다.
+    //
+    // Q4. Page<Employee>를 API 응답에 직접 노출하는 대신 해야 할 일은? [chapter-v1-07-08]
+    // ① 모든 관계와 비밀번호를 그대로 직렬화한다.
+    // ② 조회·매핑 경계를 정하고 공개 필드만 가진 Page<EmployeeResponse>로 변환한다.
+    // ③ Page이면 Entity의 민감 정보가 자동 제거된다고 믿는다.
+    // ④ LAZY 관계를 아무 시점에서나 조회하도록 둔다.
+    // 정답: ②
+    // 해설: 페이지 메타정보는 유지하면서 Entity의 공개 범위·지연 로딩·API 계약을 DTO로 관리한다.
+    //
+    // 4지선다 학습 문제 (자동 생성 끝)
 }

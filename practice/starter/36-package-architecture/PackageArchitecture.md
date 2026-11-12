@@ -1,8 +1,6 @@
 # 패키지 구조와 계층 책임
 
-TRD 3.2.2 의 패키지 구조를 직접 채워 봅니다. 신입 면접에서 “계층 분리 왜 했나요?” 질문에 답할 수 있도록 책임을 한 줄씩 적어 두세요.
-
-이 문서에서는 폴더 모양을 외우는 것이 아니라 본인 실행 프로젝트의 실제 구조가 비즈니스 책임과 의존 방향을 지키는지 점검합니다. 예시와 다른 구조를 선택해도 이유와 트레이드오프를 설명할 수 있으면 됩니다.
+이 챕터의 개념과 설계 판단을 4지선다로 확인합니다. [선택·채점 화면](../../../problems.html#problem-36)에서 풀고 실제 구현·검증 결과를 [통합 워크북](../../job-preparation-workbook.md)에 남깁니다.
 
 ## 챕터 계약
 
@@ -12,129 +10,52 @@ TRD 3.2.2 의 패키지 구조를 직접 채워 봅니다. 신입 면접에서 �
 | 취업 결과물 | 실제 패키지 트리와 계층별 책임·예외를 기록한 구조 문서 |
 | 완료 검증 | 실제 코드에서 Controller의 Repository 직접 호출과 역방향 의존이 없는지 검색한다. |
 
----
+<!-- 객관식 시작 -->
+## 4지선다 문제
 
-## 1. 도식 채우기 (top-down)
+### Q36-01. 계층 우선과 도메인 우선 패키지 전략을 선택하는 기준은?
 
-```text
-com.example.companywork
-├── ____            # 진입점 / @SpringBootApplication / main()
-├── ____            # 전역 설정 (JPA Auditing, Security, WebMvc, PasswordEncoder)
-├── ____            # @RestController / @Controller — HTTP 진입점
-├── ____            # @Service — 비즈니스 로직 / 트랜잭션 경계
-├── ____            # JpaRepository — 영속성
-├── ____            # @Entity — 도메인 모델 / 비즈니스 규칙 캡슐화
-├── ____            # 요청/응답 DTO, record/class
-├── ____            # ErrorCode, BusinessException, GlobalExceptionHandler
-└── ____            # @CurrentUser, AuthCheckInterceptor, SecurityConfig
-```
+- ① 도메인 우선이면 모든 Service·Repository 분리가 금지된다.
+- ② 현재 규모와 변경 단위에 맞춰 책임 탐색·응집도·확장 비용을 비교한다.
+- ③ 계층 우선이면 모든 테스트가 불필요해진다.
+- ④ 폴더명만 바꾸면 코드 의존 문제가 모두 해결된다.
 
----
+**정답:** ②
 
-## 2. 계층별 책임 표
+**해설:** 어느 전략이든 책임과 의존 방향을 실제 코드에서 유지해야 한다.
 
-| 계층 | 의존 가능 | 의존 금지 | 주된 어노테이션 |
-|---|---|---|---|
-| Controller | Service, DTO | Repository, Entity 직접 반환 | `@RestController`, `@RequestMapping` |
-| Service | Repository, Domain | ____ | `@Service`, `@Transactional` |
-| Repository | Domain | ____ | `extends JpaRepository` |
-| Domain (Entity) | (가능한 한) 없음 | Service, Repository | `@Entity`, `@Embeddable` |
-| DTO | Domain (정적 팩토리만) | Repository | `record`, `class` |
-| Exception | ErrorCode, ResponseEntity | 비즈니스 로직 직접 호출 | `@RestControllerAdvice` |
-| Config / Security | 전 영역 | 비즈니스 로직 | `@Configuration`, `@Bean` |
+### Q36-02. 이 실습의 기본 호출 의존 방향으로 알맞은 것은?
 
----
+- ① Controller → Service → Repository, 업무 상태와 규칙은 Domain에 둔다.
+- ② Entity → Controller → HTML → Repository
+- ③ Repository가 Controller를 호출하여 HTTP 응답을 만든다.
+- ④ DTO가 Service와 세션을 직접 생성한다.
 
-## 3. 두 가지 패키지 전략
+**정답:** ①
 
-### A. 계층 우선 (Layer-first) — 현재 TRD 3.2.2 방식
+**해설:** HTTP·업무 조율·데이터 접근·도메인 규칙의 책임을 구분한다.
 
-```text
-controller/
-service/
-repository/
-domain/
-dto/
-```
+### Q36-03. Service와 Repository의 의존 정책으로 알맞은 것은?
 
-장점:
-- 단순. 신입이 책임을 빨리 익힌다.
+- ① Repository가 HttpSession을 반드시 알아야 한다.
+- ② Entity가 화면 Controller를 항상 주입받는다.
+- ③ Service가 브라우저 DOM을 직접 조작한다.
+- ④ Service는 Controller에 의존하지 않고 Repository는 HTTP 계층에 의존하지 않는다.
 
-단점:
-- 도메인이 커질수록 한 폴더가 비대해진다. (controller 아래에 30개 컨트롤러)
+**정답:** ④
 
-### B. 도메인 우선 (Feature-first)
+**해설:** 하위 업무·저장 계층을 특정 HTTP 진입점에 묶지 않아 재사용과 테스트를 쉽게 한다.
 
-```text
-employee/
-  ├── EmployeeController.java
-  ├── EmployeeService.java
-  ├── EmployeeRepository.java
-  ├── Employee.java
-  └── dto/
-leave/
-  ├── LeaveController.java
-  ├── LeaveService.java
-  └── ...
-```
+### Q36-04. 계층 책임을 가장 잘 지킨 구성은?
 
-장점:
-- 한 기능을 한 폴더에서 끝낸다.
+- ① Controller에 SQL·모든 업무 규칙·세션·응답 Entity를 한꺼번에 둔다.
+- ② Repository가 HTML을 반환하고 DTO가 데이터를 삭제한다.
+- ③ Controller는 바인딩, Service는 업무 조율, Repository는 접근, Entity는 상태 규칙, DTO는 통신 데이터를 맡는다.
+- ④ Entity가 모든 Controller를 호출하여 흐름을 조율한다.
 
-단점:
-- 신입 단계에서는 “계층이 무엇인지” 학습이 어려울 수 있다.
+**정답:** ③
 
-> 학습 단계에서는 ____ 로 시작 → 도메인이 6개 이상 되면 ____ 로 자연스럽게 전환.
-
----
-
-## 4. 의존 방향 그래프 (직접 그려보세요)
-
-```text
-Controller  ──▶  Service  ──▶  Repository  ──▶  Domain
-                  │                              ▲
-                  ▼                              │
-                  DTO ◀──────── (변환만 의존)─────┘
-```
-
-위 그래프에서 **반드시 지켜야 할 화살표 방향**을 한 줄로 적어 보세요.
-
-> A:
-
----
-
-## 5. 안티 패턴 모음
-
-- [ ] Controller 에서 Repository 를 직접 호출
-- [ ] Service 에서 HttpServletRequest / HttpSession 을 직접 다룸
-- [ ] Entity 에 `@JsonIgnore` 가 5개 이상 붙어 있음
-- [ ] DTO 가 Entity 의 setter 를 호출
-- [ ] Exception 패키지가 어떤 도메인 클래스를 import
-
-위 5개 중 가장 빠지기 쉬운 것은 무엇이고, 왜 그런지 한 줄로 적어 보세요.
-
-> A:
-
----
-
-## 6. 학습 질문
-
-- Q1. Service 에서 트랜잭션을 시작하는 것이 자연스러운 이유는?
-- Q2. Controller 가 Repository 를 직접 호출하면 어떤 단점이 있을까?
-- Q3. Entity 가 Service 를 의존하면 어떤 문제가 생길까? (순환 의존)
-- Q4. DTO 를 별도 패키지가 아니라 각 도메인 폴더의 `dto/` 서브패키지로 두면 어떤 장단점이 있을까?
-
-### 완료 후 남길 증거
-
-- [ ] 실행 프로젝트의 패키지 트리를 README 또는 구조 문서에 남겼다.
-- [ ] Controller가 Repository를 직접 호출하지 않는지 검색으로 확인했다.
-- [ ] 구조 선택 이유와 개선 가능성을 [취업 준비 통합 워크북](../../job-preparation-workbook.md)에 기록했다.
-
-| 증거 ID | 구조 문서·코드 링크 | 확인 명령 | 발견한 예외 | 선택 이유 |
-|---|---|---|---|---|
-| E-DOC-ARCH |  |  |  |  |
-
----
+**해설:** 이름만 나누는 대신 실제 책임과 의존을 구분해야 구조의 효과가 있다.
 
 ## 7. 심화 노트 (면접 답변 포인트)
 

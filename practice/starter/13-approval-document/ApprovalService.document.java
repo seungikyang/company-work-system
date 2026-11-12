@@ -1,3 +1,8 @@
+// 중학생 눈높이: 결재 작성과 제출
+// 문서를 임시 저장한 뒤 지정한 결재자에게 처리를 요청합니다.
+// 작성자와 결재자는 서로 다른 역할입니다. 자기 문서를 자기 자신에게 승인 요청하지 않도록 확인합니다.
+// 작성자·결재자 확인 → 임시 문서 만들기 → 작성자가 제출하기 순서로 봅니다.
+// ____는 직접 채울 빈칸입니다. 주석은 사람이 읽는 설명이므로 프로그램이 실행하지 않습니다.
 // 실제 구현 위치 예: src/main/java/com/example/companywork/service/ApprovalService.java
 // 목표: 전자결재 문서의 작성(DRAFT) → 결재 요청(PENDING) 흐름을 채우세요.
 //       PRD 2.4.3, 2.5.6, TRD 3.8.4 참고.
@@ -14,7 +19,9 @@ public ApprovalResponse createDraft(Long currentEmployeeId, ApprovalCreateReques
 
     // TODO 01: 작성자와 결재자가 같으면 안 됩니다.
     //          Service 와 Entity 양쪽에서 막을지, Entity 한 곳에 맡길지 정해 보세요.
+    // if는 조건이 맞을 때만 안쪽 작업을 실행합니다. 조건을 확인하는 갈림길입니다.
     if (currentEmployeeId.equals(request.getApproverId())) {
+        // throw는 문제를 알리는 예외를 던집니다. 이 지점 뒤의 정상 작업은 계속 진행하지 않습니다.
         throw new BusinessException(ErrorCode.____, "작성자와 결재자는 같을 수 없습니다.");
     }
 
@@ -32,6 +39,7 @@ public ApprovalResponse createDraft(Long currentEmployeeId, ApprovalCreateReques
         request.getContent()
     );
 
+    // return은 결과를 호출한 곳에 돌려주고 이 메서드를 끝냅니다. 값이 없는 return은 종료만 합니다.
     return ApprovalResponse.from(approvalRepository.save(doc));
 }
 
@@ -54,13 +62,34 @@ public ApprovalResponse submit(Long currentEmployeeId, Long approvalId) {
     return ApprovalResponse.from(doc);
 }
 
-// 학습 질문:
-// Q1. 작성과 결재 요청을 분리하는 이유(임시저장)는?
-//     A:
-// Q2. 결재자가 존재하지 않는 ID 라면 어떤 상태/에러 코드로 응답해야 하나?
-//     A:
-// Q3. doc.submit() 안의 상태 검증을 Service 가 if 로 하도록 바꾸면 어떤 단점이 있을까?
-//     A:
+// 4지선다 학습 문제 (자동 생성 시작)
+// 선택·채점 화면 (저장소 루트 기준): problems.html#problem-13
+//
+// Q1. 전자결재 작성과 submit 호출을 분리하는 주된 이유는? [chapter-v1-13-04]
+// ① 임시저장·편집 단계와 결재 요청 시작 시점을 명확히 구분하기 위해서다.
+// ② 작성한 문서를 자동으로 최종 승인하기 위해서다.
+// ③ 작성자가 결재자 검사 없이 상태를 바꾸게 하기 위해서다.
+// ④ 결재 대기 목록에 모든 미작성 문서를 넣기 위해서다.
+// 정답: ①
+// 해설: DRAFT에서 준비하고 submit으로 PENDING에 진입하는 업무 흐름을 상태·권한 규칙과 연결한다.
+//
+// Q2. 존재하지 않는 결재자 ID로 문서를 작성할 때 알맞은 처리는? [chapter-v1-13-05]
+// ① 없는 ID를 임의의 관리자 ID로 바꿔 저장한다.
+// ② 성공 201을 보내고 유효하지 않은 문서를 남긴다.
+// ③ DB 비밀번호와 stack trace를 응답에 넣는다.
+// ④ 결재자 조회 실패를 사용자 없음 등 정의된 업무 오류와 404 응답으로 변환하고 저장하지 않는다.
+// 정답: ④
+// 해설: 이 저장소의 존재 확인·ErrorCode 계약을 따른다. 외래키 오류 이전에 명확한 업무 응답을 주고 실패 저장이 없는지 검증한다.
+//
+// Q3. doc.submit의 상태 검사를 Service 조건문으로만 옮기면 생길 수 있는 문제는? [chapter-v1-13-06]
+// ① 모든 호출자가 Service 조건문을 자동 상속한다.
+// ② submit 메서드에 현재 상태는 필요 없다.
+// ③ 다른 호출자가 submit을 사용하면서 도메인 상태 규칙을 우회할 수 있다.
+// ④ PENDING·APPROVED 상태를 구분할 필요가 없어진다.
+// 정답: ③
+// 해설: 전이 메서드는 자기 상태 규칙을 지키고 Service는 조회·권한·트랜잭션을 조정한다.
+//
+// 4지선다 학습 문제 (자동 생성 끝)
 //
 // 심화 노트 (면접 답변 포인트):
 // - 작성자=결재자 이중 방어: Service equals(친절한 에러) + Entity createDraft(불변식). 어느 경로든 차단.

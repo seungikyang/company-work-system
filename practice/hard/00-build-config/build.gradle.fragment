@@ -1,3 +1,7 @@
+// 중학생 눈높이: Gradle은 프로그램에 필요한 도구를 모으고 빌드·시험을 돕습니다.
+// dependencies는 사용할 도구의 목록입니다. 도구를 가져오는 주소는 repositories에 적습니다.
+// Java 버전은 코드를 읽고 실행할 Java의 기준입니다. 도구와 맞는 버전을 고릅니다.
+// ____는 연습할 빈칸이고, // 뒤의 글자는 실행하지 않는 설명입니다.
 // 실제 위치 후보: build.gradle (Spring Boot 3.x / Gradle)
 // 목표: 의존성 묶음을 거의 백지에서. 막히면 starter/00-build-config, answers.md 0장.
 
@@ -46,15 +50,42 @@ dependencies {
 
 tasks.named('test') { useJUnitPlatform() }
 
-// 학습 질문 (직접 답):
-// Q1. "스타터" 가 단순 라이브러리와 다른 점은?
-//     A:
-// Q2. dependency-management 플러그인이 있으면 version 을 생략하는 이유(BOM)?
-//     A:
-// Q3. javax.* → jakarta.* 변경이 Validation/JPA 코드에 주는 영향?
-//     A:
-// Q4. security-crypto 와 starter-security 를 단계별로 나누는 이유?
-//     A:
+// 4지선다 학습 문제 (자동 생성 시작)
+// 선택·채점 화면 (저장소 루트 기준): problems.html#problem-00
+//
+// Q1. Spring Boot starter가 단일 라이브러리와 다른 점은? [chapter-v1-00-09]
+// ① 모든 starter는 단 하나의 jar만 제공한다.
+// ② starter는 애플리케이션의 업무 코드를 자동으로 완성한다.
+// ③ starter-web을 추가하면 모든 DB 엔티티가 자동 생성된다.
+// ④ 목적에 맞는 관련 의존성을 묶어 제공하고 Boot 자동 설정과 함께 필요한 구성을 줄인다.
+// 정답: ④
+// 해설: starter는 관련 라이브러리 묶음이다. 자동 설정은 classpath와 설정 조건에 따라 동작한다.
+//
+// Q2. dependency-management와 BOM을 사용하는 이유로 알맞은 것은? [chapter-v1-00-10]
+// ① 어떤 라이브러리든 버전과 호환성을 확인할 필요가 없어진다.
+// ② BOM은 Java 소스의 문법 오류를 수정한다.
+// ③ 관리 대상 버전을 모두 임의로 바꿔야 호환성이 보장된다.
+// ④ BOM이 관리하는 호환 버전 조합을 적용해 관리 대상 의존성의 버전 선언을 줄인다.
+// 정답: ④
+// 해설: Spring Boot BOM이 관리하는 버전을 기본으로 사용하고 관리 밖 의존성과 개별 버전 재정의는 따로 검토한다.
+//
+// Q3. Boot 3.x로 옮길 때 JPA·Validation 코드에서 확인할 변경은? [chapter-v1-00-11]
+// ① 관련 import와 의존성을 jakarta.persistence·jakarta.validation 기반으로 맞춘다.
+// ② java.time을 모두 javax.time으로 바꾼다.
+// ③ 모든 javax 패키지를 이름만 보고 무조건 jakarta로 치환한다.
+// ④ JPA 어노테이션을 모두 삭제하면 자동으로 호환된다.
+// 정답: ①
+// 해설: Jakarta 전환 대상 API와 라이브러리를 함께 맞춘다. javax라는 이름의 모든 Java API가 전환 대상인 것은 아니다.
+//
+// Q4. 세션 실습에서 crypto와 전체 Security starter를 단계별로 도입하는 이유는? [chapter-v1-00-12]
+// ① crypto만으로 모든 URL의 접근 권한이 자동 검사된다.
+// ② 먼저 BCrypt 인코더를 쓰고 이후 전체 인증·인가 필터와 보안 설정을 함께 적용하기 위해서다.
+// ③ Security starter는 비밀번호를 평문으로 저장하기 위해 필요하다.
+// ④ 두 의존성은 HTTP 요청 동작에 언제나 동일한 영향을 준다.
+// 정답: ②
+// 해설: 인코더 사용과 요청 보안 적용의 범위가 다르므로 전체 Security를 넣을 때 필터와 접근 정책도 구성한다.
+//
+// 4지선다 학습 문제 (자동 생성 끝)
 
 // 자가 채점:
 // □ org.springframework.boot version, io.spring.dependency-management

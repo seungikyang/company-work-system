@@ -27,6 +27,13 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# 브라우저 화면 검증 산출물
+.playwright-cli/
+output/
+
+# 판매·출시 점검 산출물
+outputs/
+
 # Spring Boot / runtime
 spring-boot-*.log
 HELP.md

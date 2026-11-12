@@ -1,3 +1,6 @@
+<!-- 중학생 눈높이: Java 코드와 Markdown 학습 문서를 글자로 보여 주는 읽기 화면입니다. -->
+<!-- HTML은 화면의 뼈대, CSS는 색과 배치입니다. JavaScript가 연결된 화면에서는 버튼·입력에 동작을 붙입니다. -->
+<!-- HTML 주석은 사람이 읽는 설명이며 화면 본문에는 나타나지 않습니다. -->
 <!-- Markdown과 Java·설정 조각 학습 자료를 브라우저에서 읽을 수 있게 보여주는 공통 문서 화면 -->
 <!doctype html>
 <html lang="ko">
@@ -233,6 +236,27 @@
       background: #fff2ee;
     }
 
+    .learning-tabs { display: flex; gap: 6px; padding: 5px; margin: 24px 0; background: #e9eee8; border-radius: 12px; }
+    .learning-tabs button { flex: 1; min-height: 48px; border: 0; border-radius: 9px; color: var(--muted); background: transparent; font: inherit; font-size: 0.9rem; font-weight: 750; cursor: pointer; }
+    .learning-tabs [aria-pressed="true"] { background: #fff; color: var(--green-dark); box-shadow: 0 2px 6px #18211b0d; }
+    .quiz-panel-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; font-size: 0.85rem; }
+    .quiz-panel-heading p { margin: 0; color: var(--muted); }
+    .quiz-panel-heading > div { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .quiz-panel-heading button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 9px; background: #fff; color: var(--green); font: inherit; font-weight: 700; cursor: pointer; }
+    .document-quiz-callout { padding: 22px; margin-top: 24px; border: 1px solid #c5d9ca; border-radius: 12px; background: #edf4ef; }
+    .document-quiz-callout p { margin: 0 0 14px; color: var(--green-dark); }
+    .document-quiz-callout button { min-height: 44px; padding: 10px 18px; border: 0; border-radius: 9px; color: white; background: var(--green); font: inherit; font-weight: 700; cursor: pointer; }
+    #document-quiz-frame { display: block; width: 100%; height: 1000px; border: 0; }
+    .layout:is(.is-solving, .has-inline-quiz) { grid-template-columns: minmax(0, 1fr); max-width: 1000px; }
+    .layout:is(.is-solving, .has-inline-quiz) .outline-card { display: none; }
+    .layout:is(.is-solving, .has-inline-quiz) .reading-intro { display: none; }
+    .layout:is(.is-solving, .has-inline-quiz) .reader { padding-top: 24px; }
+    .layout:is(.is-solving, .has-inline-quiz) .reader h1 { font-size: clamp(1.5rem, 3vw, 2rem); }
+    .layout:is(.is-solving, .has-inline-quiz) .source-label { margin-bottom: 1rem; }
+    .has-inline-quiz #document-body { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); scroll-margin-top: 90px; }
+    #document-source-heading { margin: 0 0 20px; color: var(--green-dark); font-size: 1.3rem; }
+    @media print { .learning-tabs, #quiz-panel, .document-quiz-callout { display: none !important; } #document-body[hidden] { display: block !important; } }
+
     .document-section {
       scroll-margin-top: 5.5rem;
     }
@@ -370,15 +394,26 @@
       <p class="eyebrow">취업 결과물 워크북</p>
       <h1 id="document-title">워크북을 불러오는 중입니다.</h1>
       <p id="source-label" class="source-label"></p>
-      <p><a href="./workbook-viewer.html?file=practice/beginner-guide.md">초보자 기술 안내 · 왜 쓰고 어떻게 동작하나요?</a></p>
+      <p class="status reading-intro"><strong>읽은 내용을 직접 확인해 보세요.</strong><br><a id="open-focus-quiz" href="./quiz.html">보기 선택 · 정답 확인 · 해설이 있는 집중 퀴즈 열기 →</a></p>
+      <p class="reading-intro"><a href="./workbook-viewer.html?file=practice/beginner-guide.md">초보자 기술 안내 · 왜 쓰고 어떻게 동작하나요?</a></p>
       <p id="load-status" class="status" role="status">학습 자료를 준비하고 있습니다.</p>
-      <div id="document-body"></div>
+      <div class="learning-tabs" role="toolbar" aria-label="학습 화면 선택">
+        <button id="reading-tab" type="button" aria-controls="document-body quiz-panel" aria-pressed="true">학습 문서 읽기</button>
+        <button id="solving-tab" type="button" aria-controls="document-body quiz-panel" aria-pressed="false" tabindex="-1">4지선다 직접 풀기</button>
+      </div>
+      <section id="quiz-panel" aria-label="4지선다 웹 퀴즈" tabindex="0" hidden>
+        <div class="quiz-panel-heading"><p id="quiz-panel-description">보기를 고르고, 정답과 해설을 확인하세요.</p><div><button id="show-source" type="button" hidden>관련 코드 보기 ↓</button><a id="quiz-fullscreen-link" href="./quiz.html" target="_blank" rel="noopener">큰 화면으로 풀기 ↗</a></div></div>
+        <iframe id="document-quiz-frame" title="학습 문서와 연결된 4지선다 퀴즈"></iframe>
+      </section>
+      <div id="document-body" role="region" aria-label="연결된 학습 문서" tabindex="0"></div>
     </article>
   </main>
 
   <!-- HTML로 입력창과 표시 영역을 먼저 만든 뒤, 아래 JavaScript가 DOM을 찾아 동작을 연결합니다. -->
+  <script src="./practice/quiz/document-quiz.js"></script>
   <script>
     // URLSearchParams는 ?file= 뒤의 쿼리 값을 읽습니다. 이 값은 사용자 입력이므로 허용 경로 검사 후 요청합니다.
+    // 주소의 ?file= 뒤는 읽을 파일을 지정하는 메모입니다. 허용한 학습 파일인지 확인한 뒤 읽습니다.
     const params = new URLSearchParams(window.location.search);
     const sourceFile = params.get("file") || "";
     const allowedSource = /^(?:practice\/[A-Za-z0-9._/-]+\.(?:fragment|java|md)|(?:README|company_work_system_PRD_TRD)\.md)$/;
@@ -388,7 +423,42 @@
     const documentBody = document.getElementById("document-body");
     const documentOutline = document.getElementById("document-outline");
     const printDocument = document.getElementById("print-document");
+    const quizFrame = document.getElementById("document-quiz-frame");
+    const readingTab = document.getElementById("reading-tab");
+    const solvingTab = document.getElementById("solving-tab");
+    let quizUrl = "./quiz.html?bank=chapters&limit=10";
+    let hasDocumentQuestions = false;
+    function selectLearningTab(solving) {
+      readingTab.setAttribute("aria-pressed", String(!solving));
+      solvingTab.setAttribute("aria-pressed", String(solving));
+      readingTab.tabIndex = solving ? -1 : 0;
+      solvingTab.tabIndex = solving ? 0 : -1;
+      documentBody.hidden = solving;
+      const showQuiz = solving || hasDocumentQuestions;
+      document.getElementById("quiz-panel").hidden = !showQuiz;
+      document.querySelector(".layout").classList.toggle("is-solving", solving);
+      if (showQuiz && !quizFrame.hasAttribute("src")) quizFrame.src = `${quizUrl}&embed=1`;
+    }
+    readingTab.addEventListener("click", () => selectLearningTab(false));
+    solvingTab.addEventListener("click", () => selectLearningTab(true));
+    document.getElementById("show-source").addEventListener("click", () => {
+      selectLearningTab(false);
+      documentBody.focus({ preventScroll: true });
+      documentBody.scrollIntoView({ block: "start", behavior: "instant" });
+    });
+    [readingTab, solvingTab].forEach(tab => tab.addEventListener("keydown", event => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      const solving = event.key === "End" || (event.key !== "Home" && tab === readingTab);
+      selectLearningTab(solving);
+      (solving ? solvingTab : readingTab).focus();
+    }));
+    window.addEventListener("message", event => {
+      if (event.origin !== location.origin || event.source !== quizFrame.contentWindow || event.data?.type !== "company-work-system:quiz-height") return;
+      if (Number.isFinite(event.data.height)) quizFrame.style.height = `${Math.max(360, Math.min(12000, event.data.height + 12))}px`;
+    });
 
+    // 제목에서 이동용 이름표를 만듭니다. 번호를 함께 넣어 같은 제목도 서로 다른 위치로 이동할 수 있게 합니다.
     function makeHeadingId(title, index) {
       const slug = title
         .toLowerCase()
@@ -399,11 +469,26 @@
     }
 
     // 줄바꿈을 통일하고 # 제목을 기준으로 구획을 나눕니다. 제목이 없는 Java 파일도 본문 구획으로 남깁니다.
+    // 긴 문서를 제목마다 나누는 작업입니다. Java 코드처럼 제목이 없는 자료도 글 전체를 남깁니다.
     function splitDocument(source) {
       const chunks = [];
       let current = { level: 1, title: "", lines: [] };
+      let fence = null;
 
       source.replace(/\r\n?/g, "\n").split("\n").forEach((line) => {
+        // 코드 블록 안의 # 주석과 Markdown 예시는 제목으로 나누지 않습니다.
+        if (fence) {
+          current.lines.push(line);
+          const closing = line.match(/^ {0,3}(`+|~+)[ \t]*$/);
+          if (closing && closing[1][0] === fence.marker && closing[1].length >= fence.length) fence = null;
+          return;
+        }
+        const opening = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
+        if (opening && (opening[1][0] !== "`" || !opening[2].includes("`"))) {
+          fence = { marker: opening[1][0], length: opening[1].length };
+          current.lines.push(line);
+          return;
+        }
         const heading = line.match(/^(#{1,6})\s+(.+?)\s*$/);
         if (!heading) {
           current.lines.push(line);
@@ -425,7 +510,28 @@
       return chunks;
     }
 
+    // 나눈 글로 제목·목차·본문을 만듭니다. 코드는 실행하지 않고 들여쓰기를 살려 글자로 보여 줍니다.
     function renderDocument(source) {
+      // 파일 끝의 자동 생성 문제는 정답이 노출되는 주석 대신 실제 선택형 풀이로 연결합니다.
+      // 원본 파일은 그대로 두고, 문서에 실린 문항 ID로 같은 문제만 골라 줍니다.
+      const extracted = DocumentQuiz.extract(source);
+      const questionIds = extracted.ids;
+      hasDocumentQuestions = questionIds.length > 0;
+      document.querySelector(".layout").classList.toggle("has-inline-quiz", hasDocumentQuestions);
+      if (questionIds.length) {
+        readingTab.textContent = "문제 + 학습 문서";
+        solvingTab.textContent = "문제만 집중해서 풀기";
+        document.getElementById("quiz-panel-description").textContent = "보기 선택 → 채점 → 해설 확인";
+        document.getElementById("show-source").hidden = false;
+        source = extracted.source;
+        const scoped = new URL(quizUrl, location.href);
+        scoped.searchParams.set("items", questionIds.join(","));
+        quizUrl = `./quiz.html?${scoped.searchParams}`;
+        document.getElementById("open-focus-quiz").href = quizUrl;
+        document.getElementById("quiz-fullscreen-link").href = quizUrl;
+        // 파일 요청이 끝나기 전에 풀이 탭을 열었어도 문서에 맞는 범위로 맞춥니다.
+        if (quizFrame.hasAttribute("src")) quizFrame.src = `${quizUrl}&embed=1`;
+      }
       const chunks = splitDocument(source);
       const firstTitle = chunks.find((chunk) => chunk.level === 1 && chunk.title);
       const displayTitle = firstTitle?.title || sourceFile.split("/").pop() || "학습 자료";
@@ -435,6 +541,12 @@
       documentTitle.textContent = displayTitle;
       document.title = `${displayTitle} · Company Work System`;
       documentBody.replaceChildren();
+      if (hasDocumentQuestions) {
+        const sourceHeading = document.createElement("h2");
+        sourceHeading.id = "document-source-heading";
+        sourceHeading.textContent = "관련 코드로 이해하기";
+        documentBody.append(sourceHeading);
+      }
 
       chunks.forEach((chunk, index) => {
         const section = document.createElement("section");
@@ -445,7 +557,6 @@
           const headingLevel = Math.min(Math.max(chunk.level, 2), 4);
           const heading = document.createElement(`h${headingLevel}`);
           const headingId = makeHeadingId(chunk.title, index);
-          heading.id = headingId;
           heading.textContent = chunk.title;
           section.id = headingId;
           section.append(heading);
@@ -474,6 +585,19 @@
         documentBody.append(section);
       });
 
+      if (questionIds.length) {
+        const callout = document.createElement("div");
+        callout.className = "document-quiz-callout";
+        const copy = document.createElement("p");
+        copy.textContent = `코드를 확인했다면, 위의 ${questionIds.length}문제로 이해한 내용을 확인해 보세요.`;
+        const solve = document.createElement("button");
+        solve.type = "button";
+        solve.textContent = "문제로 돌아가서 풀기 ↑";
+        solve.addEventListener("click", () => { selectLearningTab(true); solvingTab.focus(); });
+        callout.append(copy, solve);
+        documentBody.append(callout);
+      }
+
       if (outlineList.childElementCount) {
         documentOutline.replaceChildren(outlineList);
       } else {
@@ -482,10 +606,13 @@
         documentOutline.replaceChildren(emptyOutline);
       }
       loadStatus.hidden = true;
+      // 문제 주석이 있는 파일은 첫 화면부터 실제 보기가 보이도록 합니다.
+      selectLearningTab(solvingTab.getAttribute("aria-pressed") === "true");
     }
 
     // 경로 확인 → raw=1 원문 요청 → HTTP 성공 확인 → 제목·목차·본문 표시 순서입니다.
     // 서버도 공개 경로를 검사합니다. 브라우저 검사만으로 서버 파일의 접근 권한을 정할 수는 없습니다.
+    // 파일 경로 확인 → 서버에 원문 요청 → 성공 여부 확인 → 화면 표시 순서로 진행합니다.
     async function loadDocument() {
       if (sourceFile === "practice/problems.md") {
         window.location.replace("./problems.html");
@@ -496,7 +623,19 @@
       }
 
       sourceLabel.textContent = sourceFile;
+      const chapterMatch = /^practice\/(?:starter|hard)\/(\d{2})-/.exec(sourceFile);
+      if (chapterMatch && Number(chapterMatch[1]) < 40) {
+        const quizLink = document.getElementById("open-focus-quiz");
+        quizLink.href = `./quiz.html?bank=chapters&chapter=${chapterMatch[1]}`;
+        quizLink.textContent = `${chapterMatch[1]}장 집중 퀴즈 · 보기 선택하고 해설 보기 →`;
+        quizUrl = `./quiz.html?bank=chapters&chapter=${chapterMatch[1]}`;
+        quizFrame.title = `${chapterMatch[1]}장 4지선다 퀴즈 · 보기 선택과 해설`;
+      }
+      if (sourceFile === "practice/beginner-guide.md") quizUrl = "./quiz.html?bank=fundamentals&limit=10";
+      document.getElementById("open-focus-quiz").href = quizUrl;
+      document.getElementById("quiz-fullscreen-link").href = quizUrl;
       const sourceUrl = new URL(`./${sourceFile}`, window.location.href);
+      // raw=1은 읽기 화면 대신 파일 원문을 보내 달라는 약속입니다. 자기 화면을 계속 불러오는 일을 막습니다.
       sourceUrl.searchParams.set("raw", "1");
       const response = await fetch(sourceUrl);
       if (!response.ok) {
@@ -506,6 +645,7 @@
     }
 
     printDocument.addEventListener("click", () => window.print());
+    // 파일을 읽다가 문제가 생기면 빈 화면 대신 파일 이름과 오류 이유를 알려 줍니다.
     loadDocument().catch((error) => {
       documentTitle.textContent = "워크북을 열 수 없습니다.";
       sourceLabel.textContent = sourceFile || "파일 경로 없음";

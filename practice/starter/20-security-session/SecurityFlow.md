@@ -1,8 +1,6 @@
 # 보안 흐름 워크북
 
-TRD 3.11 에서 정의한 1차/2차/3차 보안 진화를 직접 채워봅니다. 아래 빈칸과 질문에 한 줄씩 답을 적어 두면, 면접에서 “이 시스템의 보안은 어떻게 진화시킬 수 있나요?”에 자연스럽게 답할 수 있습니다.
-
-워크북 프로그램에서는 인증 기술을 많이 나열하는 것보다 현재 구현한 방식의 선택 이유와 한계를 코드·테스트로 증명하는 것이 중요합니다. 이 문서를 푼 뒤에는 로그인 성공, 인증 실패, 권한 실패 시나리오를 실행 프로젝트에서 검증합니다.
+이 챕터의 개념과 설계 판단을 4지선다로 확인합니다. [선택·채점 화면](../../../problems.html#problem-20)에서 풀고 실제 구현·검증 결과를 [통합 워크북](../../job-preparation-workbook.md)에 남깁니다.
 
 ## 챕터 계약
 
@@ -12,142 +10,41 @@ TRD 3.11 에서 정의한 1차/2차/3차 보안 진화를 직접 채워봅니다
 | 취업 결과물 | 현재 인증 방식, 권한 매트릭스와 다음 보안 개선을 담은 설계 문서 |
 | 완료 검증 | 로그인 성공·실패와 USER의 ADMIN 접근 실패 테스트가 실제로 통과한다. |
 
----
+<!-- 객관식 시작 -->
+## 4지선다 문제
 
-## 1차: 세션 기반 로그인
+### Q20-01. 1차 세션 로그인 흐름으로 알맞은 것은?
 
-### 흐름
+- ① 브라우저가 USER_ID 값을 정하면 로그인 완료다.
+- ② Service가 자격 증명을 확인하고 Controller가 세션 ID를 갱신해 사용자 정보를 저장한다.
+- ③ 매 요청마다 서버의 모든 계정을 새로 생성한다.
+- ④ 비밀번호를 세션 쿠키에 원문으로 넣는다.
 
-```text
-1. 클라이언트가 POST /api/auth/login 으로 email + password 전송
-2. AuthService 가 ____Repository.findByEmail(email) 로 사용자 조회
-3. passwordEncoder.____(rawPassword, user.getPassword()) 로 비밀번호 검증
-4. AuthController 가 request.____() 로 세션 ID 를 재발급
-5. AuthController 가 HttpSession 에 사용자 ID 와 Role 저장
-   session.setAttribute("USER_ID", user.getId());
-   session.setAttribute("USER_ROLE", user.getRole());
-6. 이후 요청마다 ____Interceptor 가 세션을 확인하여 currentUser 를 구성
-```
+**정답:** ②
 
-### TODO
+**해설:** 비밀번호 확인과 HTTP 세션 관리는 역할을 나눠 수행한다.
 
-- [ ] `JSESSIONID` 쿠키의 `HttpOnly`, `Secure`, `SameSite` 옵션을 설정한 이유를 한 줄씩 적어 보세요.
-- [ ] 비밀번호를 평문으로 저장하면 PRD 의 어떤 비기능 요구사항을 위반하나요?
-- [ ] 로그인 실패 시 `email` 이 존재하지 않는지, 비밀번호가 틀린지 메시지에서 구분하면 안 되는 이유는?
+### Q20-02. Spring Security를 실제 적용하는 2차 단계에서 달라지는 점은?
 
-### 학습 질문
+- ① 인증·인가 필터와 설정을 연결하고 역할별 접근 정책을 검증한다.
+- ② 의존성 이름만 쓰면 모든 도메인 권한이 자동 완성된다.
+- ③ BCrypt를 제거하고 평문 비밀번호를 저장한다.
+- ④ Security를 적용하면 실패 테스트가 필요 없어진다.
 
-- Q. 세션 기반 인증의 가장 큰 단점은? (스케일 아웃 관점)
-- Q. 같은 사용자가 두 브라우저에서 로그인하면 세션은 몇 개가 만들어지나요?
+**정답:** ①
 
----
+**해설:** Security 확장은 의존성·설정·인증 방식·인가 정책을 함께 구현해야 한다.
 
-## 2차: Spring Security + BCrypt + Role 기반 접근 제어
+### Q20-03. JWT 기반 무상태 인증으로 전환할 때 필요한 판단은?
 
-### 핵심 구성요소
+- ① 서버가 토큰 내용을 검증 없이 신뢰한다.
+- ② JWT를 쓰면 역할 검사와 로그아웃 정책이 필요 없다.
+- ③ 기존 HttpSession 저장만 유지하면 자동으로 무상태가 된다.
+- ④ 토큰 서명·만료·검증과 갱신·폐기 정책을 설계한다.
 
-| 요소 | 역할 |
-|---|---|
-| `SecurityFilterChain` | 필터 체인 정의 (formLogin, csrf, authorizeHttpRequests …) |
-| `UserDetailsService` | DB 의 사용자 정보를 Spring Security 가 이해할 수 있는 형태로 변환 |
-| `____PasswordEncoder` | 단방향 해시 + salt 자동 처리 |
-| `@PreAuthorize` / `hasRole(...)` | 메서드/엔드포인트 단위 권한 검사 |
+**정답:** ④
 
-### 빈칸 채우기
-
-```java
-@Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-        .csrf(csrf -> csrf.____())  // REST API + JWT 단계에서는 disable. 세션+폼 로그인 단계에서는 활성.
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/**", "/h2-console/**").____()
-            .requestMatchers("/api/admin/**").hasRole("____")
-            .requestMatchers("/api/approvals/pending", "/api/approvals/*/approve", "/api/approvals/*/reject")
-                .hasAnyRole("APPROVER", "ADMIN")
-            .anyRequest().____()
-        )
-        .formLogin(form -> form.loginProcessingUrl("/api/auth/login").permitAll())
-        .logout(logout -> logout.logoutUrl("/api/auth/logout"));
-    return http.build();
-}
-
-@Bean
-public PasswordEncoder passwordEncoder() {
-    return new ____PasswordEncoder();
-}
-```
-
-### 학습 질문
-
-- Q. `hasRole("ADMIN")` 과 `hasAuthority("ROLE_ADMIN")` 의 차이는?
-- Q. CSRF 보호를 disable 해도 되는 조건은?
-
----
-
-## 3차: JWT 무상태 인증
-
-### 흐름
-
-```text
-1. POST /api/auth/login → AccessToken + (선택) RefreshToken 발급
-2. 클라이언트가 Authorization: ____ {token} 헤더로 요청
-3. JwtAuthenticationFilter 가 헤더를 파싱하여 SecurityContext 에 Authentication 주입
-4. 서버는 ____ 상태이므로, 토큰만 유효하면 어떤 인스턴스든 인증을 처리 가능
-```
-
-### TODO
-
-- [ ] JWT payload 에 어떤 클레임을 담을지 적어 보세요. (sub, role, exp 등)
-- [ ] AccessToken 의 만료 시간을 짧게 두는 이유는?
-- [ ] RefreshToken 을 도입하면 어떤 새로운 보안 위협이 생기나요?
-- [ ] 토큰 서명에 사용하는 비밀키를 환경 변수로 분리해야 하는 이유는?
-
-### 비교 표 (직접 채워보세요)
-
-| 항목 | 세션 | JWT |
-|---|---|---|
-| 상태 위치 | 서버 메모리 | ____ |
-| 강제 로그아웃 | 세션 삭제로 즉시 가능 | ____ |
-| 분산 환경 | 세션 클러스터링/Redis 필요 | ____ |
-| 페이로드 변조 | 서버 메모리라 불가능 | 서명 검증으로 차단 |
-| 모바일 친화도 | 쿠키 관리 필요 | ____ |
-
----
-
-## 권한 정책 매트릭스 (TRD 3.11.3 채우기)
-
-| 기능 | USER | ADMIN | APPROVER |
-|---|---|---|---|
-| 내 정보 조회 | ____ | 가능 | 가능 |
-| 직원 관리 | ____ | 가능 | ____ |
-| 부서 관리 | ____ | 가능 | ____ |
-| 휴가 신청 | 가능 | 가능 | 가능 |
-| 휴가 승인 | ____ | 가능 | ____ |
-| 공지 등록 | ____ | 가능 | ____ |
-| 결재 작성 | 가능 | 가능 | 가능 |
-| 결재 승인 | ____ | 가능 | 가능 |
-
----
-
-## 셀프 체크
-
-- [ ] 1차/2차/3차 보안 흐름을 도식 없이 말로 설명할 수 있는가?
-- [ ] BCrypt 가 단순 SHA-256 보다 안전한 이유를 한 줄로 답할 수 있는가?
-- [ ] 권한 검사가 다층(필터 → 어노테이션 → 서비스 가드)으로 있어야 하는 이유를 답할 수 있는가?
-
-### 완료 후 남길 증거
-
-- [ ] 현재 프로젝트가 사용하는 인증 방식을 README에 명시했다.
-- [ ] 로그인 성공·실패와 USER의 ADMIN 접근 실패 테스트를 통과했다.
-- [ ] 보안 선택 이유와 확장 방향을 [취업 준비 통합 워크북](../../job-preparation-workbook.md)에 기록했다.
-
-| 증거 ID | 코드 위치 | 검증 명령·결과 | 마지막 확인일 | 면접 한 문장 |
-|---|---|---|---|---|
-| E-FR-USER-001 |  |  |  |  |
-| E-FR-USER-005 |  |  |  |  |
-
----
+**해설:** JWT 인증은 세션 조회를 토큰 검증으로 바꾸며 토큰 수명과 취소 전략도 고려한다.
 
 ## 심화 노트 (면접 답변 포인트)
 
