@@ -22,6 +22,7 @@
     // page는 현재 페이지 번호입니다. 컴퓨터는 첫 페이지를 0으로, 화면은 1로 표시합니다.
     let answers = {};
     // 저장하지 못한 변경만 따로 기억합니다. 다른 화면의 새 답안 위에 이 변경만 합칩니다.
+    // 왜? 저장소가 꽉 찼거나 막혀서 저장에 실패해도 바꾼 답을 잊지 않고, 다음 저장 때 다시 시도하려고 따로 모아 둡니다.
     const pendingAnswers = new Map();
     let filtered = questions;
     let page = 0;
@@ -35,6 +36,8 @@
         return {};
       }
       if (stored === null) return {};
+      // 왜 여기서는 오류로 멈출까요? 글자가 깨진 기록은 되살릴 방법이 없어 새로 시작하지만,
+      // 버전이 다른 기록은 아직 쓸모 있을 수 있습니다. 그대로 덮어쓰지 않도록 오류를 내서 저장을 멈춥니다.
       if (stored.version !== core.version || !stored.answers || typeof stored.answers !== "object") throw new Error("저장 형식 오류");
       const cleaned = core.sanitizeAnswers(stored.answers, questions);
       if (Object.keys(cleaned).length !== Object.keys(stored.answers).length) {
@@ -66,6 +69,8 @@
       if (record) answers[id] = record;
       else delete answers[id];
       try {
+        // 왜 저장 직전에 다시 읽을까요? 다른 탭에서 그사이 푼 답이 있을 수 있습니다.
+        // 이 화면이 들고 있던 오래된 기록을 통째로 쓰면 그 답이 사라지므로, 최신 기록 위에 내 변경만 얹습니다.
         const latest = mergePending(readStoredAnswers());
         localStorage.setItem(core.storageKey, JSON.stringify({ version: core.version, answers: latest }));
         answers = latest;
@@ -82,6 +87,7 @@
       const stats = core.statistics(questions, answers);
       byId("study-progress").max = stats.total;
       for (const name of ["answered", "correct", "wrong", "remaining"]) {
+        // 왜? toLocaleString은 1234를 1,234처럼 한국식 자릿수 표시로 바꿔 큰 숫자를 읽기 쉽게 합니다.
         byId(`${name}-count`).textContent = stats[name].toLocaleString("ko-KR");
       }
       byId("study-progress").value = stats.answered;
@@ -125,9 +131,11 @@
       const grade = element("button", "grade-button", "채점하고 해설 보기");
       grade.type = "button";
       const source = element("a", "", "연결된 기술 설명 →");
+      // 왜? 파일 경로의 / 나 공백 같은 글자가 주소의 다른 부분으로 오해되지 않도록 encodeURIComponent로 안전하게 바꿉니다.
       source.href = `./workbook-viewer.html?file=${encodeURIComponent(question.reading)}`;
       actions.append(grade, source);
       const feedback = element("div", "feedback");
+      // 왜? aria-live는 내용이 바뀌면 화면 낭독기가 읽어 주게 합니다. polite는 읽던 내용을 끊지 않고 끝난 뒤에 알려 줍니다.
       feedback.setAttribute("aria-live", "polite");
       feedback.setAttribute("aria-atomic", "true");
 
@@ -137,6 +145,7 @@
         const graded = record?.graded === true;
         choices.forEach(({ label, input }, i) => {
           input.checked = record?.selected === i;
+          // 왜? 채점 뒤에 답을 바꿀 수 있으면 '정답 보고 고치기'가 되므로, 다시 풀기를 누르기 전까지 선택을 잠급니다.
           input.disabled = graded;
           label.classList.toggle("correct", graded && i === question.answer);
           label.classList.toggle("incorrect", graded && record.selected === i && i !== question.answer);
@@ -195,6 +204,7 @@
     // 현재 페이지에 해당하는 부분만 잘라 카드로 보여 줍니다. Math.ceil은 남은 일부 문제도 한 페이지로 셉니다.
     function render(focus = false) {
       const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      // 왜? 필터로 문제 수가 줄면 지금 페이지 번호가 끝을 넘을 수 있습니다. 0부터 마지막 페이지 사이로 다시 맞춥니다.
       page = Math.max(0, Math.min(page, totalPages - 1));
       const start = page * PAGE_SIZE;
       const shown = filtered.slice(start, start + PAGE_SIZE);
@@ -209,6 +219,7 @@
         byId(`previous-${side}`).disabled = page === 0;
         byId(`next-${side}`).disabled = page >= totalPages - 1;
       }
+      // 왜? 페이지를 넘긴 뒤 키보드·화면 낭독기 사용자가 목록 맨 위부터 다시 읽을 수 있게 제목으로 이동합니다.
       if (focus) byId("questions-heading").focus();
     }
 
@@ -246,12 +257,14 @@
     }
     // 복원·채점·삭제를 다른 화면에서 했어도 새 기록을 보여 주며, 이 화면의 미저장 변경은 유지합니다.
     window.addEventListener("storage", event => {
+      // 왜 null도 볼까요? 다른 탭에서 localStorage.clear()로 모두 지우면 key가 null로 전달되기 때문입니다.
       if (event.key !== core.storageKey && event.key !== null) return;
       if (readAnswers()) {
         updateStatistics();
         render();
       }
     });
+    // 왜? HTML에서는 버튼을 잠가 두었다가 준비가 끝나면 엽니다. 로드에 실패했을 때 눌러도 반응 없는 버튼이 생기지 않게 합니다.
     byId("apply-filters").disabled = false;
     updateStatistics();
     applyFilters(false);

@@ -6,6 +6,7 @@
   "use strict";
   const version = 2;
   // localStorage는 이 브라우저의 작은 보관함입니다. 이 이름표 아래 기본기 답안만 넣습니다.
+  // 왜? 문제 구성이 크게 바뀌면 이름표(v2)를 바꿉니다. 옛 답안의 '2번 보기 선택'이 새 문제에 잘못 붙지 않게 하려는 것입니다.
   const storageKey = "company-work-system.fundamentals.technology.v2";
   const scopes = {
     workbook: "워크북 실제 구현",
@@ -35,6 +36,10 @@
   // 고정 시드로 보기를 섞어 새로고침 후에도 저장한 선택지 번호의 의미가 유지됩니다.
   // seed는 숫자 뽑기의 시작값입니다. 같은 시작값이면 같은 순서가 나와 저장한 보기 번호가 유지됩니다.
   // 보안 비밀을 만드는 함수가 아니라 연습 문제의 보기 순서를 정하는 함수입니다.
+  // 왜 Math.random을 쓰지 않을까요? Math.random은 시작값을 정할 수 없어 새로고침할 때마다 보기 순서가 바뀝니다.
+  // 그러면 저장해 둔 '③번 선택'이 다른 보기를 가리키게 됩니다. 그래서 같은 시작값이면 같은 순서가 나오는 간단한 방식을 씁니다.
+  // 1664525와 1013904223은 이런 계산(선형 합동 생성기)에서 널리 쓰이는 검증된 숫자입니다.
+  // Math.imul과 >>> 0은 큰 수를 곱해도 소수점 오차 없이 32비트 양의 정수로 유지하려는 장치입니다.
   function random(seed) {
     return function () {
       seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
@@ -42,6 +47,8 @@
     };
   }
   // 카드 섞기처럼 목록의 순서를 바꿉니다. ...items로 복사해서 원래 목록은 바꾸지 않습니다.
+  // 왜 이 방법일까요? 뒤에서부터 한 칸씩 무작위 자리와 바꾸는 방법(피셔–예이츠 섞기)은 모든 순서가 같은 확률로 나옵니다.
+  // 흔히 보는 sort(() => Math.random() - 0.5)는 특정 순서로 치우칠 수 있어 쓰지 않습니다.
   function shuffle(items, next) {
     const result = [...items];
     for (let i = result.length - 1; i > 0; i -= 1) {
@@ -73,6 +80,9 @@
     }
     // 기존 1,000문항의 보기·정답 순서를 유지해야 저장된 선택 번호도 그대로 유효합니다.
     const originalCount = chapters.reduce((count, chapter) => count + chapter.topics.length * 5, 0);
+    // 왜 i % 4를 섞을까요? 0·1·2·3을 정확히 같은 개수만큼 만든 뒤 섞으면 정답 자리가 네 곳에 고르게 나뉩니다.
+    // '정답은 주로 ③' 같은 찍기 요령이 통하지 않게 하려는 것입니다.
+    // 시드를 두 개 쓰는 이유: 나중에 추가한 기술 식별 문항이 앞 1,000문항의 정답 자리를 바꾸지 않게 따로 계산합니다.
     const positions = [
       ...shuffle(Array.from({ length: originalCount }, (_, i) => i % 4), random(20260922)),
       ...shuffle(Array.from({ length: originalCount }, (_, i) => i % 4), random(20261009)),
@@ -85,13 +95,16 @@
           const facetIndex = kind.facetIndex ?? index;
           chapter.topics.forEach((topic, topicIndex) => {
             const number = questions.length + 1;
+            // 왜 7919일까요? 소수(1과 자기 자신으로만 나뉘는 수)를 곱하면 문제마다 시작값이 고르게 흩어져 보기 순서가 비슷해지지 않습니다.
             const next = random(number * 7919);
             // 같은 단원의 다른 주제 설명 세 개를 오답 보기로 고릅니다. 질문의 주제를 구별하는 연습입니다.
+            // 왜 같은 단원일까요? 다른 단원의 설명을 오답으로 쓰면 주제가 너무 달라 읽지 않고도 정답이 티 납니다.
             const others = shuffle(chapter.topics.filter(other => other !== topic), next).slice(0, 3);
             const optionFor = item => ({ text: identify ? item.name : item.facets[facetIndex], topic: item.name });
             const options = others.map(optionFor);
             const answer = positions[number - 1];
             options.splice(answer, 0, optionFor(topic));
+            // 왜? 같은 글자의 보기가 두 개면 정답이 둘인 것처럼 보이므로, 잘못된 문제를 내보내기 전에 아예 멈춥니다.
             if (new Set(options.map(option => option.text)).size !== 4) throw new Error(`${number}번 보기 중복`);
             questions.push({
               id: `tech-v2-${chapter.id}-${topicIndex + 1}-${kind.id}`,
@@ -113,6 +126,7 @@
     const result = {};
     if (!value || typeof value !== "object" || Array.isArray(value)) return result;
     for (const question of questions) {
+      // 왜? value.hasOwnProperty(...)로 부르면, 저장된 값 안에 같은 이름의 칸이 있을 때 고장 날 수 있어 안전한 형태로 부릅니다.
       const record = Object.prototype.hasOwnProperty.call(value, question.id) ? value[question.id] : null;
       if (record && Number.isInteger(record.selected) && record.selected >= 0 && record.selected < 4 && typeof record.graded === "boolean") {
         result[question.id] = { selected: record.selected, graded: record.graded };
@@ -123,11 +137,13 @@
 
   // 도서관에서 조건에 맞는 책만 찾듯이 단원·유형·풀이 상태·검색어에 맞는 문제만 남깁니다.
   function filterQuestions(questions, filters, answers) {
+    // 왜? 모두 소문자로 바꿔 비교하면 'Spring'과 'spring'을 같은 검색어로 찾을 수 있습니다. String(...)은 빈 값도 글자로 맞춥니다.
     const query = String(filters.query || "").trim().toLocaleLowerCase();
     return questions.filter(question => {
       const record = answers[question.id];
       if (filters.chapter && question.chapter !== filters.chapter) return false;
       if (filters.scope === "workbook" && question.scope !== "workbook") return false;
+      // 왜? '백엔드' 범위는 실습 조각과 확장 미리보기를 함께 보여 주려고, 워크북 문항만 빼는 방식으로 고릅니다.
       if (filters.scope === "backend" && question.scope === "workbook") return false;
       if (filters.kind && question.kind !== filters.kind) return false;
       if (filters.mode === "unanswered" && record?.graded) return false;
@@ -151,5 +167,6 @@
     return { total: questions.length, answered, correct, wrong: answered - correct, remaining: questions.length - answered };
   }
 
+  // 왜? 화면 코드 없이 계산만 공개하므로, 자동 검사 스크립트(scripts/verify_*.cjs)도 같은 규칙을 그대로 불러 확인할 수 있습니다.
   globalThis.Fundamentals = { version, storageKey, scopes, kinds, buildBank, sanitizeAnswers, filterQuestions, statistics };
 })();

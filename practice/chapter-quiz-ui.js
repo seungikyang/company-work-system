@@ -11,6 +11,9 @@
     return node;
   }
   const letters = ["A", "B", "C", "D"];
+  // 왜 값 대신 함수(getAnswers, gradeOnSelect)를 받을까요? 답안이나 '즉시 채점' 체크 상태는 계속 바뀝니다.
+  // 함수로 받으면 카드를 다시 만들지 않고도 쓸 때마다 최신 값을 읽을 수 있습니다.
+  // 저장 방법도 onChange로 밖에 맡겨서, 이 카드 코드를 여러 화면이 함께 쓸 수 있습니다.
   function mount(container, questions, { getAnswers, onChange, headingLevel = 5, showNumber = true, gradeOnSelect = () => false }) {
     // container는 카드를 붙일 자리입니다. 챕터가 바뀌면 이전 카드를 지우고 새로 만듭니다.
     // getAnswers는 현재 답안을 읽는 함수, onChange는 바뀐 답안을 저장하도록 알리는 함수입니다.
@@ -20,6 +23,7 @@
       card.dataset.questionId = question.id;
       const prefix = showNumber ? `${question.chapter}-${String(question.number).padStart(2, "0")}. ` : "";
       const heading = element(`h${headingLevel}`, "chapter-choice-heading", prefix + question.prompt);
+      // 왜 container.id를 붙일까요? 한 페이지에 같은 문제가 두 곳에 나와도 id가 겹치지 않게 하려는 것입니다.
       heading.id = `${container.id}-${question.id}-heading`;
       const fieldset = element("fieldset", "chapter-choices");
       const legend = element("legend", "sr-only", "보기 네 개 중 하나를 선택하세요.");
@@ -27,6 +31,7 @@
       // aria-labelledby는 화면을 음성으로 읽는 도구에 이 보기 묶음의 질문 제목을 알려 줍니다.
       fieldset.append(legend);
       const feedback = element("div", "chapter-choice-feedback");
+      // 왜? role="status"이면 채점 결과가 바뀔 때 화면 낭독기가 자동으로 읽어 줍니다.
       feedback.setAttribute("role", "status");
       const button = element("button", "chapter-grade", "채점하고 해설 보기");
       button.type = "button";
@@ -37,6 +42,7 @@
         // 같은 name을 가진 라디오 버튼은 한 묶음입니다. 네 보기 중 하나만 선택할 수 있습니다.
         input.name = `${container.id}-${question.id}`;
         input.value = String(i);
+        // 왜? 화면의 A·B 표시는 aria-hidden으로 숨기고, 대신 'A. 보기 내용'을 한 번에 읽게 해서 같은 글자를 두 번 읽지 않게 합니다.
         input.setAttribute("aria-label", `${letters[i]}. ${option}`);
         const marker = element("span", "choice-marker", letters[i]);
         marker.setAttribute("aria-hidden", "true");
@@ -98,6 +104,7 @@
           // null을 전달하면 이 문제의 기록만 지웁니다. 다른 문제의 답안은 그대로 남습니다.
           onChange(question.id, null);
           refresh();
+          // 왜? 다시 풀기를 누른 뒤 바로 보기를 고를 수 있도록 첫 보기로 키보드 위치를 옮겨 둡니다.
           choices[0].input.focus();
         } else if (!record) {
           // 답을 고르지 않았다면 채점하지 않고 첫 보기로 키보드 이동 위치를 옮깁니다.
