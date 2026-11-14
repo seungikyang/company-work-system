@@ -19,6 +19,7 @@
   <script defer src="./practice/quiz/quiz-page.js"></script>
   <script>
     // 실행 스크립트 자체가 로드되지 않아도 빈 화면 대신 복구 안내를 표시합니다.
+    // 왜 load일까요? defer 스크립트가 모두 실행된 뒤에 오는 신호라, 이때도 문제 목록이 비어 있으면 '준비 실패'라고 확신할 수 있습니다.
     window.addEventListener("load", function () {
       if (!document.getElementById("question-list").hasChildNodes()) {
         document.getElementById("load-error").hidden = false;
